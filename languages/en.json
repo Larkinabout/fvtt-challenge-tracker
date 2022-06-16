@@ -1,3 +1,8 @@
 {
-    "MODULE.hello": "hello"
+  "settings":{
+    "size" : {
+      "name": "Size",
+      "hint": "Set the size of the challenge tracker in pixels"
+  	}
+	}
 }
