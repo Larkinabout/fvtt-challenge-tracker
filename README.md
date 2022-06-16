@@ -8,6 +8,6 @@ Create a macro with a Type of 'script' and enter: `ChallengeTracker.open(success
 
 ![challenge-tracker-macro](https://user-images.githubusercontent.com/105953297/174140132-14ec2b29-a894-4bf8-b929-63cccd0a6e9b.png)
 
-Successes are tracked on the outer ring while failures are tracked on the inner circle. Left-click anywhere within the outer ring to add a success and anywhere within the inner circle to add a failure. Right-click within the ring or circcle to remove successes or failures, respectively.
+Successes are tracked on the outer ring while failures are tracked on the inner circle. Left-click anywhere within the outer ring to add a success and anywhere within the inner circle to add a failure. Right-click within the ring or circle to remove successes or failures, respectively.
 
 Currently, only the GM can open, control and close the Challenge Tracker. In a future release, I'll add the functionality to hand over the Challenge Tracker to a player.
