@@ -1,7 +1,7 @@
 {
   "name": "challenge-tracker",
   "title": "Challenge Tracker",
-  "description": "An interactive aid to track number of successes and failures in challenges",
+  "description": "An interactive aid to track successes and failures in challenges",
   "version": "0.1",
   "library": "false",
   "manifestPlusVersion": "1.0.0",
@@ -16,6 +16,9 @@
   "socket": true,
   "dependencies": [
     {
+      "name": "colorsettings"
+    },
+    {
       "name": "socketlib"
     }
   ],
@@ -28,7 +31,8 @@
   "scripts": [
     "./scripts/hooks.js",
     "./scripts/config.js",
-    "./scripts/challenge-tracker.js"
+    "./scripts/challenge-tracker.js",
+    "./scripts/shade-color.js"
   ],
   "styles": [
     "styles/challenge-tracker.css"
@@ -47,7 +51,7 @@
   "media": [
     {
       "type": "icon",
-      "url": "https://avatars2.githubusercontent.com/u/71292812?s=400&u=ccdb4eeb7abf551ca8f314e5a9bfd0479a4d3d41&v=4"
+      "url": "https://user-images.githubusercontent.com/105953297/174140157-bf62a535-9f9e-47eb-96b2-f659437915c6.png"
     }
   ]
 }

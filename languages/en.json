@@ -1,8 +1,27 @@
 {
-  "settings":{
+  "settings": {
+    "successColor" : {
+      "name": "Success Color",
+      "hint": "Set the color for successes",
+      "label": "Color Picker"
+  	},
+    "failureColor" : {
+      "name": "Failure Color",
+      "hint": "Set the color for failures",
+      "label": "Color Picker"
+  	},
+    "frameColor" : {
+      "name": "Frame Color",
+      "hint": "Set the color of the frame",
+      "label": "Color Picker"
+  	},
     "size" : {
       "name": "Size",
       "hint": "Set the size of the challenge tracker in pixels"
+  	},
+    "scroll" : {
+      "name": "Scroll",
+      "hint": "Enable the scroll wheel for increasing/decreasing successes and failures"
   	}
 	}
 }
