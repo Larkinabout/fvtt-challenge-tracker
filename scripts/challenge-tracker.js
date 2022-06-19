@@ -34,8 +34,8 @@ class ChallengeTracker extends Application {
     this.mousePosition = { x: 0, y: 0 }
     this.eventListenerController = new AbortController()
     this.eventListenerSignal = this.eventListenerController.signal
-    this.eventListenerControllerScroll = new AbortController()
-    this.eventListenerSignalScroll = this.eventListenerControllerScroll.signal
+    this.eventListenerControllerScroll = null
+    this.eventListenerSignalScroll = null
   }
 
   static get defaultOptions () {
@@ -88,15 +88,13 @@ class ChallengeTracker extends Application {
       document.addEventListener('keypress', (event) => this.challengeTrackerKeyPressEvent(event),
         { signal: this.eventListenerSignal }
       )
-      document.addEventListener('wheel', (event) => this.challengeTrackerWheelEvent(event),
-        { signal: this.eventListenerSignalScroll }
-      )
       this.canvasFrame.addEventListener('click', (event) => this.challengeTrackerClickEvent(event),
         { signal: this.eventListenerSignal }
       )
       this.canvasFrame.addEventListener('contextmenu', (event) => this.challengeTrackerContextMenuEvent(event),
         { signal: this.eventListenerSignal }
       )
+      this.updateScroll()
     }
   }
 
@@ -431,17 +429,19 @@ class ChallengeTracker extends Application {
 
   updateScroll () {
     const scroll = game.settings.get('challenge-tracker', 'scroll')
-    if (scroll) {
-      if (game.challengeTracker && this.eventListenerControllerScroll.aborted) {
-        this.eventListenerControllerScroll = new AbortController()
-        this.eventListenerSignalScroll = this.eventListenerControllerScroll.signal
-        document.addEventListener('wheel', (event) => this.challengeTrackerWheelEvent(event),
-          { signal: this.eventListenerSignalScroll }
-        )
-      }
-    } else {
-      if (game.challengeTracker && !this.eventListenerControllerScroll.aborted) {
-        this.eventListenerControllerScroll.abort()
+    if (game.challengeTracker) {
+      if (scroll) {
+        if (this.eventListenerSignalScroll == null || this.eventListenerSignalScroll.aborted) {
+          this.eventListenerControllerScroll = new AbortController()
+          this.eventListenerSignalScroll = this.eventListenerControllerScroll.signal
+          document.addEventListener('wheel', (event) => this.challengeTrackerWheelEvent(event),
+            { signal: this.eventListenerSignalScroll }
+          )
+        }
+      } else {
+        if (this.eventListenerSignalScroll !== null && !this.eventListenerSignalScroll.aborted) {
+          this.eventListenerControllerScroll.abort()
+        }
       }
     }
   }
