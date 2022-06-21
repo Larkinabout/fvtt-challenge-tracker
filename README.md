@@ -1,7 +1,7 @@
 # Challenge Tracker
 An interactive aid to track successes and failures in challenges.  
 
-![challenge-tracker](https://user-images.githubusercontent.com/105953297/174140157-bf62a535-9f9e-47eb-96b2-f659437915c6.png)
+![challenge-tracker](https://user-images.githubusercontent.com/105953297/174775519-3261d0db-57af-483e-a999-31ea3d453c86.png)
 
 ## Features
 - **Versatile:** Works for D&D 4e-inspired skill challenges, Blades in the Dark progress clocks, or as a resource/countdown tracker.
@@ -13,7 +13,7 @@ An interactive aid to track successes and failures in challenges.
 1. Create a macro with a Type of 'script' and enter: `ChallengeTracker.open(successes, failures, show)` where `successes` is the number of successes required, `failures` is the number of failures required, and `show` equals `true` to show the tracker to your players or `false` to hide it from your players. `show` is optional and is set to false by default.
 2. Execute the macro to open the Challenge Tracker.
 
-![challenge-tracker-macro](https://user-images.githubusercontent.com/105953297/174140132-14ec2b29-a894-4bf8-b929-63cccd0a6e9b.png)
+![challenge-tracker-macro](https://user-images.githubusercontent.com/105953297/174775545-f3992540-9737-4ab2-b5e0-6be06428c53a.png)
 
 By default, successes are tracked on the outer ring while failures are tracked on the inner circle.
 
