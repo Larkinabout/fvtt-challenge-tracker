@@ -10,10 +10,10 @@ An interactive aid to track successes and failures in challenges.
 - **Player View:** Click **Show** on the header to show the tracker to your players and click **Hide** to hide it from your players.
 
 ## How to Use
-1. Create a macro with a Type of 'script' and enter: `ChallengeTracker.open(successes, failures, show)` where `successes` is the number of successes required, `failures` is the number of failures required, and `show` equals `true` to show the tracker to your players or `false` to hide it from your players. `show` is optional and is set to false by default.
+1. Create a macro with a Type of 'script' and enter: `ChallengeTracker.open(successes, failures, {show: true/false})` where `successes` is the number of successes required, `failures` is the number of failures required, and `{show: true/false}` equals `{show: true}` to show the tracker to your players or `{show: false}` to hide it from your players. `{show: true/false}` is optional and is set to false by default.
 2. Execute the macro to open the Challenge Tracker.
 
-![challenge-tracker-macro](https://user-images.githubusercontent.com/105953297/174775545-f3992540-9737-4ab2-b5e0-6be06428c53a.png)
+![challenge-tracker-macro](https://user-images.githubusercontent.com/105953297/174798982-53b25513-5aca-464d-9556-1ab7ee543856.png)
 
 By default, successes are tracked on the outer ring while failures are tracked on the inner circle.
 

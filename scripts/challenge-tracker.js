@@ -8,14 +8,14 @@ class ChallengeTrackerSettings {
 }
 
 class ChallengeTracker extends Application {
-  constructor (totalSuccess, totalFailure, currentSuccess = 0, currentFailure = 0, showToEveryone = false) {
+  constructor (totalSuccess, totalFailure, currentSuccess = 0, currentFailure = 0, challengeTrackerOptions = {show: false}) {
     super()
     this._disable_popout_module = true // Disable the PopOut! module on this application
     this.totalSuccess = totalSuccess
     this.totalFailure = totalFailure
     this.currentSuccess = currentSuccess
     this.currentFailure = currentFailure
-    this.showToEveryone = showToEveryone
+    this.challengeTrackerOptions = challengeTrackerOptions
     this.successColor = null
     this.failureColor = null
     this.frameColor = null
@@ -49,19 +49,19 @@ class ChallengeTracker extends Application {
     }
   }
 
-  static open (totalSuccess, totalFailure, showToEveryone = false) {
+  static open (totalSuccess, totalFailure, challengeTrackerOptions = { show: false }) {
     if (!game.user.isGM) return
     const currentSuccess = 0
     const currentFailure = 0
-    this.showToEveryone = showToEveryone
-    if (this.showToEveryone) {
+    challengeTrackerOptions["show"] = [true, false].includes(challengeTrackerOptions.show) ? challengeTrackerOptions.show : false
+    if (challengeTrackerOptions.show) {
       ChallengeTrackerSocket.executeForEveryone(
         'openHandler',
         totalSuccess,
         totalFailure,
         currentSuccess,
         currentFailure,
-        showToEveryone
+        challengeTrackerOptions
       )
     } else {
       ChallengeTracker.openHandler(
@@ -69,26 +69,26 @@ class ChallengeTracker extends Application {
         totalFailure,
         currentSuccess,
         currentFailure,
-        showToEveryone
+        challengeTrackerOptions
       )
     }
   }
 
-  static openHandler (totalSuccess, totalFailure, currentSuccess = 0, currentFailure = 0, showToEveryone = false) {
+  static openHandler (totalSuccess, totalFailure, currentSuccess = 0, currentFailure = 0, challengeTrackerOptions = { show: false }) {
     if (!game.challengeTracker) {
       game.challengeTracker = new ChallengeTracker(
         totalSuccess,
         totalFailure,
         currentSuccess,
         currentFailure,
-        showToEveryone
+        challengeTrackerOptions
       )
     } else {
       this.totalSuccess = totalSuccess
       this.totalFailure = totalFailure
       this.currentSuccess = currentSuccess
       this.currentFailure = currentFailure
-      this.showToEveryone = showToEveryone
+      this.challengeTrackerOptions = challengeTrackerOptions
     }
     if (!game.challengeTracker.rendered) game.challengeTracker.render(true)
   }
@@ -116,7 +116,7 @@ class ChallengeTracker extends Application {
     if (game.user.isGM) {
       this.updateCloseElement(game.settings.get('challenge-tracker', 'size'))
       this.element.find('.close').before('<a class="show-hide"></a>')
-      this.showHide(this.showToEveryone)
+      this.showHide(this.challengeTrackerOptions.show)
     }
     if (!game.user.isGM) this.element.find('.header-button.close').remove() // Remove the Close button for players
   }
@@ -138,7 +138,7 @@ class ChallengeTracker extends Application {
       this.canvasFrame.addEventListener('contextmenu', (event) => this.challengeTrackerContextMenuEvent(event),
         { signal: this.eventListenerSignal }
       )
-      this.updateScroll()
+      this.updateScroll(game.settings.get('challenge-tracker', 'scroll'))
     }
   }
 
@@ -275,7 +275,7 @@ class ChallengeTracker extends Application {
   // Methods for drawing the Challenge Tracker
 
   draw (totalSuccess, totalFailure, currentSuccess, currentFailure) {
-    if (this.showToEveryone) {
+    if (this.challengeTrackerOptions.show) {
       ChallengeTrackerSocket.executeForEveryone(
         'drawHandler',
         totalSuccess,
@@ -486,7 +486,7 @@ class ChallengeTracker extends Application {
     }
   }
 
-  updateScroll (scroll) {
+  updateScroll (scroll = game.settings.get('challenge-tracker', 'scroll')) {
     if (game.challengeTracker) {
       if (scroll) {
         if (this.eventListenerSignalScroll == null || this.eventListenerSignalScroll.aborted) {
@@ -505,7 +505,7 @@ class ChallengeTracker extends Application {
   }
 
   updateSize (size) {
-    this.updateShowHideElement({ size, showToEveryone: this.showToEveryone })
+    this.updateShowHideElement({ size, show: this.challengeTrackerOptions.show })
     this.updateCloseElement(size)
     this.showHideEvent()
     this.draw(
@@ -527,11 +527,11 @@ class ChallengeTracker extends Application {
 
   // Methods for showing or hiding the Challenge Tracker for players
 
-  updateShowHideElement ({ size = game.settings.get('challenge-tracker', 'size'), showToEveryone = this.showToEveryone }) {
+  updateShowHideElement ({ size = game.settings.get('challenge-tracker', 'size'), show = this.challengeTrackerOptions.show }) {
     const showHideElement = this.element.find('.show-hide')
     let showHideHtmlText
     let showHideHtmlIcon
-    if (showToEveryone) {
+    if (show) {
       showHideHtmlText = 'Hide'
       showHideHtmlIcon = 'fas fa-eye-slash fa-fw'
     } else {
@@ -543,16 +543,16 @@ class ChallengeTracker extends Application {
     showHideElement.replaceWith(showHideHtml)
   }
 
-  showHide (showToEveryone) {
-    this.updateShowHideElement(showToEveryone)
-    if (showToEveryone) {
+  showHide (show = this.challengeTrackerOptions.show) {
+    this.updateShowHideElement(show)
+    if (show) {
       ChallengeTrackerSocket.executeForOthers(
         'openHandler',
         this.totalSuccess,
         this.totalFailure,
         this.currentSuccess,
         this.currentFailure,
-        showToEveryone
+        show
       )
     } else {
       ChallengeTrackerSocket.executeForOthers('closeHandler')
@@ -561,8 +561,8 @@ class ChallengeTracker extends Application {
   }
 
   switchShowHide () {
-    this.showToEveryone = !(this.showToEveryone)
-    this.showHide(this.showToEveryone)
+    this.challengeTrackerOptions.show = !(this.challengeTrackerOptions.show)
+    this.showHide(this.challengeTrackerOptions.show)
   }
 
   showHideEvent () {
@@ -571,21 +571,21 @@ class ChallengeTracker extends Application {
 
   static show () {
     if (!game.user.isGM) return
-    game.challengeTracker.showHandler()
+    if (game.challengeTracker) game.challengeTracker.showHandler()
   }
 
   showHandler () {
-    this.showToEveryone = true
-    this.showHide(this.showToEveryone)
+    this.challengeTrackerOptions.show = true
+    this.showHide(this.challengeTrackerOptions.show)
   }
 
   static hide () {
     if (!game.user.isGM) return
-    game.challengeTracker.hideHandler()
+    if (game.challengeTracker) game.challengeTracker.hideHandler()
   }
 
   hideHandler () {
-    this.showToEveryone = false
-    this.showHide(this.showToEveryone)
+    this.challengeTrackerOptions.show = false
+    this.showHide(this.challengeTrackerOptions.show)
   }
 }
