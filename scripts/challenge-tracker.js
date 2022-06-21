@@ -8,13 +8,14 @@ class ChallengeTrackerSettings {
 }
 
 class ChallengeTracker extends Application {
-  constructor (totalSuccess, totalFailure) {
+  constructor (totalSuccess, totalFailure, currentSuccess = 0, currentFailure = 0, showToEveryone = false) {
     super()
     this._disable_popout_module = true // Disable the PopOut! module on this application
     this.totalSuccess = totalSuccess
     this.totalFailure = totalFailure
-    this.currentSuccess = 0
-    this.currentFailure = 0
+    this.currentSuccess = currentSuccess
+    this.currentFailure = currentFailure
+    this.showToEveryone = showToEveryone
     this.successColor = null
     this.failureColor = null
     this.frameColor = null
@@ -48,33 +49,76 @@ class ChallengeTracker extends Application {
     }
   }
 
-  static open (totalSuccess, totalFailure) {
-    if (game.user.isGM) ChallengeTrackerSocket.executeForEveryone('openForEveryone', totalSuccess, totalFailure)
+  static open (totalSuccess, totalFailure, showToEveryone = false) {
+    if (!game.user.isGM) return
+    const currentSuccess = 0
+    const currentFailure = 0
+    this.showToEveryone = showToEveryone
+    if (this.showToEveryone) {
+      ChallengeTrackerSocket.executeForEveryone(
+        'openHandler',
+        totalSuccess,
+        totalFailure,
+        currentSuccess,
+        currentFailure,
+        showToEveryone
+      )
+    } else {
+      ChallengeTracker.openHandler(
+        totalSuccess,
+        totalFailure,
+        currentSuccess,
+        currentFailure,
+        showToEveryone
+      )
+    }
   }
 
-  static openForEveryone (totalSuccess, totalFailure) {
-    ChallengeTracker.initialise(totalSuccess, totalFailure)
-  }
-
-  static initialise (totalSuccess, totalFailure) {
+  static openHandler (totalSuccess, totalFailure, currentSuccess = 0, currentFailure = 0, showToEveryone = false) {
     if (!game.challengeTracker) {
-      game.challengeTracker = new ChallengeTracker(totalSuccess, totalFailure)
+      game.challengeTracker = new ChallengeTracker(
+        totalSuccess,
+        totalFailure,
+        currentSuccess,
+        currentFailure,
+        showToEveryone
+      )
     } else {
       this.totalSuccess = totalSuccess
       this.totalFailure = totalFailure
-      this.currentSuccess = 0
-      this.currentFailure = 0
+      this.currentSuccess = currentSuccess
+      this.currentFailure = currentFailure
+      this.showToEveryone = showToEveryone
     }
     if (!game.challengeTracker.rendered) game.challengeTracker.render(true)
+  }
+
+  close () {
+    if (game.user.isGM) this.eventListenerController.abort()
+    if (game.challengeTracker) {
+      super.close()
+      delete game.challengeTracker
+    }
+  }
+
+  static closeHandler () {
+    game.challengeTracker?.close()
   }
 
   getData (options) {
     return {}
   }
 
+  // Methods for event listeners
+
   activateListeners (html) {
     super.activateListeners(html)
-    if (!game.user.isGM) this.element.find('.header-button').remove() // Remove the Close button for players
+    if (game.user.isGM) {
+      this.updateCloseElement(game.settings.get('challenge-tracker', 'size'))
+      this.element.find('.close').before('<a class="show-hide"></a>')
+      this.showHide(this.showToEveryone)
+    }
+    if (!game.user.isGM) this.element.find('.header-button.close').remove() // Remove the Close button for players
   }
 
   activateListenersPostDraw () {
@@ -106,8 +150,7 @@ class ChallengeTracker extends Application {
   challengeTrackerClickEvent (event) {
     if (this.contextFrame.isPointInPath(this.innerArc, event.offsetX, event.offsetY)) {
       this.currentFailure = (this.currentFailure === this.totalFailure) ? this.totalFailure : this.currentFailure + 1
-      ChallengeTrackerSocket.executeForEveryone(
-        'drawForEveryone',
+      this.draw(
         this.totalSuccess,
         this.totalFailure,
         this.currentSuccess,
@@ -115,8 +158,7 @@ class ChallengeTracker extends Application {
       )
     } else if (this.contextFrame.isPointInPath(this.outerArc, event.offsetX, event.offsetY)) {
       this.currentSuccess = (this.currentSuccess === this.totalSuccess) ? this.totalSuccess : this.currentSuccess + 1
-      ChallengeTrackerSocket.executeForEveryone(
-        'drawForEveryone',
+      this.draw(
         this.totalSuccess,
         this.totalFailure,
         this.currentSuccess,
@@ -129,8 +171,7 @@ class ChallengeTracker extends Application {
     if (this.contextFrame.isPointInPath(this.innerArc, event.offsetX, event.offsetY)) {
       event.preventDefault()
       this.currentFailure = (this.currentFailure === 0) ? this.totalFailure : this.currentFailure - 1
-      ChallengeTrackerSocket.executeForEveryone(
-        'drawForEveryone',
+      this.draw(
         this.totalSuccess,
         this.totalFailure,
         this.currentSuccess,
@@ -139,8 +180,7 @@ class ChallengeTracker extends Application {
     } else if (this.contextFrame.isPointInPath(this.outerArc, event.offsetX, event.offsetY)) {
       event.preventDefault()
       this.currentSuccess = (this.currentSuccess === 0) ? this.totalSuccess : this.currentSuccess - 1
-      ChallengeTrackerSocket.executeForEveryone(
-        'drawForEveryone',
+      this.draw(
         this.totalSuccess,
         this.totalFailure,
         this.currentSuccess,
@@ -158,17 +198,16 @@ class ChallengeTracker extends Application {
       if (event.code === 'Minus') {
         if (this.totalFailure > 1) this.totalFailure--
         this.currentFailure = (this.currentFailure > this.totalFailure) ? this.totalFailure : this.currentFailure
-        ChallengeTrackerSocket.executeForEveryone(
-          'drawForEveryone',
+        this.draw(
           this.totalSuccess,
           this.totalFailure,
           this.currentSuccess,
-          this.currentFailure)
+          this.currentFailure
+        )
       }
       if (event.code === 'Equal') {
         this.totalFailure++
-        ChallengeTrackerSocket.executeForEveryone(
-          'drawForEveryone',
+        this.draw(
           this.totalSuccess,
           this.totalFailure,
           this.currentSuccess,
@@ -179,8 +218,7 @@ class ChallengeTracker extends Application {
       console.log(event.code)
       if (event.code === 'Minus') {
         if (this.totalSuccess > 1) this.totalSuccess--
-        ChallengeTrackerSocket.executeForEveryone(
-          'drawForEveryone',
+        this.draw(
           this.totalSuccess,
           this.totalFailure,
           this.currentSuccess,
@@ -189,8 +227,7 @@ class ChallengeTracker extends Application {
       }
       if (event.code === 'Equal') {
         this.totalSuccess++
-        ChallengeTrackerSocket.executeForEveryone(
-          'drawForEveryone',
+        this.draw(
           this.totalSuccess,
           this.totalFailure,
           this.currentSuccess,
@@ -212,8 +249,7 @@ class ChallengeTracker extends Application {
       if (event.deltaY < 0) {
         this.totalFailure++
       }
-      ChallengeTrackerSocket.executeForEveryone(
-        'drawForEveryone',
+      this.draw(
         this.totalSuccess,
         this.totalFailure,
         this.currentSuccess,
@@ -227,8 +263,7 @@ class ChallengeTracker extends Application {
       if (event.deltaY < 0) {
         this.totalSuccess++
       }
-      ChallengeTrackerSocket.executeForEveryone(
-        'drawForEveryone',
+      this.draw(
         this.totalSuccess,
         this.totalFailure,
         this.currentSuccess,
@@ -237,15 +272,27 @@ class ChallengeTracker extends Application {
     }
   }
 
-  static drawForEveryone (totalSuccess, totalFailure, currentSuccess, currentFailure) {
-    if (!game.challengeTracker.rendered) {
-      ChallengeTracker.initialise(totalSuccess, totalFailure)
+  // Methods for drawing the Challenge Tracker
+
+  draw (totalSuccess, totalFailure, currentSuccess, currentFailure) {
+    if (this.showToEveryone) {
+      ChallengeTrackerSocket.executeForEveryone(
+        'drawHandler',
+        totalSuccess,
+        totalFailure,
+        currentSuccess,
+        currentFailure
+      )
     } else {
-      game.challengeTracker?.draw(totalSuccess, totalFailure, currentSuccess, currentFailure)
+      ChallengeTracker.drawHandler(totalSuccess, totalFailure, currentSuccess, currentFailure)
     }
   }
 
-  draw (totalSuccess, totalFailure, currentSuccess, currentFailure) {
+  static drawHandler (totalSuccess, totalFailure, currentSuccess, currentFailure) {
+    game.challengeTracker.drawCanvas(totalSuccess, totalFailure, currentSuccess, currentFailure)
+  }
+
+  drawCanvas (totalSuccess, totalFailure, currentSuccess, currentFailure) {
     // Set variables
     this.totalSuccess = totalSuccess
     this.totalFailure = totalFailure
@@ -415,20 +462,31 @@ class ChallengeTracker extends Application {
     this.contextFrame.closePath()
   }
 
-  static closeForEveryone () {
-    if (game.challengeTracker) game.challengeTracker.close()
+  // Methods for setting updates
+
+  updateColor (successColor, failureColor, frameColor) {
+    this.successColor = successColor
+    this.failureColor = failureColor
+    this.frameColor = frameColor
+    this.successColorShade = ShadeColor.shadeColor(successColor, 1.25)
+    this.failureColorShade = ShadeColor.shadeColor(failureColor, 1.25)
+    this.successColorBackground = this.successColorShade.substring(0, 7) + '2b'
+    this.failureColorBackground = this.failureColorShade.substring(0, 7) + '2b'
   }
 
-  close () {
-    if (game.user.isGM) this.eventListenerController.abort()
-    if (game.challengeTracker) {
-      super.close()
-      delete game.challengeTracker
+  updateColorAndDraw (successColor, failureColor, frameColor) {
+    this.updateColor(successColor, failureColor, frameColor)
+    if (game.challengeTracker?.rendered) {
+      this.draw(
+        this.totalSuccess,
+        this.totalFailure,
+        this.currentSuccess,
+        this.currentFailure
+      )
     }
   }
 
-  updateScroll () {
-    const scroll = game.settings.get('challenge-tracker', 'scroll')
+  updateScroll (scroll) {
     if (game.challengeTracker) {
       if (scroll) {
         if (this.eventListenerSignalScroll == null || this.eventListenerSignalScroll.aborted) {
@@ -446,26 +504,88 @@ class ChallengeTracker extends Application {
     }
   }
 
-  updateColor (successColor, failureColor, frameColor) {
-    this.successColor = successColor
-    this.failureColor = failureColor
-    this.frameColor = frameColor
-    this.successColorShade = ShadeColor.shadeColor(successColor, 1.25)
-    this.failureColorShade = ShadeColor.shadeColor(failureColor, 1.25)
-    this.successColorBackground = this.successColorShade.substring(0, 7) + '2b'
-    this.failureColorBackground = this.failureColorShade.substring(0, 7) + '2b'
+  updateSize (size) {
+    this.updateShowHideElement({ size, showToEveryone: this.showToEveryone })
+    this.updateCloseElement(size)
+    this.showHideEvent()
+    this.draw(
+      this.totalSuccess,
+      this.totalFailure,
+      this.currentSuccess,
+      this.currentFailure
+    )
   }
 
-  updateColorAndDraw (successColor, failureColor, frameColor) {
-    this.updateColor(successColor, failureColor, frameColor)
-    if (game.challengeTracker?.rendered) {
-      ChallengeTrackerSocket.executeForEveryone(
-        'drawForEveryone',
+  updateCloseElement (size) {
+    const closeElement = this.element.find('.header-button.close')
+    if (size <= 200) {
+      closeElement.html('<i class="fas fa-times"></i>')
+    } else {
+      closeElement.html('<i class="fas fa-times"></i>Close')
+    }
+  }
+
+  // Methods for showing or hiding the Challenge Tracker for players
+
+  updateShowHideElement ({ size = game.settings.get('challenge-tracker', 'size'), showToEveryone = this.showToEveryone }) {
+    const showHideElement = this.element.find('.show-hide')
+    let showHideHtmlText
+    let showHideHtmlIcon
+    if (showToEveryone) {
+      showHideHtmlText = 'Hide'
+      showHideHtmlIcon = 'fas fa-eye-slash fa-fw'
+    } else {
+      showHideHtmlText = 'Show'
+      showHideHtmlIcon = 'fas fa-eye fa-fw'
+    }
+    if (size < 300) showHideHtmlText = ''
+    const showHideHtml = `<a class="show-hide"><i class="${showHideHtmlIcon}"></i>${showHideHtmlText}</a>`
+    showHideElement.replaceWith(showHideHtml)
+  }
+
+  showHide (showToEveryone) {
+    this.updateShowHideElement(showToEveryone)
+    if (showToEveryone) {
+      ChallengeTrackerSocket.executeForOthers(
+        'openHandler',
         this.totalSuccess,
         this.totalFailure,
         this.currentSuccess,
-        this.currentFailure
+        this.currentFailure,
+        showToEveryone
       )
+    } else {
+      ChallengeTrackerSocket.executeForOthers('closeHandler')
     }
+    this.showHideEvent()
+  }
+
+  switchShowHide () {
+    this.showToEveryone = !(this.showToEveryone)
+    this.showHide(this.showToEveryone)
+  }
+
+  showHideEvent () {
+    this.element.find('.show-hide').one('click', () => this.switchShowHide())
+  }
+
+  static show () {
+    if (!game.user.isGM) return
+    game.challengeTracker.showHandler()
+  }
+
+  showHandler () {
+    this.showToEveryone = true
+    this.showHide(this.showToEveryone)
+  }
+
+  static hide () {
+    if (!game.user.isGM) return
+    game.challengeTracker.hideHandler()
+  }
+
+  hideHandler () {
+    this.showToEveryone = false
+    this.showHide(this.showToEveryone)
   }
 }

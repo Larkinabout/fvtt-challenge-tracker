@@ -11,16 +11,7 @@ Hooks.once('init', async function () {
       step: 50
     },
     default: 400,
-    onChange: () => {
-      if (game.challengeTracker) {
-        ChallengeTracker.drawForEveryone(
-          game.challengeTracker.totalSuccess,
-          game.challengeTracker.totalFailure,
-          game.challengeTracker.currentSuccess,
-          game.challengeTracker.currentFailure
-        )
-      }
-    }
+    onChange: (size) => { if (game.challengeTracker) game.challengeTracker.updateSize(size) }
   })
 
   game.settings.register('challenge-tracker', 'scroll', {
@@ -30,7 +21,7 @@ Hooks.once('init', async function () {
     config: true,
     type: Boolean,
     default: true,
-    onChange: () => { if (game.challengeTracker) game.challengeTracker.updateScroll() }
+    onChange: (scroll) => { if (game.challengeTracker) game.challengeTracker.updateScroll(scroll) }
   })
 })
 
@@ -42,9 +33,9 @@ Hooks.once('colorSettingsInitialized', async function () {
     scope: 'world',
     restricted: true,
     defaultColor: '#009600',
-    onChange: (sett) => { 
+    onChange: (successColor) => { 
       if (game.challengeTracker) game.challengeTracker.updateColorAndDraw(
-        sett,
+        successColor,
         game.challengeTracker.failureColor,
         game.challengeTracker.frameColor
       )
@@ -58,10 +49,10 @@ Hooks.once('colorSettingsInitialized', async function () {
     scope: 'world',
     restricted: true,
     defaultColor: '#DC0000',
-    onChange: (sett) => {
+    onChange: (failureColor) => {
       if (game.challengeTracker) game.challengeTracker.updateColorAndDraw(
         game.challengeTracker.successColor,
-        sett,
+        failureColor,
         game.challengeTracker.frameColor
       )
     }
@@ -74,8 +65,14 @@ Hooks.once('colorSettingsInitialized', async function () {
     scope: 'world',
     restricted: true,
     defaultColor: '#0F1414',
-    onChange: (sett) => {
-      if (game.challengeTracker) game.challengeTracker.updateColorAndDraw(game.challengeTracker.successColor, game.challengeTracker.failureColor, sett)
+    onChange: (frameColor) => {
+      if (game.challengeTracker) {
+        game.challengeTracker.updateColorAndDraw(
+          game.challengeTracker.successColor,
+          game.challengeTracker.failureColor,
+          frameColor
+        )
+      }
     }
   })
 })

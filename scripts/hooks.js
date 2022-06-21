@@ -17,14 +17,14 @@ Hooks.on('renderChallengeTracker', async function () {
 })
 
 Hooks.on('closeChallengeTracker', async function () {
-  if (game.user.isGM) ChallengeTrackerSocket.executeForEveryone('closeForEveryone')
+  if (game.user.isGM) ChallengeTrackerSocket.executeForEveryone('closeHandler')
 })
 
 let ChallengeTrackerSocket
 
 Hooks.once('socketlib.ready', () => {
   ChallengeTrackerSocket = socketlib.registerModule('challenge-tracker')
-  ChallengeTrackerSocket.register('openForEveryone', ChallengeTracker.openForEveryone)
-  ChallengeTrackerSocket.register('drawForEveryone', ChallengeTracker.drawForEveryone)
-  ChallengeTrackerSocket.register('closeForEveryone', ChallengeTracker.closeForEveryone)
+  ChallengeTrackerSocket.register('openHandler', ChallengeTracker.openHandler)
+  ChallengeTrackerSocket.register('drawHandler', ChallengeTracker.drawHandler)
+  ChallengeTrackerSocket.register('closeHandler', ChallengeTracker.closeHandler)
 })
