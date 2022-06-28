@@ -11,7 +11,7 @@ Hooks.once('init', async function () {
       step: 50
     },
     default: 400,
-    onChange: (size) => { if (game.challengeTracker) game.challengeTracker.updateSize(size) }
+    onChange: (size) => { ChallengeTracker.updateSize(size) }
   })
 
   game.settings.register('challenge-tracker', 'scroll', {
@@ -21,39 +21,39 @@ Hooks.once('init', async function () {
     config: true,
     type: Boolean,
     default: true,
-    onChange: (scroll) => { if (game.challengeTracker) game.challengeTracker.updateScroll(scroll) }
+    onChange: (scroll) => { ChallengeTracker.updateScroll(scroll) }
   })
 })
 
 Hooks.once('colorSettingsInitialized', async function () {
-  new window.Ardittristan.ColorSetting('challenge-tracker', 'successColor', {
-    name: game.i18n.localize('settings.successColor.name'),
-    hint: game.i18n.localize('settings.successColor.hint'),
-    label: game.i18n.localize('settings.successColor.label'),
+  new window.Ardittristan.ColorSetting('challenge-tracker', 'outerColor', {
+    name: game.i18n.localize('settings.outerColor.name'),
+    hint: game.i18n.localize('settings.outerColor.hint'),
+    label: game.i18n.localize('settings.outerColor.label'),
     scope: 'world',
     restricted: true,
     defaultColor: '#009600',
-    onChange: (successColor) => { 
-      if (game.challengeTracker) game.challengeTracker.updateColorAndDraw(
-        successColor,
-        game.challengeTracker.failureColor,
-        game.challengeTracker.frameColor
+    onChange: (outerColor) => { 
+      ChallengeTracker.updateColorAndDraw(
+        outerColor,
+        game.settings.get('challenge-tracker', 'innerColor'),
+        game.settings.get('challenge-tracker', 'frameColor')
       )
     }
   })
 
-  new window.Ardittristan.ColorSetting('challenge-tracker', 'failureColor', {
-    name: game.i18n.localize('settings.failureColor.name'),
-    hint: game.i18n.localize('settings.failureColor.hint'),
-    label: game.i18n.localize('settings.failureColor.label'),
+  new window.Ardittristan.ColorSetting('challenge-tracker', 'innerColor', {
+    name: game.i18n.localize('settings.innerColor.name'),
+    hint: game.i18n.localize('settings.innerColor.hint'),
+    label: game.i18n.localize('settings.innerColor.label'),
     scope: 'world',
     restricted: true,
     defaultColor: '#DC0000',
-    onChange: (failureColor) => {
-      if (game.challengeTracker) game.challengeTracker.updateColorAndDraw(
-        game.challengeTracker.successColor,
-        failureColor,
-        game.challengeTracker.frameColor
+    onChange: (innerColor) => {
+      ChallengeTracker.updateColorAndDraw(
+        game.settings.get('challenge-tracker', 'outerColor'),
+        innerColor,
+        game.settings.get('challenge-tracker', 'frameColor')
       )
     }
   })
@@ -66,13 +66,11 @@ Hooks.once('colorSettingsInitialized', async function () {
     restricted: true,
     defaultColor: '#0F1414',
     onChange: (frameColor) => {
-      if (game.challengeTracker) {
-        game.challengeTracker.updateColorAndDraw(
-          game.challengeTracker.successColor,
-          game.challengeTracker.failureColor,
-          frameColor
-        )
-      }
+      ChallengeTracker.updateColorAndDraw(
+        game.settings.get('challenge-tracker', 'outerColor'),
+        game.settings.get('challenge-tracker', 'innerColor'),
+        frameColor
+      )
     }
   })
 })

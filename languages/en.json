@@ -1,13 +1,13 @@
 {
   "settings": {
-    "successColor" : {
-      "name": "Success Color",
-      "hint": "Set the color for successes",
+    "outerColor" : {
+      "name": "Outer Color",
+      "hint": "Set the color for the outer ring",
       "label": "Color Picker"
   	},
-    "failureColor" : {
-      "name": "Failure Color",
-      "hint": "Set the color for failures",
+    "innerColor" : {
+      "name": "Inner Color",
+      "hint": "Set the color for the inner circle",
       "label": "Color Picker"
   	},
     "frameColor" : {
@@ -21,7 +21,7 @@
   	},
     "scroll" : {
       "name": "Scroll",
-      "hint": "Enable the scroll wheel for increasing/decreasing successes and failures"
+      "hint": "Enable the scroll wheel for increasing/decreasing segments"
   	}
 	}
 }

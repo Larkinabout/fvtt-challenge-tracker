@@ -1,8 +1,8 @@
-#challenge-tracker {
+.challenge-tracker.window-app {
 	height: auto;
 }
 
-#challenge-tracker .window-content {
+.challenge-tracker.window-app .window-content {
     background: transparent;
     padding: 0;
     margin: 0;

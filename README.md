@@ -10,11 +10,20 @@ An interactive aid to track successes and failures in challenges.
 - **Player View:** Click **Show** on the header to show the tracker to your players and click **Hide** to hide it from your players.
 
 ## How to Use
-1. Create a macro with a Type of 'script' and enter: `ChallengeTracker.open(successes, failures, {show: true/false})` where `successes` is the number of successes required, `failures` is the number of failures required, and `{show: true/false}` equals `{show: true}` to show the tracker to your players or `{show: false}` to hide it from your players. `{show: true/false}` is optional and is set to false by default.
+1. Create a macro with a Type of 'script' and enter: `ChallengeTracker.open(outer, inner)` where `outer` is the number of segments required on the outer ring (successes) and `inner` is the number of segments required on the inner circle (failures).
 2. Execute the macro to open the Challenge Tracker.
 
+## Advanced Options
+More options can be set  using an optional array parameter: `ChallengeTracker.open(successes failures, {options})` where options is a comma-separated list of any of the following parameters in the format `option: value`:
+- **show:** Set to `true` to show the Challenge Tracker to your players. Default is `false`. Example: `show: true`
+- **outerCurrent:** Set the number of completed segments on the outer ring (successes). Default is `0`. Example: `outerCurrent: 3`
+- **innerCurrent:** Set the number of completed segments on the inner circle (failures). Default is `0`. Example: `innerCurrent: 3`
+- **outerColor:** Set the hex color of the outer ring (successes). The 'Outer Color' module setting will be ignored. Example: `outerColor: '#0000FF'`
+- **innerColor:** Set the hex color of the inner circle (failures). The 'Inner Color' module setting will be ignored. Example: `outerColor: '#0000FF'`
+- **frameColor:** Set the hex color of the frame. The 'Frame Color' module setting will be ignored. Example: `outerColor: '#0000FF'`
+- **size:** Set the size of the Challenge Tracker in pixels between 200 to 600. The 'Size' module setting will be ignored. Example: `size: 400`
+- **title:** Set the title of the Challenge Tracker in the window header. Default is `Challenge Tracker`. Example: `title: 'Skill Challenge 1'`  
+
+**Example:** `ChallengeTracker.open(10, 5, {show: true, outerCurrent: 10, innerCurrent: 5, outerColor: '#FF3232', innerColor: '#2180FF', title: 'Health & Mana'})`  
+
 ![challenge-tracker-macro](https://user-images.githubusercontent.com/105953297/174798982-53b25513-5aca-464d-9556-1ab7ee543856.png)
-
-By default, successes are tracked on the outer ring while failures are tracked on the inner circle.
-
-Currently, only the GM can open, control and close the Challenge Tracker. In a future release, I'll add the functionality to hand over the Challenge Tracker to a player.

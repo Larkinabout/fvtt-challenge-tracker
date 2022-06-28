@@ -7,17 +7,23 @@ Hooks.once('ready', async function () {
 })
 
 Hooks.on('renderChallengeTracker', async function () {
-  game.challengeTracker.draw(
-    game.challengeTracker.totalSuccess,
-    game.challengeTracker.totalFailure,
-    game.challengeTracker.currentSuccess,
-    game.challengeTracker.currentFailure
-  )
-  game.challengeTracker.activateListenersPostDraw()
+  if (!game.challengeTracker) return
+  for (const element of game.challengeTracker) {
+    if (element._state === 1) {
+      element.draw()
+      element.activateListenersPostDraw()
+    }
+  }
 })
 
 Hooks.on('closeChallengeTracker', async function () {
-  if (game.user.isGM) ChallengeTrackerSocket.executeForEveryone('closeHandler')
+  if (!game.user.isGM) return
+  if (!game.challengeTracker) return
+  for (const element of game.challengeTracker) {
+    if (element._state === -2) {
+      element.close_()
+    }
+  }
 })
 
 let ChallengeTrackerSocket
