@@ -19,8 +19,8 @@ More options can be set  using an optional array parameter: `ChallengeTracker.op
 - **outerCurrent:** Set the number of completed segments on the outer ring (successes). Default is `0`. Example: `outerCurrent: 3`
 - **innerCurrent:** Set the number of completed segments on the inner circle (failures). Default is `0`. Example: `innerCurrent: 3`
 - **outerColor:** Set the hex color of the outer ring (successes). The 'Outer Color' module setting will be ignored. Example: `outerColor: '#0000FF'`
-- **innerColor:** Set the hex color of the inner circle (failures). The 'Inner Color' module setting will be ignored. Example: `outerColor: '#0000FF'`
-- **frameColor:** Set the hex color of the frame. The 'Frame Color' module setting will be ignored. Example: `outerColor: '#0000FF'`
+- **innerColor:** Set the hex color of the inner circle (failures). The 'Inner Color' module setting will be ignored. Example: `innerColor: '#0000FF'`
+- **frameColor:** Set the hex color of the frame. The 'Frame Color' module setting will be ignored. Example: `frameColor: '#0000FF'`
 - **size:** Set the size of the Challenge Tracker in pixels between 200 to 600. The 'Size' module setting will be ignored. Example: `size: 400`
 - **title:** Set the title of the Challenge Tracker in the window header. Default is `Challenge Tracker`. Example: `title: 'Skill Challenge 1'`  
 
