@@ -51,11 +51,11 @@
   "media": [
     {
       "type": "icon",
-      "url": "https://github.com/Larkinabout/fvtt-challenge-tracker/images/challenge-tracker.png"
+      "url": "https://raw.githubusercontent.com/Larkinabout/fvtt-challenge-tracker/master/images/challenge-tracker.png"
     },
     {
       "type": "cover",
-      "url": "https://github.com/Larkinabout/fvtt-challenge-tracker/images/challenge-tracker-cover.png"
+      "url": "https://raw.githubusercontent.com/Larkinabout/fvtt-challenge-tracker/master/images/challenge-tracker-cover.png"
     }
   ]
 }
