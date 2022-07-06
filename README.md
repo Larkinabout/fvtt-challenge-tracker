@@ -1,7 +1,7 @@
 # Challenge Tracker
 An interactive aid to track successes and failures in challenges.  
 
-![challenge-tracker](https://user-images.githubusercontent.com/105953297/174775519-3261d0db-57af-483e-a999-31ea3d453c86.png)
+![challenge-tracker](./images/challenge-tracker.png) ![challenge-tracker](./images/challenge-tracker-progress-clock.png)
 
 ## Features
 - **Versatile:** Works for D&D 4e-inspired skill challenges, Blades in the Dark progress clocks, or as a resource/countdown tracker.
@@ -13,6 +13,8 @@ An interactive aid to track successes and failures in challenges.
 1. Create a macro with a Type of 'script' and enter: `ChallengeTracker.open(outer, inner)` where `outer` is the number of segments required on the outer ring (successes) and `inner` is the number of segments required on the inner circle (failures).
 2. Execute the macro to open the Challenge Tracker.
 
+![challenge-tracker-macro](./images/challenge-tracker-macro.png)
+
 ## Advanced Options
 More options can be set  using an optional array parameter: `ChallengeTracker.open(successes failures, {options})` where options is a comma-separated list of any of the following parameters in the format `option: value`:
 - **show:** Set to `true` to show the Challenge Tracker to your players. Default is `false`. Example: `show: true`
@@ -22,8 +24,18 @@ More options can be set  using an optional array parameter: `ChallengeTracker.op
 - **innerColor:** Set the hex color of the inner circle (failures). The 'Inner Color' module setting will be ignored. Example: `innerColor: '#0000FF'`
 - **frameColor:** Set the hex color of the frame. The 'Frame Color' module setting will be ignored. Example: `frameColor: '#0000FF'`
 - **size:** Set the size of the Challenge Tracker in pixels between 200 to 600. The 'Size' module setting will be ignored. Example: `size: 400`
-- **title:** Set the title of the Challenge Tracker in the window header. Default is `Challenge Tracker`. Example: `title: 'Skill Challenge 1'`  
+- **title:** Set the title of the Challenge Tracker in the window header. Default is `Challenge Tracker`. Example: `title: 'Skill Challenge 1'`
 
-**Example:** `ChallengeTracker.open(10, 5, {show: true, outerCurrent: 10, innerCurrent: 5, outerColor: '#FF3232', innerColor: '#2180FF', title: 'Health & Mana'})`  
+## Examples
+### Progress Clock
+`ChallengeTracker.open(8, 0, {show: true, title: 'Progress Clock'})`
 
-![challenge-tracker-macro](https://user-images.githubusercontent.com/105953297/174798982-53b25513-5aca-464d-9556-1ab7ee543856.png)
+![challenge-tracker-macro](./images/challenge-tracker-progress-clock.png)
+
+### Health & Mana
+`ChallengeTracker.open(10, 5, {show: true, outerCurrent: 10, innerCurrent: 5, outerColor: '#DC0000', innerColor: '#0040FF', title: 'Health & Mana'})`  
+
+![challenge-tracker-macro](./images/challenge-tracker-health-mana.png)
+
+
+

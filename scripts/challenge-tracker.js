@@ -9,8 +9,8 @@ class ChallengeTrackerSettings {
 
 class ChallengeTracker extends Application {
   constructor (
-    outerTotal,
-    innerTotal,
+    outerTotal = 1,
+    innerTotal = 1,
     challengeTrackerOptions = {
       show: false,
       outerCurrent: 0,
@@ -84,7 +84,7 @@ class ChallengeTracker extends Application {
   * @param {number} innerTotal Number of segments for the inner circle
   * @param {array} [challengeTrackerOptions] show, outerCurrent, innerCurrent, outerColor, innerColor, frameColor, size, title
   **/
-  static open (outerTotal, innerTotal,
+  static open (outerTotal = 1, innerTotal = 1,
     challengeTrackerOptions = {
       show: false,
       outerCurrent: 0,
@@ -255,7 +255,7 @@ class ChallengeTracker extends Application {
   * @param {object} event Listener event
   **/
   challengeTrackerClickEvent (event) {
-    if (this.contextFrame.isPointInPath(this.innerArc, event.offsetX, event.offsetY)) {
+    if (this.innerTotal > 0 && this.contextFrame.isPointInPath(this.innerArc, event.offsetX, event.offsetY)) {
       this.challengeTrackerOptions.innerCurrent = (this.challengeTrackerOptions.innerCurrent === this.innerTotal)
         ? this.innerTotal
         : this.challengeTrackerOptions.innerCurrent + 1
@@ -273,7 +273,7 @@ class ChallengeTracker extends Application {
   * @param {object} event Listener event
   **/
   challengeTrackerContextMenuEvent (event) {
-    if (this.contextFrame.isPointInPath(this.innerArc, event.offsetX, event.offsetY)) {
+    if (this.innerTotal > 0 && this.contextFrame.isPointInPath(this.innerArc, event.offsetX, event.offsetY)) {
       event.preventDefault()
       this.challengeTrackerOptions.innerCurrent = (this.challengeTrackerOptions.innerCurrent === 0)
         ? this.innerTotal
@@ -296,7 +296,7 @@ class ChallengeTracker extends Application {
     const rect = this.canvasFrame.getBoundingClientRect()
     const x = this.mousePosition.x - rect.left
     const y = this.mousePosition.y - rect.top
-    if (this.contextFrame.isPointInPath(this.innerArc, x, y)) {
+    if (this.innerTotal > 0 && this.contextFrame.isPointInPath(this.innerArc, x, y)) {
       console.log(event.code)
       if (event.code === 'Minus') {
         if (this.innerTotal > 1) this.innerTotal--
@@ -330,7 +330,7 @@ class ChallengeTracker extends Application {
     const rect = this.canvasFrame.getBoundingClientRect()
     const x = this.mousePosition.x - rect.left
     const y = this.mousePosition.y - rect.top
-    if (this.contextFrame.isPointInPath(this.innerArc, x, y)) {
+    if (this.innerTotal > 0 && this.contextFrame.isPointInPath(this.innerArc, x, y)) {
       if (event.deltaY > 0) {
         if (this.innerTotal > 1) this.innerTotal--
         this.challengeTrackerOptions.innerCurrent = (this.challengeTrackerOptions.innerCurrent > this.innerTotal)
@@ -462,52 +462,54 @@ class ChallengeTracker extends Application {
     context.fillStyle = outerGradient
     context.fill()
     context.closePath()
+    
+    if (this.innerTotal > 0) {
+      // Remove centre of outer ring for the inner circle
+      context.save()
+      context.beginPath()
+      context.arc(halfCanvasSize, halfCanvasSize, radius / 5 * 3, 0, 2 * Math.PI)
+      context.globalCompositeOperation = 'destination-out'
+      context.fillStyle = 'rgba(0, 0, 0, 1)'
+      context.fill()
+      context.closePath()
+      context.restore()
 
-    // Remove centre of outer ring for the inner circle
-    context.save()
-    context.beginPath()
-    context.arc(halfCanvasSize, halfCanvasSize, radius / 5 * 3, 0, 2 * Math.PI)
-    context.globalCompositeOperation = 'destination-out'
-    context.fillStyle = 'rgba(0, 0, 0, 1)'
-    context.fill()
-    context.closePath()
-    context.restore()
+      // Draw inner circle background
+      context.beginPath()
+      context.moveTo(halfCanvasSize, halfCanvasSize)
+      context.arc(halfCanvasSize, halfCanvasSize, radius / 5 * 3, 0, 2 * Math.PI)
+      context.fillStyle = this.innerColorBackground
+      context.fill()
+      context.closePath()
 
-    // Draw inner circle background
-    context.beginPath()
-    context.moveTo(halfCanvasSize, halfCanvasSize)
-    context.arc(halfCanvasSize, halfCanvasSize, radius / 5 * 3, 0, 2 * Math.PI)
-    context.fillStyle = this.innerColorBackground
-    context.fill()
-    context.closePath()
-
-    // Set inner circle gradient
-    const innerGradient = context.createRadialGradient(
-      halfCanvasSize,
-      halfCanvasSize,
-      0,
-      halfCanvasSize,
-      halfCanvasSize,
-      radius / 5 * 3
-    )
-    innerGradient.addColorStop(0, this.innerColor)
-    innerGradient.addColorStop(1, this.innerColorShade)
-
-    // Draw inner circle current arc
-    context.beginPath()
-    context.moveTo(halfCanvasSize, halfCanvasSize)
-    if (this.challengeTrackerOptions.innerCurrent > 0) {
-      context.arc(
+      // Set inner circle gradient
+      const innerGradient = context.createRadialGradient(
         halfCanvasSize,
         halfCanvasSize,
-        radius / 3 * 2 - lineWidth,
-        startAngle,
-        innerEndAngle
+        0,
+        halfCanvasSize,
+        halfCanvasSize,
+        radius / 5 * 3
       )
+      innerGradient.addColorStop(0, this.innerColor)
+      innerGradient.addColorStop(1, this.innerColorShade)
+
+      // Draw inner circle current arc
+      context.beginPath()
+      context.moveTo(halfCanvasSize, halfCanvasSize)
+      if (this.challengeTrackerOptions.innerCurrent > 0) {
+        context.arc(
+          halfCanvasSize,
+          halfCanvasSize,
+          radius / 3 * 2 - lineWidth,
+          startAngle,
+          innerEndAngle
+        )
+      }
+      context.fillStyle = innerGradient
+      context.fill()
+      context.closePath()
     }
-    context.fillStyle = innerGradient
-    context.fill()
-    context.closePath()
 
     // Clear drawing on canvasFrame element
     this.contextFrame.clearRect(0, 0, canvasSize, canvasSize)
@@ -526,24 +528,30 @@ class ChallengeTracker extends Application {
     if (this.outerTotal > 1) {
       for (let outerSlice = 1; outerSlice <= this.outerTotal; outerSlice++) {
         if (outerSlice > 1) this.contextFrame.rotate(outerSliceRadians)
-        this.contextFrame.moveTo(0, radius / 5 * 3)
+        if (this.innerTotal > 0) {
+          this.contextFrame.moveTo(0, radius / 5 * 3)
+        } else {
+          this.contextFrame.moveTo(0, 0)
+        }
         this.contextFrame.lineTo(0, radius)
       }
     }
     this.contextFrame.restore()
-
-    // Draw lines between segments of inner circle
-    this.contextFrame.save()
-    this.contextFrame.translate(halfCanvasSize, halfCanvasSize)
-    this.contextFrame.rotate(innerSliceRadians * this.innerTotal / 2)
-    if (this.innerTotal > 1) {
-      for (let innerSlice = 1; innerSlice <= this.innerTotal; innerSlice++) {
-        if (innerSlice > 1) this.contextFrame.rotate(innerSliceRadians)
-        this.contextFrame.moveTo(0, 0)
-        this.contextFrame.lineTo(0, radius / 5 * 3)
+ 
+    if (this.innerTotal > 0) {
+      // Draw lines between segments of inner circle
+      this.contextFrame.save()
+      this.contextFrame.translate(halfCanvasSize, halfCanvasSize)
+      this.contextFrame.rotate(innerSliceRadians * this.innerTotal / 2)
+      if (this.innerTotal > 1) {
+        for (let innerSlice = 1; innerSlice <= this.innerTotal; innerSlice++) {
+          if (innerSlice > 1) this.contextFrame.rotate(innerSliceRadians)
+          this.contextFrame.moveTo(0, 0)
+          this.contextFrame.lineTo(0, radius / 5 * 3)
+        }
       }
+      this.contextFrame.restore()
     }
-    this.contextFrame.restore()
 
     // Stroke lines
     this.contextFrame.strokeStyle = this.frameColor
@@ -553,14 +561,16 @@ class ChallengeTracker extends Application {
 
     // Draw circles
     this.contextFrame.beginPath()
-    this.outerArc.arc(halfCanvasSize, halfCanvasSize, radius, 0, 2 * Math.PI)
-    this.innerArc.arc(halfCanvasSize, halfCanvasSize, radius / 5 * 3, 0, 2 * Math.PI)
     this.contextFrame.strokeStyle = this.frameColor
     this.contextFrame.lineWidth = lineWidth
+    this.outerArc.arc(halfCanvasSize, halfCanvasSize, radius, 0, 2 * Math.PI)
     this.contextFrame.stroke(this.outerArc)
-    this.contextFrame.stroke(this.innerArc)
-    this.contextFrame.closePath()
-
+    if (this.innerTotal > 0) {
+      this.innerArc.arc(halfCanvasSize, halfCanvasSize, radius / 5 * 3, 0, 2 * Math.PI)
+      this.contextFrame.stroke(this.innerArc)
+      this.contextFrame.closePath()
+    }
+    
     // Draw thin circle around outer ring
     this.contextFrame.beginPath()
     this.contextFrame.arc(halfCanvasSize, halfCanvasSize, radius + halfLineWidth, 0, 2 * Math.PI)

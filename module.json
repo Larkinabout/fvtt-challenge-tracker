@@ -2,7 +2,7 @@
   "name": "challenge-tracker",
   "title": "Challenge Tracker",
   "description": "An interactive aid to track successes and failures in challenges",
-  "version": "0.3",
+  "version": "0.5",
   "library": "false",
   "manifestPlusVersion": "1.0.0",
   "minimumCoreVersion": "9",
@@ -51,7 +51,11 @@
   "media": [
     {
       "type": "icon",
-      "url": "https://user-images.githubusercontent.com/105953297/174140157-bf62a535-9f9e-47eb-96b2-f659437915c6.png"
+      "url": "https://github.com/Larkinabout/fvtt-challenge-tracker/images/challenge-tracker.png"
+    },
+    {
+      "type": "cover",
+      "url": "https://github.com/Larkinabout/fvtt-challenge-tracker/images/challenge-tracker-cover.png"
     }
   ]
 }
