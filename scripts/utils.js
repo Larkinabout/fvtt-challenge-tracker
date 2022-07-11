@@ -1,6 +1,15 @@
-// https://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color-or-rgb-and-blend-colors
+export class Utils {
+  static checkAllowShow (userRole) {
+    const allowShow = game.settings.get('challenge-tracker', 'allowShow')
+    if (userRole >= allowShow) return true
+    return false
+  }
 
-class ShadeColor {
+  static checkUserId (userId) {
+    if (game.userId === userId) return true
+    return false
+  }
+
   /**
   * @param color Hex value format: #ffffff or ffffff
   * @param decimal lighten or darken decimal value, example 0.5 to lighten by 50% or 1.5 to darken by 50%.

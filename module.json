@@ -2,7 +2,7 @@
   "name": "challenge-tracker",
   "title": "Challenge Tracker",
   "description": "An interactive aid to track successes and failures in challenges",
-  "version": "0.5",
+  "version": "0.6",
   "library": "false",
   "manifestPlusVersion": "1.0.0",
   "minimumCoreVersion": "9",
@@ -26,13 +26,9 @@
 
   ],
   "esmodules": [
-
+    "./scripts/challenge-tracker.js"
   ],
   "scripts": [
-    "./scripts/hooks.js",
-    "./scripts/config.js",
-    "./scripts/challenge-tracker.js",
-    "./scripts/shade-color.js"
   ],
   "styles": [
     "styles/challenge-tracker.css"

@@ -7,7 +7,7 @@ An interactive aid to track successes and failures in challenges.
 - **Versatile:** Works for D&D 4e-inspired skill challenges, Blades in the Dark progress clocks, or as a resource/countdown tracker.
 - **Click to Fill:** Left-click anywhere within the ring or circle to fill a segment in that area. Right-click  to clear a segment.
 - **Scroll to Change:** Hover over the ring or circle and use your mouse wheel, or the +/- keys, to increase or decrease the number of segments.
-- **Player View:** Click **Show** on the header to show the tracker to your players and click **Hide** to hide it from your players.
+- **Player View:** Click **Show** on the header to show the tracker to other players and click **Hide** to hide it from other players.
 
 ## How to Use
 1. Create a macro with a Type of 'script' and enter: `ChallengeTracker.open(outer, inner)` where `outer` is the number of segments required on the outer ring (successes) and `inner` is the number of segments required on the inner circle (failures).
