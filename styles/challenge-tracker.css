@@ -3,22 +3,46 @@
 }
 
 .challenge-tracker.window-app .window-content {
-    background: transparent;
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
-    border-radius: 0 0 5px 5px;
-    display: block;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 0 0 5px 5px;
+  display: block;
 }
 
 #challenge-tracker-wrapper{
-    position: relative;
-    width: 300px;
-    height: 300px;
+  position: relative;
+  width: 300px;
+  height: 300px;
 }
 
 #challenge-tracker-canvas, #challenge-tracker-canvas-frame {
-    position: absolute;
-    top: 0px;
-    left: 0px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.challenge-tracker.windowless {
+	background: unset;
+	box-shadow: unset;
+}
+
+.challenge-tracker.windowless .window-header {
+	border-bottom: unset;
+	visibility: hidden;
+  overflow: visible;
+	text-shadow: 0px 0px 2px #00000040, 0px 0px 10px #000000;
+}
+
+.challenge-tracker.windowless:hover > .window-header{
+	visibility: visible;
+	transition: visibility 0.2s ease-in;
+	transition-delay: 0.5s;
+}
+
+.challenge-tracker.windowless:not(:hover) > .window-header{
+	visibility: hidden;
+	transition: visibility 0.2s ease-in;
+	transition-delay: 0.1s;
 }

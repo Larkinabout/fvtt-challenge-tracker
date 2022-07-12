@@ -33,29 +33,17 @@ Hooks.once('ready', async () => {
     show: ChallengeTracker.show,
     hide: ChallengeTracker.hide,
     updateSize: ChallengeTracker.updateSize,
+    updateWindowed: ChallengeTracker.updateWindowed,
     updateScroll: ChallengeTracker.updateScroll
   }
 })
 
 Hooks.on('renderChallengeTracker', async () => {
   if (!game.challengeTracker) return
-  for (const element of game.challengeTracker) {
-    if (element._state === 1) {
-      element.draw()
-      element.activateListenersPostDraw()
+  for (const challengeTracker of game.challengeTracker) {
+    if (challengeTracker._state === 1) {
+      challengeTracker.draw()
+      challengeTracker.activateListenersPostDraw()
     }
   }
 })
-/*
-Hooks.on('closeChallengeTracker', async () => {
-  if (!game.user.isGM && !Utils.checkPermission) return
-  if (!game.challengeTracker) return
-  for (const element of game.challengeTracker) {
-    if (game.user.isGM || Utils.checkUserId(element.ownerId)) {
-      if (element._state === -2) {
-        element._close()
-      }
-    }
-  }
-})
-*/

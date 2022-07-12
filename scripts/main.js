@@ -21,6 +21,7 @@ export class ChallengeTracker extends Application {
       innerColor: null,
       frameColor: null,
       size: null,
+      windowed: null,
       title: ChallengeTrackerSettings.title
     },
     options,
@@ -44,6 +45,9 @@ export class ChallengeTracker extends Application {
     this.challengeTrackerOptions.innerColor = challengeTrackerOptions.innerColor ?? null
     this.challengeTrackerOptions.frameColor = challengeTrackerOptions.frameColor ?? null
     this.challengeTrackerOptions.size = challengeTrackerOptions.size ?? null
+    this.challengeTrackerOptions.window = [true, false].includes(challengeTrackerOptions.windowed) ?? null
+    this.windowed = this.challengeTrackerOptions.windowed ??
+      game.settings.get('challenge-tracker', 'windowed')
 
     // Colors
     this.outerColor = this.challengeTrackerOptions.outerColor ??
@@ -87,7 +91,7 @@ export class ChallengeTracker extends Application {
   * Open Challenge Tracker
   * @param {number} outerTotal Number of segments for the outer ring
   * @param {number} innerTotal Number of segments for the inner circle
-  * @param {array} [challengeTrackerOptions] show, outerCurrent, innerCurrent, outerColor, innerColor, frameColor, size, title
+  * @param {array} [challengeTrackerOptions] show, outerCurrent, innerCurrent, outerColor, innerColor, frameColor, size, windowed, title
   **/
   static open (outerTotal = 1, innerTotal = 1,
     challengeTrackerOptions = {
@@ -98,6 +102,7 @@ export class ChallengeTracker extends Application {
       innerColor: null,
       frameColor: null,
       size: null,
+      windowed: null,
       title: ChallengeTrackerSettings.title
     }
   ) {
@@ -243,6 +248,13 @@ export class ChallengeTracker extends Application {
 
     // Remove the Close button for players
     if (!game.user.isGM && !Utils.checkUserId(this.ownerId)) this.element.find('.header-button.close').remove()
+
+    // Add class for windowless mode
+    if (this.windowed) {
+      this.element.removeClass('windowless')
+    } else {
+      this.element.addClass('windowless')
+    }
   }
 
   /* Add event listeners for GM */
@@ -611,10 +623,20 @@ export class ChallengeTracker extends Application {
     // Draw thin circle around outer ring
     this.contextFrame.beginPath()
     this.contextFrame.arc(halfCanvasSize, halfCanvasSize, radius + halfLineWidth, 0, 2 * Math.PI)
-    this.contextFrame.strokeStyle = 'rgba(50, 50, 50, 1)'
+    this.contextFrame.strokeStyle = 'rgba(255, 255, 255, 0.3)'
     this.contextFrame.lineWidth = 0.5
     this.contextFrame.stroke()
     this.contextFrame.closePath()
+
+    // Draw thin circle around inner ring
+    if (this.innerTotal > 1) {
+      this.contextFrame.beginPath()
+      this.contextFrame.arc(halfCanvasSize, halfCanvasSize, radius / 5 * 3 + halfLineWidth, 0, 2 * Math.PI)
+      this.contextFrame.strokeStyle = 'rgba(255, 255, 255, 0.2)'
+      this.contextFrame.lineWidth = 0.5
+      this.contextFrame.stroke()
+      this.contextFrame.closePath()
+    }
   }
 
   /**
@@ -625,9 +647,9 @@ export class ChallengeTracker extends Application {
   **/
   static updateColorAndDraw (outerColor, innerColor, frameColor) {
     if (!game.challengeTracker) return
-    for (const element of game.challengeTracker) {
-      element.updateColor(outerColor, innerColor, frameColor)
-      element.draw()
+    for (const challengeTracker of game.challengeTracker) {
+      challengeTracker.updateColor(outerColor, innerColor, frameColor)
+      challengeTracker.draw()
     }
   }
 
@@ -643,31 +665,8 @@ export class ChallengeTracker extends Application {
     this.frameColor = this.challengeTrackerOptions.frameColor ?? frameColor
     this.outerColorShade = Utils.shadeColor(this.outerColor, 1.25)
     this.innerColorShade = Utils.shadeColor(this.innerColor, 1.25)
-    this.outerColorBackground = this.outerColorShade.substring(0, 7) + '2b'
-    this.innerColorBackground = this.innerColorShade.substring(0, 7) + '2b'
-  }
-
-  /**
-  * Enable/disable scroll wheel event on all Challenge Trackers based on the module setting
-  * @param {boolean} scroll Enable (true) or disable (false) the scroll wheel event
-  **/
-  static updateScroll (scroll) {
-    if (!game.challengeTracker) return
-    for (const element of game.challengeTracker) {
-      if (scroll) {
-        if (element.eventListenerSignalScroll == null || element.eventListenerSignalScroll.aborted) {
-          element.eventListenerControllerScroll = new AbortController()
-          element.eventListenerSignalScroll = element.eventListenerControllerScroll.signal
-          document.addEventListener('wheel', (event) => element.challengeTrackerWheelEvent(event),
-            { signal: element.eventListenerSignalScroll }
-          )
-        }
-      } else {
-        if (element.eventListenerSignalScroll !== null && !element.eventListenerSignalScroll.aborted) {
-          element.eventListenerControllerScroll.abort()
-        }
-      }
-    }
+    this.outerColorBackground = this.outerColorShade.substring(0, 7) + '40'
+    this.innerColorBackground = this.innerColorShade.substring(0, 7) + '40'
   }
 
   /**
@@ -676,11 +675,50 @@ export class ChallengeTracker extends Application {
   **/
   static updateSize (size) {
     if (!game.challengeTracker) return
-    for (const element of game.challengeTracker) {
-      element.size = element.challengeTrackerOptions.size ?? size
-      element.updateShowHideElement()
-      element.updateCloseElement()
-      element.draw()
+    for (const challengeTracker of game.challengeTracker) {
+      challengeTracker.size = challengeTracker.challengeTrackerOptions.size ?? size
+      challengeTracker.updateShowHideElement()
+      challengeTracker.updateCloseElement()
+      challengeTracker.draw()
+    }
+  }
+
+  /**
+  * Update window visibility of all Challenge Trackers based on the module setting
+  * @param {boolean} windowed true = Windowed, false = Windowless
+  **/
+  static updateWindowed (windowed) {
+    if (!game.challengeTracker) return
+    for (const challengeTracker of game.challengeTracker) {
+      challengeTracker.windowed = challengeTracker.challengeTrackerOptions.windowed ?? windowed
+      if (windowed) {
+        challengeTracker.element.removeClass('windowless')
+      } else {
+        challengeTracker.element.addClass('windowless')
+      }
+    }
+  }
+
+  /**
+  * Enable/disable scroll wheel event on all Challenge Trackers based on the module setting
+  * @param {boolean} scroll Enable (true) or disable (false) the scroll wheel event
+  **/
+  static updateScroll (scroll) {
+    if (!game.challengeTracker) return
+    for (const challengeTracker of game.challengeTracker) {
+      if (scroll) {
+        if (challengeTracker.eventListenerSignalScroll == null || challengeTracker.eventListenerSignalScroll.aborted) {
+          challengeTracker.eventListenerControllerScroll = new AbortController()
+          challengeTracker.eventListenerSignalScroll = challengeTracker.eventListenerControllerScroll.signal
+          document.addEventListener('wheel', (event) => challengeTracker.challengeTrackerWheelEvent(event),
+            { signal: challengeTracker.eventListenerSignalScroll }
+          )
+        }
+      } else {
+        if (challengeTracker.eventListenerSignalScroll !== null && !challengeTracker.eventListenerSignalScroll.aborted) {
+          challengeTracker.eventListenerControllerScroll.abort()
+        }
+      }
     }
   }
 
@@ -697,7 +735,7 @@ export class ChallengeTracker extends Application {
 
   /**
   * Update Show/Hide element of the Challenge Tracker
-  * @param {boolean} show Show/Hide indicator
+  * @param {boolean} show true = Show, false = Hide
   **/
   updateShowHideElement (show = this.challengeTrackerOptions.show) {
     const userRole = game.user.role
@@ -759,9 +797,9 @@ export class ChallengeTracker extends Application {
     // Only allow GM to execute
     if (!game.user.isGM || !Utils.checkAllowShow) return
     if (!game.challengeTracker) return
-    for (const element of game.challengeTracker) {
-      if (element.options.title === title || title === null) {
-        if (game.user.isGM || Utils.checkUserId(element.ownerId)) element.showHandler()
+    for (const challengeTracker of game.challengeTracker) {
+      if (challengeTracker.options.title === title || title === null) {
+        if (game.user.isGM || Utils.checkUserId(challengeTracker.ownerId)) challengeTracker.showHandler()
       }
     }
   }
@@ -779,9 +817,9 @@ export class ChallengeTracker extends Application {
     // Only allow GM to execute
     if (!game.user.isGM || !Utils.checkAllowShow) return
     if (!game.challengeTracker) return
-    for (const element of game.challengeTracker) {
-      if (element.options.title === title || title === null) {
-        if (game.user.isGM || Utils.checkUserId(element.ownerId)) element.hideHandler()
+    for (const challengeTracker of game.challengeTracker) {
+      if (challengeTracker.options.title === title || title === null) {
+        if (game.user.isGM || Utils.checkUserId(challengeTracker.ownerId)) challengeTracker.hideHandler()
       }
     }
   }

@@ -33,6 +33,16 @@ export class Settings {
       onChange: (size) => { ChallengeTracker.updateSize(size) }
     })
 
+    game.settings.register('challenge-tracker', 'windowed', {
+      name: game.i18n.localize('settings.windowed.name'),
+      hint: game.i18n.localize('settings.windowed.hint'),
+      scope: 'client',
+      config: true,
+      type: Boolean,
+      default: true,
+      onChange: (windowed) => { ChallengeTracker.updateWindowed(windowed) }
+    })
+
     game.settings.register('challenge-tracker', 'scroll', {
       name: game.i18n.localize('settings.scroll.name'),
       hint: game.i18n.localize('settings.scroll.hint'),

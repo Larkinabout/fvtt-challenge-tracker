@@ -23,6 +23,10 @@
       "name": "Size",
       "hint": "Set the default size of the challenge tracker in pixels"
   	},
+    "windowed" : {
+      "name": "Windowed",
+      "hint": "Set the challenge tracker to windowed by default"
+  	},
     "scroll" : {
       "name": "Scroll",
       "hint": "Enable the scroll wheel for increasing/decreasing segments"
