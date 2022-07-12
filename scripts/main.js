@@ -45,7 +45,9 @@ export class ChallengeTracker extends Application {
     this.challengeTrackerOptions.innerColor = challengeTrackerOptions.innerColor ?? null
     this.challengeTrackerOptions.frameColor = challengeTrackerOptions.frameColor ?? null
     this.challengeTrackerOptions.size = challengeTrackerOptions.size ?? null
-    this.challengeTrackerOptions.window = [true, false].includes(challengeTrackerOptions.windowed) ?? null
+    this.challengeTrackerOptions.windowed = [true, false].includes(challengeTrackerOptions.windowed)
+      ? challengeTrackerOptions.windowed
+      : null
     this.windowed = this.challengeTrackerOptions.windowed ??
       game.settings.get('challenge-tracker', 'windowed')
 
@@ -152,7 +154,7 @@ export class ChallengeTracker extends Application {
   * @param {string} ownerId User that created the Challenge Tracker
   * @param {string} executorId User that executed the method
   **/
-  static openHandler (outerTotal, innerTotal, challengeTrackerOptions, options, ownerId, executorId = ownerId) {
+  static async openHandler (outerTotal, innerTotal, challengeTrackerOptions, options, ownerId, executorId = ownerId) {
     // If array does not exist, create an empty array
     if (!game.challengeTracker) game.challengeTracker = []
 
@@ -167,6 +169,7 @@ export class ChallengeTracker extends Application {
 
     // Add new Challenge Tracker or update client variables
     if (!game.challengeTracker[index]) {
+      await renderTemplate(ChallengeTrackerSettings.templates.challengeTracker)
       game.challengeTracker[index] = new ChallengeTracker(
         outerTotal,
         innerTotal,
@@ -710,7 +713,7 @@ export class ChallengeTracker extends Application {
   static updateWindowed (windowed) {
     if (!game.challengeTracker) return
     for (const challengeTracker of game.challengeTracker) {
-      challengeTracker.windowed = challengeTracker.challengeTrackerOptions.windowed ?? windowed
+      if ([true, false].includes(challengeTracker.challengeTrackerOptions.windowed)) return
       if (windowed) {
         challengeTracker.element.removeClass('windowless')
       } else {

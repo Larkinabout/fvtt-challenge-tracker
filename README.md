@@ -24,6 +24,7 @@ More options can be set  using an optional array parameter: `ChallengeTracker.op
 - **innerColor:** Set the hex color of the inner circle (failures). The 'Inner Color' module setting will be ignored. Example: `innerColor: '#0000FF'`
 - **frameColor:** Set the hex color of the frame. The 'Frame Color' module setting will be ignored. Example: `frameColor: '#0000FF'`
 - **size:** Set the size of the Challenge Tracker in pixels between 200 to 600. The 'Size' module setting will be ignored. Example: `size: 400`
+- **windowed:** Set the Challenge Tracker to windowed (true) or windowless (false). The 'Windowed' module setting will be ignored. Example: `windowed: false`
 - **title:** Set the title of the Challenge Tracker in the window header. Default is `Challenge Tracker`. Example: `title: 'Skill Challenge 1'`
 
 ## Examples
