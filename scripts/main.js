@@ -62,6 +62,8 @@ export class ChallengeTracker extends Application {
     this.innerColorShade = null
     this.outerColorBackground = null
     this.innerColorBackground = null
+    this.frameColorHighlight1 = null
+    this.frameColorHighlight2 = null
     this.updateColor(this.outerColor, this.innerColor, this.frameColor)
 
     // Canvas
@@ -565,8 +567,8 @@ export class ChallengeTracker extends Application {
 
     // Draw frame
     this.contextFrame.beginPath()
-    this.contextFrame.shadowOffsetX = 1
-    this.contextFrame.shadowOffsetY = 1
+    this.contextFrame.shadowOffsetX = 2
+    this.contextFrame.shadowOffsetY = 2
     this.contextFrame.shadowColor = 'rgba(0, 0, 0, 0.25)'
     this.contextFrame.shadowBlur = halfLineWidth
 
@@ -609,32 +611,48 @@ export class ChallengeTracker extends Application {
     this.contextFrame.closePath()
 
     // Draw circles
+    // Set inner circle gradient
+    const outerFrameGradient = context.createRadialGradient(
+      halfCanvasSize + (halfLineWidth / 4),
+      halfCanvasSize + (halfLineWidth / 4),
+      radius - halfLineWidth - (halfLineWidth / 4),
+      halfCanvasSize + (halfLineWidth / 4),
+      halfCanvasSize + (halfLineWidth / 4),
+      radius + halfLineWidth + (halfLineWidth / 4)
+    )
+    outerFrameGradient.addColorStop(0, this.frameColorHighlight2)
+    outerFrameGradient.addColorStop(0.1, this.frameColorHighlight1)
+    outerFrameGradient.addColorStop(0.3, this.frameColor)
+    outerFrameGradient.addColorStop(0.7, this.frameColor)
+    outerFrameGradient.addColorStop(0.9, this.frameColorHighlight1)
+    outerFrameGradient.addColorStop(1, this.frameColorHighlight2)
     this.contextFrame.beginPath()
-    this.contextFrame.strokeStyle = this.frameColor
+    this.contextFrame.strokeStyle = outerFrameGradient
     this.contextFrame.lineWidth = lineWidth
     this.outerArc.arc(halfCanvasSize, halfCanvasSize, radius, 0, 2 * Math.PI)
     this.contextFrame.stroke(this.outerArc)
-    if (this.innerTotal > 0) {
-      this.innerArc.arc(halfCanvasSize, halfCanvasSize, radius / 5 * 3, 0, 2 * Math.PI)
-      this.contextFrame.stroke(this.innerArc)
-      this.contextFrame.closePath()
-    }
-
-    // Draw thin circle around outer ring
-    this.contextFrame.beginPath()
-    this.contextFrame.arc(halfCanvasSize, halfCanvasSize, radius + halfLineWidth, 0, 2 * Math.PI)
-    this.contextFrame.strokeStyle = 'rgba(255, 255, 255, 0.3)'
-    this.contextFrame.lineWidth = 0.5
-    this.contextFrame.stroke()
     this.contextFrame.closePath()
 
-    // Draw thin circle around inner ring
-    if (this.innerTotal > 1) {
+    if (this.innerTotal > 0) {
+      const innerFrameGradient = context.createRadialGradient(
+        halfCanvasSize + (halfLineWidth / 4),
+        halfCanvasSize + (halfLineWidth / 4),
+        (radius / 5 * 3) - halfLineWidth - (halfLineWidth / 4),
+        halfCanvasSize + (halfLineWidth / 4),
+        halfCanvasSize + (halfLineWidth / 4),
+        (radius / 5 * 3) + halfLineWidth + (halfLineWidth / 4)
+      )
+      innerFrameGradient.addColorStop(0, this.frameColorHighlight2)
+      innerFrameGradient.addColorStop(0.1, this.frameColorHighlight1)
+      innerFrameGradient.addColorStop(0.3, this.frameColor)
+      innerFrameGradient.addColorStop(0.7, this.frameColor)
+      innerFrameGradient.addColorStop(0.9, this.frameColorHighlight1)
+      innerFrameGradient.addColorStop(1, this.frameColorHighlight2)
       this.contextFrame.beginPath()
-      this.contextFrame.arc(halfCanvasSize, halfCanvasSize, radius / 5 * 3 + halfLineWidth, 0, 2 * Math.PI)
-      this.contextFrame.strokeStyle = 'rgba(255, 255, 255, 0.2)'
-      this.contextFrame.lineWidth = 0.5
-      this.contextFrame.stroke()
+      this.contextFrame.strokeStyle = innerFrameGradient
+      this.contextFrame.lineWidth = lineWidth
+      this.innerArc.arc(halfCanvasSize, halfCanvasSize, radius / 5 * 3, 0, 2 * Math.PI)
+      this.contextFrame.stroke(this.innerArc)
       this.contextFrame.closePath()
     }
   }
@@ -665,8 +683,10 @@ export class ChallengeTracker extends Application {
     this.frameColor = this.challengeTrackerOptions.frameColor ?? frameColor
     this.outerColorShade = Utils.shadeColor(this.outerColor, 1.25)
     this.innerColorShade = Utils.shadeColor(this.innerColor, 1.25)
-    this.outerColorBackground = this.outerColorShade.substring(0, 7) + '40'
-    this.innerColorBackground = this.innerColorShade.substring(0, 7) + '40'
+    this.outerColorBackground = this.outerColorShade.substring(0, 7) + '66'
+    this.innerColorBackground = this.innerColorShade.substring(0, 7) + '66'
+    this.frameColorHighlight1 = Utils.shadeColor(this.frameColor, 0.9)
+    this.frameColorHighlight2 = Utils.shadeColor(this.frameColor, 0.4)
   }
 
   /**

@@ -61,7 +61,7 @@ export class Settings {
       label: game.i18n.localize('settings.outerColor.label'),
       scope: 'world',
       restricted: true,
-      defaultColor: '#009600',
+      defaultColor: '#228B22',
       onChange: (outerColor) => { 
         ChallengeTracker.updateColorAndDraw(
           outerColor,
