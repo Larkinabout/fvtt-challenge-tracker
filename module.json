@@ -1,8 +1,8 @@
 {
   "name": "challenge-tracker",
   "title": "Challenge Tracker",
-  "description": "An interactive aid to track successes and failures in challenges",
-  "version": "0.6",
+  "description": "An interactive aid to track successes and failures in challenges à la D&D 4e-inspired skill challenges and Blades in the Dark progress clocks",
+  "version": "0.7",
   "library": "false",
   "manifestPlusVersion": "1.0.0",
   "minimumCoreVersion": "9",

@@ -1,0 +1,66 @@
+{{#with challengeTracker}}
+<form data-owner-id="{{ownerId}}" data-challenge-tracker-id="{{id}}">
+  <section class="challenge-tracker-edit-form flexcol">
+    <div class="challenge-tracker-form-box">
+      <div class="form-group" title="Set the name of the challenge tracker">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" data-dtype="String" value="{{title}}">
+      </div>
+      <div class="form-group" title="Set the size of the challenge tracker in pixels">
+        <label for="size">Size:</label>
+        <input type="number" id="size" name="size" data-dtype="Number" value="{{size}}">
+      </div>
+      <div class="form-group" title="Show the challenge tracker to others">
+        <label for="show">Show to Others:</label>
+        <input type="checkbox" name="show" data-dtype="Boolean" {{checked show}}>
+      </div>
+      <div class="form-group" title="Display the challenge tracker in a window">
+        <label for="windowed">Windowed:</label><br>
+        <input type="checkbox" name="windowed" data-dtype="Boolean" {{checked windowed}}>
+      </div>
+    </div>
+    <div class="challenge-tracker-form-box">
+      <h3>Outer Segments</h3>
+      <div class="form-group" title="Set the number of segments on the outer ring">
+        <label for="outerTotal">Total:</label>
+        <input type="number" id="outerTotal" name="outerTotal" data-dtype="Number" value="{{outerTotal}}">
+      </div>
+      <div class="form-group" title="Set the number of filled segments on the outer ring">
+        <label for="outerCurrent">Filled:</label>
+        <input type="number" id="outerCurrent" name="outerCurrent" data-dtype="Number" value="{{outerCurrent}}">
+      </div>
+      <div class="form-group" title="Set the hex color of the outer ring">
+        <label for="outerColor">Color:</label>
+        {{#colorPicker name="outerColor" value=outerColor}}{{/colorPicker}}
+      </div>
+    </div>
+    <div class="challenge-tracker-form-box">
+      <h3>Inner Segments</h3>
+      <div class="form-group" title="Set the number of segments on the inner circle">
+        <label for="innerTotal">Total:</label>
+        <input type="number" id="innerTotal" name="innerTotal" data-dtype="Number" value="{{innerTotal}}">
+      </div>
+      <div class="form-group" title="Set the number of filled segments on the inner circle">
+        <label for="innerCurrent">Filled:</label>
+        <input type="number" id="innerCurrent" name="innerCurrent" data-dtype="Number" value="{{innerCurrent}}">
+      </div>
+      <div class="form-group" title="Set the hex color of the inner circle">
+        <label for="innerColor">Color:</label>
+        {{#colorPicker name="innerColor" value=innerColor}}{{/colorPicker}}
+      </div>
+    </div>
+    <div class="challenge-tracker-form-box"></div>
+      <h3>Frame</h3>
+      <div class="form-group" title="Set the hex color of the frame">
+        <label for="frameColor">Color:</label>
+        {{#colorPicker name="frameColor" value=frameColor}}{{/colorPicker}}
+      </div>
+    </div>
+  </section>
+  <footer class="flexrow">
+    <button type="submit" name="submit" class="challenge-tracker-submit-button">
+      <i class="fas fa-save"></i>Save and Close
+    </button>
+  </footer>
+</form>
+{{/with}}

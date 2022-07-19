@@ -35,14 +35,100 @@
 	text-shadow: 0px 0px 2px #00000040, 0px 0px 10px #000000;
 }
 
-.challenge-tracker.windowless:hover > .window-header{
+.challenge-tracker.windowless:hover > .window-header {
 	visibility: visible;
 	transition: visibility 0.2s ease-in;
 	transition-delay: 0.5s;
 }
 
-.challenge-tracker.windowless:not(:hover) > .window-header{
+.challenge-tracker.windowless:not(:hover) > .window-header {
 	visibility: hidden;
 	transition: visibility 0.2s ease-in;
 	transition-delay: 0.1s;
+}
+
+.challenge-tracker-player-list-button {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  line-height: 0;
+  align-self: center;
+  width: 60px;
+  cursor: pointer;
+}
+
+.challenge-tracker-player-list-button > svg {
+  color: var(--color-text-light-highlight);
+  width: auto;
+  height: var(--font-size-18);
+}
+
+.challenge-tracker-player-list-button:hover, .challenge-tracker-player-list-button:focus {
+  overflow: visible;
+  box-shadow: none;
+  filter: drop-shadow(0px 0px 5px rgb(255 0 0 / 1));
+}
+
+#challenge-tracker-form {
+  width: auto !important;
+}
+
+.challenge-tracker-form {
+  padding: 0 0.5em 0.5em 0;
+  margin-top: 0;
+  gap: 1em;
+  overflow: auto;
+  max-height: 300px
+}
+
+.challenge-tracker-form > li {
+  align-items: center;
+  gap: 1em;
+  justify-content: space-between;
+  border-top: 1px solid rgba(0,0,0,.1);
+  padding-top: 0.5em;
+}
+
+.challenge-tracker-form > li:first-child {
+  border: none;
+  padding-top: 0;
+}
+
+.challenge-tracker-form-button-group {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.25em;
+  padding-top: 0.5em; 
+}
+
+.challenge-tracker-form-button-box {
+  border: 2px groove #eeede0;
+  padding: 3px;
+}
+
+.challenge-tracker-button {
+  width: 70px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.challenge-tracker-form-box {
+  border-top: 1px solid rgba(0,0,0,.1);
+  padding-top: 0.5em;
+}
+
+.challenge-tracker-form-box:first-child {
+  border: 0;
+  padding-top: 0;
+}
+
+.challenge-tracker-edit-form {
+  row-gap: 2px
+}
+
+.challenge-tracker-submit-button {
+	margin: 0px;
+	margin-top: 2px;
 }

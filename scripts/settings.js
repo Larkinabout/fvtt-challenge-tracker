@@ -3,8 +3,8 @@ import { ChallengeTracker } from './main.js'
 export class Settings {
   static init () {
     game.settings.register('challenge-tracker', 'allowShow', {
-      name: game.i18n.localize('settings.allowShow.name'),
-      hint: game.i18n.localize('settings.allowShow.hint'),
+      name: game.i18n.localize('challengeTracker.settings.allowShow.name'),
+      hint: game.i18n.localize('challengeTracker.settings.allowShow.hint'),
       scope: 'world',
       config: true,
       type: String,
@@ -19,8 +19,8 @@ export class Settings {
     })
 
     game.settings.register('challenge-tracker', 'size', {
-      name: game.i18n.localize('settings.size.name'),
-      hint: game.i18n.localize('settings.size.hint'),
+      name: game.i18n.localize('challengeTracker.settings.size.name'),
+      hint: game.i18n.localize('challengeTracker.settings.size.hint'),
       scope: 'world',
       config: true,
       type: Number,
@@ -34,8 +34,8 @@ export class Settings {
     })
 
     game.settings.register('challenge-tracker', 'windowed', {
-      name: game.i18n.localize('settings.windowed.name'),
-      hint: game.i18n.localize('settings.windowed.hint'),
+      name: game.i18n.localize('challengeTracker.settings.windowed.name'),
+      hint: game.i18n.localize('challengeTracker.settings.windowed.hint'),
       scope: 'client',
       config: true,
       type: Boolean,
@@ -44,8 +44,8 @@ export class Settings {
     })
 
     game.settings.register('challenge-tracker', 'scroll', {
-      name: game.i18n.localize('settings.scroll.name'),
-      hint: game.i18n.localize('settings.scroll.hint'),
+      name: game.i18n.localize('challengeTracker.settings.scroll.name'),
+      hint: game.i18n.localize('challengeTracker.settings.scroll.hint'),
       scope: 'client',
       config: true,
       type: Boolean,
@@ -56,9 +56,9 @@ export class Settings {
 
   static initColorSettings () {
     new window.Ardittristan.ColorSetting('challenge-tracker', 'outerColor', {
-      name: game.i18n.localize('settings.outerColor.name'),
-      hint: game.i18n.localize('settings.outerColor.hint'),
-      label: game.i18n.localize('settings.outerColor.label'),
+      name: game.i18n.localize('challengeTracker.settings.outerColor.name'),
+      hint: game.i18n.localize('challengeTracker.settings.outerColor.hint'),
+      label: game.i18n.localize('challengeTracker.settings.outerColor.label'),
       scope: 'world',
       restricted: true,
       defaultColor: '#228B22',
@@ -73,9 +73,9 @@ export class Settings {
     })
 
     new window.Ardittristan.ColorSetting('challenge-tracker', 'innerColor', {
-      name: game.i18n.localize('settings.innerColor.name'),
-      hint: game.i18n.localize('settings.innerColor.hint'),
-      label: game.i18n.localize('settings.innerColor.label'),
+      name: game.i18n.localize('challengeTracker.settings.innerColor.name'),
+      hint: game.i18n.localize('challengeTracker.settings.innerColor.hint'),
+      label: game.i18n.localize('challengeTracker.settings.innerColor.label'),
       scope: 'world',
       restricted: true,
       defaultColor: '#DC0000',
@@ -90,9 +90,9 @@ export class Settings {
     })
 
     new window.Ardittristan.ColorSetting('challenge-tracker', 'frameColor', {
-      name: game.i18n.localize('settings.frameColor.name'),
-      hint: game.i18n.localize('settings.frameColor.hint'),
-      label: game.i18n.localize('settings.frameColor.label'),
+      name: game.i18n.localize('challengeTracker.settings.frameColor.name'),
+      hint: game.i18n.localize('challengeTracker.settings.frameColor.hint'),
+      label: game.i18n.localize('challengeTracker.settings.frameColor.label'),
       scope: 'world',
       restricted: true,
       defaultColor: '#0F1414',

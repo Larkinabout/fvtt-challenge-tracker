@@ -1,35 +1,41 @@
 {
-  "settings": {
-    "allowShow" : {
-      "name": "Show to Others",
-      "hint": "Allow users with this role (and above) to show Challenge Trackers to others (Requires reload)"
-  	},
-    "outerColor" : {
-      "name": "Outer Color",
-      "hint": "Set the default color for the outer ring",
-      "label": "Color Picker"
-  	},
-    "innerColor" : {
-      "name": "Inner Color",
-      "hint": "Set the default color for the inner circle",
-      "label": "Color Picker"
-  	},
-    "frameColor" : {
-      "name": "Frame Color",
-      "hint": "Set the default color of the frame",
-      "label": "Color Picker"
-  	},
-    "size" : {
-      "name": "Size",
-      "hint": "Set the default size of the challenge tracker in pixels"
-  	},
-    "windowed" : {
-      "name": "Windowed",
-      "hint": "Set the challenge tracker to windowed by default"
-  	},
-    "scroll" : {
-      "name": "Scroll",
-      "hint": "Enable the scroll wheel for increasing/decreasing segments"
-  	}
-	}
+  "challengeTracker": {
+    "labels": {
+      "challengeTrackerTitle": "Challenge Tracker",
+      "challengeTrackerButtonTitle": "Challenge Tracker"
+    },
+    "settings": {
+      "allowShow" : {
+        "name": "Show to Others",
+        "hint": "Allow users with this role (and above) to show Challenge Trackers to others (Requires reload)"
+    	},
+      "outerColor" : {
+        "name": "Outer Color",
+        "hint": "Set the default color for the outer ring",
+        "label": "Color Picker"
+    	},
+      "innerColor" : {
+        "name": "Inner Color",
+        "hint": "Set the default color for the inner circle",
+        "label": "Color Picker"
+    	},
+      "frameColor" : {
+        "name": "Frame Color",
+        "hint": "Set the default color of the frame",
+        "label": "Color Picker"
+    	},
+      "size" : {
+        "name": "Size",
+        "hint": "Set the default size of the challenge tracker in pixels"
+    	},
+      "windowed" : {
+        "name": "Windowed",
+        "hint": "Set the challenge tracker to windowed by default"
+    	},
+      "scroll" : {
+        "name": "Scroll",
+        "hint": "Enable the scroll wheel for increasing/decreasing segments"
+    	}
+    }
+  }
 }

@@ -1,0 +1,32 @@
+<form data-owner-id="{{ownerId}}">
+  <ul class="challenge-tracker-form flexcol">
+    {{#each challengeTrackerList}}
+      <li data-owner-id="{{ownerId}}" data-challenge-tracker-id="{{id}}">
+        <div class="flexrow">
+          <div>
+            {{title}}
+          </div>
+          <div style="flex: none; justify-content: flex-end;">
+            [{{outerCurrent}}/{{outerTotal}}]{{#ifEquals innerTotal 0}}{{else}} [{{innerCurrent}}/{{innerTotal}}]{{/ifEquals}}
+          </div>
+        </div>
+        <div class="challenge-tracker-form-button-group">
+          <button type="button" title="Edit the Challenge Tracker" data-action="edit" class="flex0 challenge-tracker-button">
+            <i class="fas fa-pen"></i>Edit
+          </button>
+          <button type="button" title="Open the Challenge Tracker" data-action="open" class="flex0 challenge-tracker-button">
+            <i class="fas fa-folder-open"></i>Open
+          </button>
+          <button type="button" title="Delete the Challenge Tracker" data-action="delete" class="flex0 challenge-tracker-button">
+            <i class="fas fa-trash"></i>Delete
+          </button>
+        </div>
+      </li>
+    {{/each}}
+  </ul>
+  <footer class="flexrow">
+    <button type="button" title="Create a new Challenge Tracker" data-action="new" class="challenge-tracker-button">
+      <i class="fas fa-plus"></i>Create New
+    </button>
+  </footer>
+</form>

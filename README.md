@@ -1,5 +1,5 @@
 # Challenge Tracker
-An interactive aid to track successes and failures in challenges.  
+An interactive aid to track successes and failures in challenges à la D&D 4e-inspired skill challenges and Blades in the Dark progress clocks.
 
 ![challenge-tracker](./images/challenge-tracker.png) ![challenge-tracker](./images/challenge-tracker-progress-clock.png)
 
@@ -10,6 +10,19 @@ An interactive aid to track successes and failures in challenges.
 - **Player View:** Click **Show** on the header to show the tracker to other players and click **Hide** to hide it from other players.
 
 ## How to Use
+### Using the Player List
+![challenge-tracker-macro](./images/challenge-tracker-player-list.png)
+1. Click the button ![challenge-tracker-macro](./images/challenge-tracker-player-list-button.png) in the player list.
+
+   ![challenge-tracker-macro](./images/challenge-tracker-list.png)
+
+2. Click 'Create New' to create a new Challenge Tracker.
+3. Fill in the options and click 'Save and Close'.
+    - Click 'Open' to open a Challenge Tracker.
+    - Click 'Edit' to edit an existing Challenge Tracker.
+    - Click 'Delete' to delete an existing Challenge Tracker.
+
+### Using Macros
 1. Create a macro with a Type of 'script' and enter: `ChallengeTracker.open(outer, inner)` where `outer` is the number of segments required on the outer ring (successes) and `inner` is the number of segments required on the inner circle (failures).
 2. Execute the macro to open the Challenge Tracker.
 
@@ -17,15 +30,16 @@ An interactive aid to track successes and failures in challenges.
 
 ## Advanced Options
 More options can be set  using an optional array parameter: `ChallengeTracker.open(successes failures, {options})` where options is a comma-separated list of any of the following parameters in the format `option: value`:
-- **show:** Set to `true` to show the Challenge Tracker to your players. Default is `false`. Example: `show: true`
-- **outerCurrent:** Set the number of completed segments on the outer ring (successes). Default is `0`. Example: `outerCurrent: 3`
-- **innerCurrent:** Set the number of completed segments on the inner circle (failures). Default is `0`. Example: `innerCurrent: 3`
+- **outerCurrent:** Set the number of completed segments on the outer ring (successes). Default is `0`. Example: `outerCurrent: 3
+- **innerCurrent:** Set the number of completed segments on the inner circle (failures). Default is `0`. Example: `innerCurrent: 
 - **outerColor:** Set the hex color of the outer ring (successes). The 'Outer Color' module setting will be ignored. Example: `outerColor: '#0000FF'`
 - **innerColor:** Set the hex color of the inner circle (failures). The 'Inner Color' module setting will be ignored. Example: `innerColor: '#0000FF'`
 - **frameColor:** Set the hex color of the frame. The 'Frame Color' module setting will be ignored. Example: `frameColor: '#0000FF'`
+- **persist:** Set to `true` to persist the Challenge Tracker across sessions. Default is `false`. Example: `persist: true`
+- **show:** Set to `true` to show the Challenge Tracker to your players. Default is `false`. Example: `show: true`
 - **size:** Set the size of the Challenge Tracker in pixels between 200 to 600. The 'Size' module setting will be ignored. Example: `size: 400`
-- **windowed:** Set the Challenge Tracker to windowed (true) or windowless (false). The 'Windowed' module setting will be ignored. Example: `windowed: false`
 - **title:** Set the title of the Challenge Tracker in the window header. Default is `Challenge Tracker`. Example: `title: 'Skill Challenge 1'`
+- **windowed:** Set the Challenge Tracker to windowed (true) or windowless (false). The 'Windowed' module setting will be ignored. Example: `windowed: false`
 
 ## Examples
 ### Progress Clock
