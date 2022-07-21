@@ -69,7 +69,8 @@
   filter: drop-shadow(0px 0px 5px rgb(255 0 0 / 1));
 }
 
-#challenge-tracker-form {
+#challenge-tracker-form
+{
   width: auto !important;
 }
 
@@ -125,10 +126,32 @@
 }
 
 .challenge-tracker-edit-form {
-  row-gap: 2px
+  width: 300px !important;
+  row-gap: 2px;
 }
 
 .challenge-tracker-submit-button {
 	margin: 0px;
 	margin-top: 2px;
+}
+
+input[data-jscolor] {
+  width: calc(100% - 2px);
+  min-width: 20px;
+  height: var(--form-field-height);
+  background: rgba(0, 0, 0, 0.05);
+  padding: 1px 3px;
+  margin: 0;
+  color: var(--color-text-dark-primary);
+  font-family: inherit;
+  font-size: inherit;
+  text-align: center;
+  text-indent: 2em;
+  line-height: inherit;
+  border: 1px solid var(--color-border-light-tertiary);
+  border-radius: 3px;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }

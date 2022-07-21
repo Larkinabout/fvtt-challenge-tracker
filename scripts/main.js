@@ -22,7 +22,9 @@ export class ChallengeTracker extends Application {
       outerCurrent: 0,
       innerCurrent: 0,
       outerColor: null,
+      outerBackgroundColor: null,
       innerColor: null,
+      innerBackgroundColor: null,
       frameColor: null,
       size: null,
       windowed: null,
@@ -31,16 +33,15 @@ export class ChallengeTracker extends Application {
       persist: false
     },
     options,
-    ownerId = null
+    ownerId = null,
+    executorId = null
   ) {
     super(options)
     this.ownerId = ownerId
-    this.executorId = null
+    this.executorId = executorId
     this._disable_popout_module = true // Disable the PopOut! module on this application
 
     // Challenge Tracker Options
-    const userRole = game.user.role
-    if (!Utils.checkAllowShow(userRole)) challengeTrackerOptions.show = false
     this.challengeTrackerOptions = challengeTrackerOptions
     this.challengeTrackerOptions.ownerId = ownerId
     this.challengeTrackerOptions.show = [true, false].includes(challengeTrackerOptions.show)
@@ -51,7 +52,9 @@ export class ChallengeTracker extends Application {
     this.challengeTrackerOptions.outerCurrent = challengeTrackerOptions.outerCurrent ?? 0
     this.challengeTrackerOptions.innerCurrent = challengeTrackerOptions.innerCurrent ?? 0
     this.challengeTrackerOptions.outerColor = challengeTrackerOptions.outerColor ?? null
+    this.challengeTrackerOptions.outerBackgroundColor = challengeTrackerOptions.outerBackgroundColor ?? null
     this.challengeTrackerOptions.innerColor = challengeTrackerOptions.innerColor ?? null
+    this.challengeTrackerOptions.innerBackgroundColor = challengeTrackerOptions.innerBackgroundColor ?? null
     this.challengeTrackerOptions.frameColor = challengeTrackerOptions.frameColor ?? null
     this.challengeTrackerOptions.size = challengeTrackerOptions.size ?? null
     this.challengeTrackerOptions.windowed = [true, false].includes(challengeTrackerOptions.windowed)
@@ -69,8 +72,10 @@ export class ChallengeTracker extends Application {
     this.frameColor = null
     this.outerColorShade = null
     this.innerColorShade = null
-    this.outerColorBackground = null
-    this.innerColorBackground = null
+    this.outerBackgroundColor = null
+    this.innerBackgroundColor = null
+    this.outerBackgroundColorShade = null
+    this.innerBackgroundColorShade = null
     this.frameColorHighlight1 = null
     this.frameColorHighlight2 = null
     this.setVariables() // Set values from challengeTrackerOptions or module settings for local variables
@@ -106,9 +111,15 @@ export class ChallengeTracker extends Application {
       game.settings.get('challenge-tracker', 'windowed')
 
     // Base Colors
+    this.outerBackgroundColor = (this.challengeTrackerOptions.outerBackgroundColor)
+      ? this.challengeTrackerOptions.outerBackgroundColor
+      : game.settings.get('challenge-tracker', 'outerBackgroundColor')
     this.outerColor = (this.challengeTrackerOptions.outerColor)
       ? this.challengeTrackerOptions.outerColor
       : game.settings.get('challenge-tracker', 'outerColor')
+    this.innerBackgroundColor = (this.challengeTrackerOptions.innerBackgroundColor)
+      ? this.challengeTrackerOptions.innerBackgroundColor
+      : game.settings.get('challenge-tracker', 'innerBackgroundColor')
     this.innerColor = (this.challengeTrackerOptions.innerColor)
       ? this.challengeTrackerOptions.innerColor
       : game.settings.get('challenge-tracker', 'innerColor')
@@ -116,7 +127,7 @@ export class ChallengeTracker extends Application {
       ? this.challengeTrackerOptions.frameColor
       : game.settings.get('challenge-tracker', 'frameColor')
 
-    this.updateColor(this.outerColor, this.innerColor, this.frameColor)
+    this.updateColor(this.outerBackgroundColor, this.outerColor, this.innerBackgroundColor, this.innerColor, this.frameColor)
   }
 
   /**
@@ -126,9 +137,11 @@ export class ChallengeTracker extends Application {
   * @param {array} [challengeTrackerOptions] Challenge Tracker Options
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
   * @param {number} challengeTrackerOptions.innerTotal Number of segments for the inner circle
+  * @param {string} challengeTrackerOptions.outerBackgroundColor Hex color of the outer ring background
   * @param {string} challengeTrackerOptions.outerColor Hex color of the outer ring
   * @param {number} challengeTrackerOptions.outerCurrent Number of filled segments of the outer ring
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
@@ -140,14 +153,21 @@ export class ChallengeTracker extends Application {
   * @param {boolean} challengeTrackerOptions.windowed true = Windowed, false = Windowless
   **/
   static open (
-    outerTotal = 4,
-    innerTotal = 3,
-    challengeTrackerOptions = {
+    arg1 = null,
+    arg2 = null,
+    arg3 = null
+  ) {
+    // Set defaults
+    let outerTotal = 4
+    let innerTotal = 0
+    let challengeTrackerOptions = {
       frameColor: null,
       id: null,
+      innerBackgroundColor: null,
       innerColor: null,
       innerCurrent: 0,
       innerTotal: 3,
+      outerBackgroundColor: null,
       outerColor: null,
       outerCurrent: 0,
       outerTotal: 4,
@@ -158,11 +178,51 @@ export class ChallengeTracker extends Application {
       title: ChallengeTrackerSettings.title,
       windowed: null
     }
-  ) {
+    switch (arguments.length) {
+      case 1:
+        if (typeof arg1 === 'object') {
+          challengeTrackerOptions = arg1
+          outerTotal = challengeTrackerOptions.outerTotal ?? outerTotal
+          innerTotal = challengeTrackerOptions.innerTotal ?? innerTotal
+        }
+        if (typeof arg1 === 'number') {
+          outerTotal = arg1
+        }
+        break
+      case 2:
+        if (typeof arg1 === 'number') {
+          outerTotal = arg1
+        }
+        if (typeof arg2 === 'object') {
+          challengeTrackerOptions = arg2
+          innerTotal = challengeTrackerOptions.innerTotal ?? innerTotal
+        }
+        if (typeof arg2 === 'number') {
+          innerTotal = arg2
+        }
+        break
+      case 3:
+        if (typeof arg1 === 'number') {
+          outerTotal = arg1
+        }
+        if (typeof arg2 === 'number') {
+          innerTotal = arg2
+        }
+        if (typeof arg3 === 'object') {
+          challengeTrackerOptions = arg3
+        }
+    }
+
     const ownerId = challengeTrackerOptions.ownerId ?? game.userId
-    // If id included in challengeTrackerOptions, attempt to merge options from flag
+    const executorId = game.userId
+
+    // When user is not allowed to show challenge tracker to others, overwrite show to false
+    const userRole = game.user.role
+    if (!Utils.checkAllowShow(userRole)) challengeTrackerOptions.show = false
+
+    // When id is included, attempt to merge options from flag
     if (challengeTrackerOptions.id) {
-      const flag = ChallengeTrackerFlag.get (ownerId, challengeTrackerOptions.id)
+      const flag = ChallengeTrackerFlag.get(ownerId, challengeTrackerOptions.id)
       if (flag) {
         challengeTrackerOptions = foundry.utils.mergeObject(flag, challengeTrackerOptions)
       } else {
@@ -187,14 +247,16 @@ export class ChallengeTracker extends Application {
         'openHandler',
         challengeTrackerOptions,
         { id: challengeTrackerOptions.id, title: challengeTrackerOptions.title },
-        ownerId
+        ownerId,
+        executorId
 
       )
     } else {
       ChallengeTracker.openHandler(
         challengeTrackerOptions,
         { id: challengeTrackerOptions.id, title: challengeTrackerOptions.title },
-        ownerId
+        ownerId,
+        executorId
       )
     }
   }
@@ -204,9 +266,11 @@ export class ChallengeTracker extends Application {
   * @param {array} [challengeTrackerOptions] Challenge Tracker Options
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
   * @param {number} challengeTrackerOptions.innerTotal Number of segments for the inner circle
+  * @param {string} challengeTrackerOptions.outerBackgroundColor Hex color of the outer ring background
   * @param {string} challengeTrackerOptions.outerColor Hex color of the outer ring
   * @param {number} challengeTrackerOptions.outerCurrent Number of filled segments of the outer ring
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
@@ -219,15 +283,15 @@ export class ChallengeTracker extends Application {
   * @param {string} ownerId User that created the Challenge Tracker
   * @param {string} executorId User that executed the method
   **/
-  static async openHandler (challengeTrackerOptions, options, ownerId, executorId = ownerId) {
+  static async openHandler (challengeTrackerOptions, options, ownerId, executorId) {
     // If array does not exist, create an empty array
     if (!game.challengeTracker) game.challengeTracker = []
 
     // Find index by id, otherwise use next available index
     let index
-    const element = game.challengeTracker.find(element => element.id === options.id)
-    if (element) {
-      index = game.challengeTracker.indexOf(element)
+    const challengeTracker = game.challengeTracker.find(ct => ct.id === options.id)
+    if (challengeTracker) {
+      index = game.challengeTracker.indexOf(challengeTracker)
     } else {
       index = game.challengeTracker.length
     }
@@ -238,16 +302,17 @@ export class ChallengeTracker extends Application {
       game.challengeTracker[index] = new ChallengeTracker(
         challengeTrackerOptions,
         options,
-        ownerId
+        ownerId,
+        executorId
       )
     } else {
       this.challengeTrackerOptions = challengeTrackerOptions
 
       // Switch the Show/Hide element for the owner
-      if ((game.user.isGM || game.userId === element.ownerId) &&
-        game.userId !== executorId && !element.challengeTrackerOptions.show) {
+      if ((game.user.isGM || game.userId === challengeTracker.ownerId) &&
+        game.userId !== executorId && !challengeTracker.challengeTrackerOptions.show) {
         const show = true
-        element.updateShowHideElement(show)
+        challengeTracker.updateShowHideElement(show)
         return
       }
     }
@@ -310,7 +375,7 @@ export class ChallengeTracker extends Application {
     if (hasPermission) {
       this.updateCloseElement(game.settings.get('challenge-tracker', 'size'))
       this.element.find('.close').before('<a class="show-hide"></a>')
-      this.updateShowHide(this.challengeTrackerOptions.show)
+      this.updateShowHideElement()
     }
 
     // Remove the Close button for players
@@ -478,9 +543,11 @@ export class ChallengeTracker extends Application {
   * @param {array} [challengeTrackerOptions=null] Challenge Tracker Options
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
   * @param {number} challengeTrackerOptions.innerTotal Number of segments for the inner circle
+  * @param {string} challengeTrackerOptions.outerBackgroundColor Hex color of the outer ring background
   * @param {string} challengeTrackerOptions.outerColor Hex color of the outer ring
   * @param {number} challengeTrackerOptions.outerCurrent Number of filled segments of the outer ring
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
@@ -508,8 +575,9 @@ export class ChallengeTracker extends Application {
 
   /* Draw the Challenge Tracker */
   _draw () {
-    // Call drawHandler for GM only or everyone
-    if (this.challengeTrackerOptions.show) {
+    // Call drawHandler for executor only or everyone
+    const isExecutor = Utils.checkUserId(this.executorId)
+    if (isExecutor && this.challengeTrackerOptions.show) {
       ChallengeTrackerSocket.executeForEveryone(
         'drawHandler',
         this.challengeTrackerOptions,
@@ -521,7 +589,7 @@ export class ChallengeTracker extends Application {
         this.options
       )
     }
-    if (this.challengeTrackerOptions.persist) {
+    if (isExecutor && this.challengeTrackerOptions.persist) {
       ChallengeTrackerFlag.set(this.ownerId, this.challengeTrackerOptions)
     }
   }
@@ -531,9 +599,11 @@ export class ChallengeTracker extends Application {
   * @param {array} challengeTrackerOptions Challenge Tracker Options
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
   * @param {number} challengeTrackerOptions.innerTotal Number of segments for the inner circle
+  * @param {string} challengeTrackerOptions.outerBackgroundColor Hex color of the outer ring background
   * @param {string} challengeTrackerOptions.outerColor Hex color of the outer ring
   * @param {number} challengeTrackerOptions.outerCurrent Number of filled segments of the outer ring
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
@@ -560,9 +630,11 @@ export class ChallengeTracker extends Application {
   * @param {array} challengeTrackerOptions Challenge Tracker Options
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
   * @param {number} challengeTrackerOptions.innerTotal Number of segments for the inner circle
+  * @param {string} challengeTrackerOptions.outerBackgroundColor Hex color of the outer ring background
   * @param {string} challengeTrackerOptions.outerColor Hex color of the outer ring
   * @param {number} challengeTrackerOptions.outerCurrent Number of filled segments of the outer ring
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
@@ -610,11 +682,23 @@ export class ChallengeTracker extends Application {
     // Clear drawing on canvas element
     context.clearRect(0, 0, canvasSize, canvasSize)
 
+    // Set outer ring background gradient
+    const outerBackgroundGradient = context.createRadialGradient(
+      halfCanvasSize,
+      halfCanvasSize,
+      radius / 5 * 3,
+      halfCanvasSize,
+      halfCanvasSize,
+      radius
+    )
+    outerBackgroundGradient.addColorStop(0, this.outerBackgroundColor)
+    outerBackgroundGradient.addColorStop(1, this.outerBackgroundColorShade)
+
     // Draw outer ring background
     context.beginPath()
     context.moveTo(halfCanvasSize, halfCanvasSize)
     context.arc(halfCanvasSize, halfCanvasSize, radius, 0, 2 * Math.PI)
-    context.fillStyle = this.outerColorBackground
+    context.fillStyle = outerBackgroundGradient
     context.fill()
     context.closePath()
 
@@ -651,11 +735,23 @@ export class ChallengeTracker extends Application {
       context.closePath()
       context.restore()
 
+      // Set inner circle background gradient
+      const innerBackgroundGradient = context.createRadialGradient(
+        halfCanvasSize,
+        halfCanvasSize,
+        0,
+        halfCanvasSize,
+        halfCanvasSize,
+        radius / 5 * 3
+      )
+      innerBackgroundGradient.addColorStop(0, this.innerBackgroundColor)
+      innerBackgroundGradient.addColorStop(1, this.innerBackgroundColorShade)
+
       // Draw inner circle background
       context.beginPath()
       context.moveTo(halfCanvasSize, halfCanvasSize)
       context.arc(halfCanvasSize, halfCanvasSize, radius / 5 * 3, 0, 2 * Math.PI)
-      context.fillStyle = this.innerColorBackground
+      context.fillStyle = innerBackgroundGradient
       context.fill()
       context.closePath()
 
@@ -785,28 +881,38 @@ export class ChallengeTracker extends Application {
 
   /**
   * Set colors and draw all Challenge Trackers based on the module settings
+  * @param {string} outerBackgroundColor Hex color for the outer ring background
   * @param {string} outerColor Hex color for the outer ring
+  * @param {string} innerBackgroundColor Hex color for the inner circle
   * @param {string} innerColor Hex color for the inner circle
   * @param {string} frameColor Hex color for the frame
   **/
-  static updateColorAndDraw (outerColor, innerColor, frameColor) {
+  static updateColorAndDraw (outerBackgroundColor, outerColor, innerBackgroundColor, innerColor, frameColor) {
     if (!game.challengeTracker) return
     for (const challengeTracker of game.challengeTracker) {
-      challengeTracker.updateColor(outerColor, innerColor, frameColor)
+      challengeTracker.updateColor(outerBackgroundColor, outerColor, innerBackgroundColor, innerColor, frameColor)
       challengeTracker._draw()
     }
   }
 
   /**
   * Update colors on all Challenge Trackers based on options or the module settings
+  * @param {string} outerBackgroundColor Hex color for the outer ring background
   * @param {string} outerColor Hex color for the outer ring
+  * @param {string} innerBackgroundColor Hex color for the inner circle background
   * @param {string} innerColor Hex color for the inner circle
   * @param {string} frameColor Hex color for the frame
   **/
-  updateColor (outerColor, innerColor, frameColor) {
+  updateColor (outerBackgroundColor, outerColor, innerBackgroundColor, innerColor, frameColor) {
+    this.outerBackgroundColor = (this.challengeTrackerOptions.outerBackgroundColor)
+      ? this.challengeTrackerOptions.outerBackgroundColor
+      : outerBackgroundColor
     this.outerColor = (this.challengeTrackerOptions.outerColor)
       ? this.challengeTrackerOptions.outerColor
       : outerColor
+    this.innerBackgroundColor = (this.challengeTrackerOptions.innerBackgroundColor)
+      ? this.challengeTrackerOptions.innerBackgroundColor
+      : innerBackgroundColor
     this.innerColor = (this.challengeTrackerOptions.innerColor)
       ? this.challengeTrackerOptions.innerColor
       : innerColor
@@ -815,8 +921,10 @@ export class ChallengeTracker extends Application {
       : frameColor
     this.outerColorShade = Utils.shadeColor(this.outerColor, 1.25)
     this.innerColorShade = Utils.shadeColor(this.innerColor, 1.25)
-    this.outerColorBackground = this.outerColorShade.substring(0, 7) + '66'
-    this.innerColorBackground = this.innerColorShade.substring(0, 7) + '66'
+    this.outerBackgroundColorShade = Utils.shadeColor(this.outerBackgroundColor, 1.25)
+    this.innerBackgroundColorShade = Utils.shadeColor(this.innerBackgroundColor, 1.25)
+    // this.outerBackgroundColor = this.outerColorShade.substring(0, 7) + '66'
+    // this.innerBackgroundColor = this.innerColorShade.substring(0, 7) + '66'
     this.frameColorHighlight1 = Utils.shadeColor(this.frameColor, 0.9)
     this.frameColorHighlight2 = Utils.shadeColor(this.frameColor, 0.4)
   }
@@ -910,9 +1018,9 @@ export class ChallengeTracker extends Application {
   }
 
   /* Show/hide the Challenge Tracker for others */
-  updateShowHide () {
-    const executorId = game.userId
-    if (this.challengeTrackerOptions.show) {
+  updateShowHide (executorId) {
+    const isExecutor = Utils.checkUserId(executorId)
+    if (isExecutor && this.challengeTrackerOptions.show) {
       ChallengeTrackerSocket.executeForOthers(
         'openHandler',
         this.challengeTrackerOptions,
@@ -932,8 +1040,9 @@ export class ChallengeTracker extends Application {
 
   /* Switch the challengeTrackerOptions.show value */
   switchShowHide () {
+    const executorId = game.userId
     this.challengeTrackerOptions.show = !(this.challengeTrackerOptions.show)
-    this.updateShowHide()
+    this.updateShowHide(executorId)
   }
 
   /* Add click event to the show/hide element */
@@ -948,16 +1057,17 @@ export class ChallengeTracker extends Application {
   static show (title = null) {
     if (!game.user.isGM || !Utils.checkAllowShow) return
     if (!game.challengeTracker) return
+    const executorId = game.userId
     for (const challengeTracker of game.challengeTracker) {
       if (challengeTracker.options.title === title || title === null) {
-        if (game.user.isGM || Utils.checkUserId(challengeTracker.ownerId)) challengeTracker.showHandler()
+        if (game.user.isGM || Utils.checkUserId(challengeTracker.ownerId)) challengeTracker.showHandler(executorId)
       }
     }
   }
 
-  showHandler () {
+  showHandler (executorId) {
     this.challengeTrackerOptions.show = true
-    this.updateShowHide()
+    this.updateShowHide(executorId)
   }
 
   /**
@@ -967,15 +1077,16 @@ export class ChallengeTracker extends Application {
   static hide (title = null) {
     if (!game.user.isGM || !Utils.checkAllowShow) return
     if (!game.challengeTracker) return
+    const executorId = game.userId
     for (const challengeTracker of game.challengeTracker) {
       if (challengeTracker.options.title === title || title === null) {
-        if (game.user.isGM || Utils.checkUserId(challengeTracker.ownerId)) challengeTracker.hideHandler()
+        if (game.user.isGM || Utils.checkUserId(challengeTracker.ownerId)) challengeTracker.hideHandler(executorId)
       }
     }
   }
 
-  hideHandler () {
+  hideHandler (executorId) {
     this.challengeTrackerOptions.show = false
-    this.updateShowHide()
+    this.updateShowHide(executorId)
   }
 }

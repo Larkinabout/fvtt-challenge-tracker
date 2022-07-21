@@ -11,7 +11,7 @@ export class Utils {
   }
 
   /**
-  * @param color Hex value format: #ffffff or ffffff
+  * @param color Hex value format: #ffffff, ffffff, #ffffffff or ffffffff
   * @param decimal lighten or darken decimal value, example 0.5 to lighten by 50% or 1.5 to darken by 50%.
   **/
   static shadeColor (color, decimal) {
@@ -32,7 +32,8 @@ export class Utils {
     const rr = ((r.toString(16).length === 1) ? `0${r.toString(16)}` : r.toString(16))
     const gg = ((g.toString(16).length === 1) ? `0${g.toString(16)}` : g.toString(16))
     const bb = ((b.toString(16).length === 1) ? `0${b.toString(16)}` : b.toString(16))
+    const aa = color.substring(base + 6, 9)
 
-    return `#${rr}${gg}${bb}`
+    return `#${rr}${gg}${bb}${aa}`
   }
 }

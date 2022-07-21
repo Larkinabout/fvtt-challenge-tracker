@@ -35,9 +35,11 @@ export class ChallengeTrackerFlag {
   * @param {array} challengeTrackerOptions Challenge Tracker Options
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
   * @param {number} challengeTrackerOptions.innerTotal Number of segments for the inner circle
+  * @param {string} challengeTrackerOptions.outerBackgroundColor Hex color of the outer ring background
   * @param {string} challengeTrackerOptions.outerColor Hex color of the outer ring
   * @param {number} challengeTrackerOptions.outerCurrent Number of filled segments of the outer ring
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
@@ -66,5 +68,17 @@ export class ChallengeTrackerFlag {
     const deletedFlag = game.users.get(ownerId)?.unsetFlag(ChallengeTrackerSettings.id, challengeTrackerId)
     ui.notifications.info(`Challenge Tracker '${challengeTrackerId}' deleted.`)
     return deletedFlag
+  }
+
+  static async setOwner () {
+    if (!game.user.data.flags['challenge-tracker']) return
+    const flagKeys = Object.keys(game.user.data.flags['challenge-tracker'])
+    for (const flagKey of flagKeys) {
+      const flag = await game.user.getFlag(ChallengeTrackerSettings.id, flagKey)
+      if (flag.ownerId !== game.userId) {
+        const challengeTrackerOptions = foundry.utils.mergeObject(flag, { ownerId: game.userId })
+        await game.user.setFlag(ChallengeTrackerSettings.id, flagKey, challengeTrackerOptions)
+      }
+    }
   }
 }

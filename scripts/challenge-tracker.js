@@ -31,6 +31,8 @@ Hooks.once('ready', async () => {
     }
   }
 
+  ChallengeTrackerFlag.setOwner()
+
   // Initialize Challenge Tracker
   window.ChallengeTracker = {
     open: ChallengeTracker.open,

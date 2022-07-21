@@ -55,16 +55,56 @@ export class Settings {
   }
 
   static initColorSettings () {
+    new window.Ardittristan.ColorSetting('challenge-tracker', 'outerBackgroundColor', {
+      name: game.i18n.localize('challengeTracker.settings.outerBackgroundColor.name'),
+      hint: game.i18n.localize('challengeTracker.settings.outerBackgroundColor.hint'),
+      label: game.i18n.localize('challengeTracker.settings.outerBackgroundColor.label'),
+      scope: 'world',
+      restricted: true,
+      defaultColor: '#1b6f1b66',
+      onChange: (outerBackgroundColor) => { 
+        ChallengeTracker.updateColorAndDraw(
+          outerBackgroundColor,
+          game.settings.get('challenge-tracker', 'outerColor'),
+          game.settings.get('challenge-tracker', 'innerBackgroundColor'),
+          game.settings.get('challenge-tracker', 'innerColor'),
+          game.settings.get('challenge-tracker', 'frameColor')
+        )
+      },
+      insertAfter: "challenge-tracker.allowShow"
+    })
+
     new window.Ardittristan.ColorSetting('challenge-tracker', 'outerColor', {
       name: game.i18n.localize('challengeTracker.settings.outerColor.name'),
       hint: game.i18n.localize('challengeTracker.settings.outerColor.hint'),
       label: game.i18n.localize('challengeTracker.settings.outerColor.label'),
       scope: 'world',
       restricted: true,
-      defaultColor: '#228B22',
+      defaultColor: '#228b22ff',
       onChange: (outerColor) => { 
         ChallengeTracker.updateColorAndDraw(
+          game.settings.get('challenge-tracker', 'outerBackgroundColor'),
           outerColor,
+          game.settings.get('challenge-tracker', 'innerBackgroundColor'),
+          game.settings.get('challenge-tracker', 'innerColor'),
+          game.settings.get('challenge-tracker', 'frameColor')
+        )
+      },
+      insertAfter: "challenge-tracker.allowShow"
+    })
+
+    new window.Ardittristan.ColorSetting('challenge-tracker', 'innerBackgroundColor', {
+      name: game.i18n.localize('challengeTracker.settings.innerBackgroundColor.name'),
+      hint: game.i18n.localize('challengeTracker.settings.innerBackgroundColor.hint'),
+      label: game.i18n.localize('challengeTracker.settings.innerBackgroundColor.label'),
+      scope: 'world',
+      restricted: true,
+      defaultColor: '#b0000066',
+      onChange: (innerBackgroundColor) => {
+        ChallengeTracker.updateColorAndDraw(
+          game.settings.get('challenge-tracker', 'outerBackgroundColor'),
+          game.settings.get('challenge-tracker', 'outerColor'),
+          innerBackgroundColor,
           game.settings.get('challenge-tracker', 'innerColor'),
           game.settings.get('challenge-tracker', 'frameColor')
         )
@@ -78,10 +118,12 @@ export class Settings {
       label: game.i18n.localize('challengeTracker.settings.innerColor.label'),
       scope: 'world',
       restricted: true,
-      defaultColor: '#DC0000',
+      defaultColor: '#DC0000ff',
       onChange: (innerColor) => {
         ChallengeTracker.updateColorAndDraw(
+          game.settings.get('challenge-tracker', 'outerBackgroundColor'),
           game.settings.get('challenge-tracker', 'outerColor'),
+          game.settings.get('challenge-tracker', 'innerBackgroundColor'),
           innerColor,
           game.settings.get('challenge-tracker', 'frameColor')
         )
@@ -98,7 +140,9 @@ export class Settings {
       defaultColor: '#0F1414',
       onChange: (frameColor) => {
         ChallengeTracker.updateColorAndDraw(
+          game.settings.get('challenge-tracker', 'outerBackgroundColor'),
           game.settings.get('challenge-tracker', 'outerColor'),
+          game.settings.get('challenge-tracker', 'innerBackgroundColor'),
           game.settings.get('challenge-tracker', 'innerColor'),
           frameColor
         )

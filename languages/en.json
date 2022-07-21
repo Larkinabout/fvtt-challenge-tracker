@@ -6,12 +6,22 @@
     },
     "settings": {
       "allowShow" : {
-        "name": "Show to Others",
+        "name": "Allow Show to Others",
         "hint": "Allow users with this role (and above) to show Challenge Trackers to others (Requires reload)"
+    	},
+      "outerBackgroundColor" : {
+        "name": "Outer Background Color",
+        "hint": "Set the default background color for the outer ring",
+        "label": "Color Picker"
     	},
       "outerColor" : {
         "name": "Outer Color",
         "hint": "Set the default color for the outer ring",
+        "label": "Color Picker"
+    	},
+      "innerBackgroundColor" : {
+        "name": "Inner Background Color",
+        "hint": "Set the default background color for the inner circle",
         "label": "Color Picker"
     	},
       "innerColor" : {

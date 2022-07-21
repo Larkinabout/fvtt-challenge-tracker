@@ -1,5 +1,6 @@
 import { ChallengeTrackerSettings, ChallengeTracker } from './main.js'
 import { ChallengeTrackerFlag } from './flags.js'
+import jscolor from './lib/jscolor.js'
 
 /* Display challenge trackers in a list with options */
 export class ChallengeTrackerForm extends FormApplication {
@@ -88,6 +89,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
     super()
     this.ownerId = ownerId
     this.challengeTrackerId = challengeTrackerId
+    this.jscolor = jscolor
   }
 
   static get defaultOptions () {
@@ -95,7 +97,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
 
     const overrides = {
       height: 'auto',
-      width: 'auto',
+      width: '300px',
       id: 'challenge-tracker-edit-form',
       template: ChallengeTrackerSettings.templates.challengeTrackerEditForm,
       title: `Edit ${ChallengeTrackerSettings.title}`,
@@ -116,9 +118,11 @@ export class ChallengeTrackerEditForm extends FormApplication {
         challengeTracker: {
           frameColor: null,
           id: `${ChallengeTrackerSettings.id}-${Math.random().toString(16).slice(2)}`,
+          innerBackgroundColor: null,
           innerColor: null,
           innerCurrent: 0,
           innerTotal: 3,
+          outerBackgroundColor: null,
           outerColor: null,
           outerCurrent: 0,
           outerTotal: 4,
@@ -151,6 +155,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
 
   activateListeners (html) {
     super.activateListeners(html)
+    this.jscolor.install()
   }
 
   /**

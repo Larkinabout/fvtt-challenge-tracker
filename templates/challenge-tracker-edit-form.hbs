@@ -20,40 +20,48 @@
       </div>
     </div>
     <div class="challenge-tracker-form-box">
-      <h3>Outer Segments</h3>
+      <h3>Outer</h3>
       <div class="form-group" title="Set the number of segments on the outer ring">
-        <label for="outerTotal">Total:</label>
+        <label for="outerTotal">Total Segments:</label>
         <input type="number" id="outerTotal" name="outerTotal" data-dtype="Number" value="{{outerTotal}}">
       </div>
-      <div class="form-group" title="Set the number of filled segments on the outer ring">
-        <label for="outerCurrent">Filled:</label>
+      <div class="form-group" title="Set the number of current segments on the outer ring">
+        <label for="outerCurrent">Current Segments:</label>
         <input type="number" id="outerCurrent" name="outerCurrent" data-dtype="Number" value="{{outerCurrent}}">
       </div>
       <div class="form-group" title="Set the hex color of the outer ring">
         <label for="outerColor">Color:</label>
-        {{#colorPicker name="outerColor" value=outerColor}}{{/colorPicker}}
+        <input data-jscolor="{required: false, alphaChannel:true, format:'hexa'}" value="{{outerColor}}" name="outerColor" id="outerColor">
+      </div>
+      <div class="form-group" title="Set the background hex color of the outer ring">
+        <label for="outerBackgroundColor">Background Color:</label>
+        <input data-jscolor="{required: false, alphaChannel:true, format:'hexa'}" value="{{outerBackgroundColor}}" name="outerBackgroundColor" id="outerBackgroundColor">
       </div>
     </div>
     <div class="challenge-tracker-form-box">
-      <h3>Inner Segments</h3>
-      <div class="form-group" title="Set the number of segments on the inner circle">
-        <label for="innerTotal">Total:</label>
+      <h3>Inner</h3>
+      <div class="form-group" title="Set the number of segments on the inner circle.">
+        <label for="innerTotal">Total Segments:</label>
         <input type="number" id="innerTotal" name="innerTotal" data-dtype="Number" value="{{innerTotal}}">
       </div>
-      <div class="form-group" title="Set the number of filled segments on the inner circle">
-        <label for="innerCurrent">Filled:</label>
+      <div class="form-group" title="Set the number of current segments on the inner circle">
+        <label for="innerCurrent">Current Segments:</label>
         <input type="number" id="innerCurrent" name="innerCurrent" data-dtype="Number" value="{{innerCurrent}}">
       </div>
       <div class="form-group" title="Set the hex color of the inner circle">
         <label for="innerColor">Color:</label>
-        {{#colorPicker name="innerColor" value=innerColor}}{{/colorPicker}}
+        <input data-jscolor="{required: false, alphaChannel:true, format:'hexa'}" value="{{innerColor}}" name="innerColor" id="innerColor">
+      </div>
+      <div class="form-group" title="Set the background hex color of the inner circle">
+        <label for="innerBackgroundColor">Background Color:</label>
+        <input data-jscolor="{required: false, alphaChannel:true, format:'hexa'}" value="{{innerBackgroundColor}}" name="innerBackgroundColor" id="innerBackgroundColor">
       </div>
     </div>
-    <div class="challenge-tracker-form-box"></div>
+    <div class="challenge-tracker-form-box">
       <h3>Frame</h3>
       <div class="form-group" title="Set the hex color of the frame">
         <label for="frameColor">Color:</label>
-        {{#colorPicker name="frameColor" value=frameColor}}{{/colorPicker}}
+        <input data-jscolor="{required: false}" value="{{frameColor}}" name="frameColor" id="frameColor">
       </div>
     </div>
   </section>
