@@ -5,6 +5,14 @@
       "challengeTrackerButtonTitle": "Challenge Tracker"
     },
     "settings": {
+      "displayButton" : {
+        "name": "Display Button",
+        "hint": "Display the Challenge Tracker button to users with this role and above (Requires reload)"
+    	},
+      "buttonLocation" : {
+        "name": "Button Location",
+        "hint": "Set the location of the Challenge Tracker button (Requires reload)"
+    	},
       "allowShow" : {
         "name": "Allow Show to Others",
         "hint": "Allow users with this role (and above) to show Challenge Trackers to others (Requires reload)"
@@ -33,6 +41,10 @@
         "name": "Frame Color",
         "hint": "Set the default color of the frame",
         "label": "Color Picker"
+    	},
+      "frameWidth" : {
+        "name": "Frame Width",
+        "hint": "Set the width of the frame"
     	},
       "size" : {
         "name": "Size",

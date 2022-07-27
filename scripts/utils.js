@@ -5,9 +5,19 @@ export class Utils {
     return false
   }
 
+  static checkDisplayButton (userRole) {
+    const displayButton = game.settings.get('challenge-tracker', 'displayButton')
+    if (userRole >= displayButton) return true
+    return false
+  }
+
   static checkUserId (userId) {
     if (game.userId === userId) return true
     return false
+  }
+
+  static async sleep (milliseconds) {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds))
   }
 
   /**
@@ -36,4 +46,34 @@ export class Utils {
 
     return `#${rr}${gg}${bb}${aa}`
   }
+
+  static fuzzyMatch (a, b) {
+    if (a.length < 3) return null
+    const matchList = []
+    let elementSub = null
+    for (const element of b) {
+      elementSub = element
+      let charCount = 0
+      if (elementSub.length === 0) break
+      if (a === element) return element
+      for (let i = 0; i < a.length; i++) {
+        const aChar = a.charCodeAt(i)
+        for (let j = 0; j < element.length; j++) {
+          const elementChar = elementSub.charCodeAt(j)
+          if (aChar === elementChar) {
+            charCount++
+            elementSub = elementSub.substring(j)
+            break
+          }
+        }
+      }
+      if (charCount > 0) matchList[element] = charCount
+    }
+    const maxValueKey = getMaxValueKey(matchList)
+    if (matchList[maxValueKey] / a.length >= 0.7) return maxValueKey
+  }
+}
+
+function getMaxValueKey (obj) {
+  return Object.keys(obj).reduce((a, b) => obj[a] > obj[b] ? a : b)
 }

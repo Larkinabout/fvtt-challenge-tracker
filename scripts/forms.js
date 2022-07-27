@@ -2,6 +2,18 @@ import { ChallengeTrackerSettings, ChallengeTracker } from './main.js'
 import { ChallengeTrackerFlag } from './flags.js'
 import jscolor from './lib/jscolor.js'
 
+Hooks.on('closeChallengeTrackerForm', () => {
+  const buttonLocation = game.settings.get('challenge-tracker', 'buttonLocation')
+  const controls = ui.controls
+  const controlsControls = controls.controls
+  const control = controlsControls.find(c => c.name === buttonLocation)
+  if (!control) return
+  const tool = control.tools.find(ct => ct.name === 'challenge-tracker')
+  if (!tool) return
+  tool.active = false
+  controls.render()
+})
+
 /* Display challenge trackers in a list with options */
 export class ChallengeTrackerForm extends FormApplication {
   static get defaultOptions () {
@@ -36,11 +48,29 @@ export class ChallengeTrackerForm extends FormApplication {
   }
 
   /**
-  * Open the Challenge Tracker form
+  * Open the Challenge Tracker form by event
   * @param {object} event Event trigger
   **/
-  static open (event) {
+  static openByEvent (event) {
     const userId = $(event.currentTarget).parents('[data-user-id]')?.data()?.userId
+    ChallengeTrackerForm.challengeTrackerForm.render(true, { userId })
+  }
+
+  /**
+  * Open the Challenge Tracker form by user name or current user
+  * @param {string} [userName=null] User name
+  **/
+  static open (userName = null) {
+    let userId
+    if (userName) {
+      userId = game.users.find(u => u.name === userName).id
+      if (!userId) {
+        ui.notifications.info(`User '${userName}' does not exist.`)
+        return
+      }
+    } else {
+      userId = game.userId
+    }
     ChallengeTrackerForm.challengeTrackerForm.render(true, { userId })
   }
 

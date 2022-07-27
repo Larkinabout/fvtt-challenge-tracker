@@ -1,5 +1,5 @@
 import { ChallengeTrackerSettings, ChallengeTracker } from './main.js'
-import { ChallengeTrackerForm } from './form.js'
+import { ChallengeTrackerForm } from './forms.js'
 
 export class ChallengeTrackerFlag {
   /**
@@ -65,7 +65,8 @@ export class ChallengeTrackerFlag {
       ui.notifications.error(`Challenge Tracker '${challengeTrackerId}' does not exist.`)
       return
     }
-    const deletedFlag = game.users.get(ownerId)?.unsetFlag(ChallengeTrackerSettings.id, challengeTrackerId)
+    const deletedFlag = await game.users.get(ownerId)?.unsetFlag(ChallengeTrackerSettings.id, challengeTrackerId)
+    ChallengeTrackerForm.challengeTrackerForm?.render(false, { width: 'auto', height: 'auto' })
     ui.notifications.info(`Challenge Tracker '${challengeTrackerId}' deleted.`)
     return deletedFlag
   }
