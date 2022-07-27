@@ -37,8 +37,8 @@ More options can be set  using an optional array parameter: `ChallengeTracker.op
 - **innerColor:** Set the hex color of the inner circle (failures). The 'Inner Color' module setting will be ignored.
 - **innerBackgroundColor:** Set the background hex color of the inner circle (failures). The 'Inner Background Color' module setting will be ignored. Example: `innerBackgroundColor: '#B0000066'`
 - **frameColor:** Set the hex color of the frame. The 'Frame Color' module setting will be ignored. Example: `frameColor: '#0000FF'`
-- **persist:** Set to `true` to persist the Challenge Tracker across sessions. Default is `false`. This option will be ignored when the user's role is not equal to or greater than the role selected in the 'Allow Show to Others' module setting. Example: `persist: true`
-- **show:** Set to `true` to show the Challenge Tracker to your players. Default is `false`. Example: `show: true`
+- **persist:** Set to `true` to persist the Challenge Tracker across sessions. Default is `false`. Example: `persist: true`
+- **show:** Set to `true` to show the Challenge Tracker to your players. Default is `false`. This option will be ignored when the user's role is not equal to or greater than the role selected in the 'Allow Show to Others' module setting. Example: `show: true`
 - **size:** Set the size of the Challenge Tracker in pixels between 200 to 600. The 'Size' module setting will be ignored. Example: `size: 400`
 - **title:** Set the title of the Challenge Tracker in the window header. Default is `Challenge Tracker`. Example: `title: 'Skill Challenge 1'`
 - **windowed:** Set the Challenge Tracker to windowed (true) or windowless (false). The 'Windowed' module setting will be ignored. Example: `windowed: false`
