@@ -60,15 +60,27 @@ export class ChallengeTrackerFlag {
   * @param {string} challengeTrackerId Unique identifier for the Challenge Tracker
   **/
   static async unset (ownerId, challengeTrackerId) {
-    const flagKey = Object.keys(game.users.get(ownerId)?.data.flags['challenge-tracker']).find(ct => ct === challengeTrackerId)
+    const flagKey = Object.keys(game.users.get(ownerId)?.data.flags['challenge-tracker'])
+      .find(ct => ct === challengeTrackerId)
     if (!flagKey) {
-      ui.notifications.error(`Challenge Tracker '${challengeTrackerId}' does not exist.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.doesNotExist', { value: challengeTrackerId }))
       return
     }
     const deletedFlag = await game.users.get(ownerId)?.unsetFlag(ChallengeTrackerSettings.id, challengeTrackerId)
     ChallengeTrackerForm.challengeTrackerForm?.render(false, { width: 'auto', height: 'auto' })
     ui.notifications.info(`Challenge Tracker '${challengeTrackerId}' deleted.`)
     return deletedFlag
+  }
+
+  static async copy (ownerId, challengeTrackerId) {
+    const flagData = ChallengeTrackerFlag.get(ownerId, challengeTrackerId)
+    if (!flagData) return
+    const newChallengeTrackerId = `${ChallengeTrackerSettings.id}-${Math.random().toString(16).slice(2)}`
+    const challengeTrackerTitle = flagData.title
+    const newChallengeTrackerTitle = `Copy of ${challengeTrackerTitle}`
+    const challengeTrackerOptions =
+      foundry.utils.mergeObject(flagData, { id: newChallengeTrackerId, title: newChallengeTrackerTitle })
+    await ChallengeTrackerFlag.set(ownerId, challengeTrackerOptions)
   }
 
   static async setOwner () {

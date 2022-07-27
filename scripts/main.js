@@ -8,6 +8,7 @@ export class ChallengeTrackerSettings {
   static schema = [
     'closeFunction',
     'frameColor',
+    'frameWidth',
     'id',
     'innerBackgroundColor',
     'innerColor',
@@ -31,21 +32,6 @@ export class ChallengeTrackerSettings {
     challengeTrackerForm: 'modules/challenge-tracker/templates/challenge-tracker-form.hbs',
     challengeTrackerEditForm: 'modules/challenge-tracker/templates/challenge-tracker-edit-form.hbs'
   }
-
-  static title = 'Challenge Tracker'
-
-  static icon =
-    `<svg width="100%" height="100%" viewBox="-5 -5 110 110" xmlns="http://www.w3.org/2000/svg">
-      <title>Challenge Tracker Menu</title>
-      <ellipse stroke-width="7" id="outer_circle" cx="50" cy="50" rx="50" ry="50" stroke="currentColor" fill="none" fill-opacity="0"/>
-      <ellipse stroke-width="7" id="inner_circle" cx="50" cy="50" rx="30" ry="30" stroke="currentColor" fill="none" fill-opacity="0"/>
-      <line stroke-width="7" id="svg_4" x1="50" x2="50" y1="0" y2="50" stroke="currentColor" fill="none" fill-opacity="0"/>
-      <line stroke-width="7" id="svg_5" x1="50" x2="76" y1="50" y2="65" stroke="currentColor" fill="none" fill-opacity="0"/>
-      <line stroke-width="7" id="svg_6" x1="50" x2="24" y1="50" y2="65" stroke="currentColor" fill="none" fill-opacity="0"/>
-      <line stroke-width="7" id="svg_8" x1="50" x2="50" y1="80" y2="100" stroke="currentColor" fill="none" fill-opacity="0"/>
-      <line stroke-width="7" id="svg_9" x1="0" x2="20" y1="50" y2="50" stroke="currentColor" fill="none" fill-opacity="0"/>
-      <line stroke-width="7" id="svg_11" x1="80" x2="100" y1="50" y2="50" stroke="currentColor" fill="none" fill-opacity="0"/>
-    </svg>`
 }
 
 export class ChallengeTracker extends Application {
@@ -203,12 +189,15 @@ export class ChallengeTracker extends Application {
     let outerTotal = 4
     let innerTotal = 0
     let challengeTrackerOptions = {
+      closeFunction: null,
       frameColor: null,
+      frameWidth: null,
       id: null,
       innerBackgroundColor: null,
       innerColor: null,
       innerCurrent: 0,
       innerTotal: 3,
+      openFunction: null,
       outerBackgroundColor: null,
       outerColor: null,
       outerCurrent: 0,
@@ -217,7 +206,7 @@ export class ChallengeTracker extends Application {
       persist: false,
       show: false,
       size: null,
-      title: ChallengeTrackerSettings.title,
+      title: game.i18n?.localize('challengeTracker.labels.challengeTrackerTitle'),
       windowed: null
     }
     switch (arguments.length) {
@@ -256,7 +245,7 @@ export class ChallengeTracker extends Application {
     }
 
     // Validate challengeTrackerOptions
-    if (!this.validateOptions(challengeTrackerOptions)) return
+    if (!ChallengeTracker.validateOptions(challengeTrackerOptions)) return
 
     const ownerId = challengeTrackerOptions.ownerId ?? game.userId
     const executorId = game.userId
@@ -271,7 +260,7 @@ export class ChallengeTracker extends Application {
       if (flag) {
         challengeTrackerOptions = foundry.utils.mergeObject(flag, challengeTrackerOptions)
       } else {
-        ui.notifications.error(`Challenge Tracker '${challengeTrackerOptions.id}' does not exist.`)
+        ui.notifications.error(game.i18n.format('challengeTracker.errors.doesNotExist', { value: challengeTrackerOptions.id }))
         return
       }
     }
@@ -284,7 +273,17 @@ export class ChallengeTracker extends Application {
       `${ChallengeTrackerSettings.id}-${Math.random().toString(16).slice(2)}`
 
     // Set title
-    challengeTrackerOptions.title = challengeTrackerOptions.title ?? ChallengeTrackerSettings.title
+    challengeTrackerOptions.title = challengeTrackerOptions.title ?? game.i18n?.localize('challengeTracker.labels.challengeTrackerTitle')
+
+    // Convert functions to string
+    if (challengeTrackerOptions.openFunction) {
+      const openFunction = Utils.functionToString(challengeTrackerOptions.openFunction)
+      challengeTrackerOptions.openFunction = openFunction
+    }
+    if (challengeTrackerOptions.closeFunction) {
+      const closeFunction = Utils.functionToString(challengeTrackerOptions.closeFunction)
+      challengeTrackerOptions.closeFunction = closeFunction
+    }
 
     // Call openHandler for only GM or everyone
     if (challengeTrackerOptions.show) {
@@ -331,9 +330,13 @@ export class ChallengeTracker extends Application {
   static async openHandler (challengeTrackerOptions, options, ownerId, executorId) {
     const challengeTrackerId = options.id
 
-    // Execute open function
-    const openFunction = challengeTrackerOptions.openFunction
-    if (typeof openFunction === 'function') openFunction()
+    // Convert openFunction back to function and execute
+    if (challengeTrackerOptions.openFunction) {
+      const openFunction = Utils.stringToFunction(challengeTrackerOptions.openFunction)
+      if (typeof openFunction === 'function') {
+        openFunction()
+      }
+    }
 
     // Add new Challenge Tracker or update client variables
     if (!game.challengeTracker[challengeTrackerId]) {
@@ -345,8 +348,8 @@ export class ChallengeTracker extends Application {
         executorId
       )
     } else {
-      this.challengeTrackerOptions = challengeTrackerOptions
-
+      const challengeTracker = game.challengeTracker[challengeTrackerId]
+      challengeTracker.challengeTrackerOptions = challengeTrackerOptions
       // Switch the Show/Hide element for the owner
       if ((game.user.isGM || game.userId === challengeTracker.ownerId) &&
         game.userId !== executorId && !challengeTracker.challengeTrackerOptions.show) {
@@ -376,7 +379,7 @@ export class ChallengeTracker extends Application {
   */
   static closeByTitle (title = null) {
     if (!title) {
-      ui.notifications.error('No title was supplied to the \'ChallengeTracker.closeByTitle\' function.')
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notSupplied', { parameter: 'title', function: 'ChallengeTracker.closeByTitle' }))
       return
     }
     const challengeTracker = Object.values(game.challengeTracker).find(ct => ct.challengeTrackerOptions.title === title)
@@ -389,7 +392,7 @@ export class ChallengeTracker extends Application {
   */
   static closeById (id = null) {
     if (!id) {
-      ui.notifications.error('No ID was supplied to the \'ChallengeTracker.closeById\' function.')
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notSupplied', { parameter: 'id', function: 'ChallengeTracker.closeById' }))
       return
     }
     const challengeTracker = Object.values(game.challengeTracker).find(ct => ct.challengeTrackerOptions.id === id)
@@ -432,7 +435,13 @@ export class ChallengeTracker extends Application {
       return
     }
 
-    // Execute close function
+    // Convert closeFunction back to function
+    if (challengeTracker.challengeTrackerOptions.closeFunction) {
+      const closeFunction = Utils.stringToFunction(challengeTracker.challengeTrackerOptions.closeFunction)
+      if (typeof closeFunction === 'function') {
+        closeFunction()
+      }
+    }
     const closeFunction = challengeTracker.challengeTrackerOptions.closeFunction
     if (typeof closeFunction === 'function') closeFunction()
 
@@ -1182,25 +1191,25 @@ export class ChallengeTracker extends Application {
   **/
   static showById (challengeTrackerId = null) {
     if (!challengeTrackerId) {
-      ui.notifications.error('No ID supplied to the \'ChallengeTracker.showById\' function.')
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notSupplied', { parameter: 'id', function: 'ChallengeTracker.showById' }))
       return
     }
     const userRole = game.user.role
     if (!game.user.isGM && !Utils.checkAllowShow(userRole)) {
-      ui.notifications.error(`User '${game.user.name}' lacks permission to the 'ChallengeTracker.showById' function.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notAllowed', { function: 'ChallengeTracker.showById' }))
       return
     }
     if (!game.challengeTracker) {
-      ui.notifications.error(`Challenge Tracker '${challengeTrackerId}' does not exist.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.doesNotExist', { value: challengeTrackerId }))
       return
     }
     const challengeTracker = Object.values(game.challengeTracker).find(ct => ct.challengeTrackerOptions.id === challengeTrackerId)
     if (!challengeTracker) {
-      ui.notifications.error(`Challenge Tracker '${challengeTrackerId}' does not exist.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.doesNotExist', { value: challengeTrackerId }))
       return
     }
     if (!game.user.isGM && !Utils.checkUserId(challengeTracker.ownerId)) {
-      ui.notifications.error(`User '${game.user.name}' does not own Challenge Tracker '${challengeTrackerId}'.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notOwned', { value: challengeTrackerId }))
       return
     }
     const executorId = game.userId
@@ -1213,25 +1222,25 @@ export class ChallengeTracker extends Application {
   **/
   static showByTitle (challengeTrackerTitle = null) {
     if (!challengeTrackerTitle) {
-      ui.notifications.error('No title supplied to the \'ChallengeTracker.showByTitle\' function.')
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notSupplied', { parameter: 'title', function: 'ChallengeTracker.showByTitle' }))
       return
     }
     const userRole = game.user.role
     if (!game.user.isGM && !Utils.checkAllowShow(userRole)) {
-      ui.notifications.error(`User '${game.user.name}' lacks permission to the 'ChallengeTracker.showByTitle' function.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notAllowed', { function: 'ChallengeTracker.showByTitle' }))
       return
     }
     if (!game.challengeTracker) {
-      ui.notifications.error(`Challenge Tracker '${challengeTrackerTitle}' does not exist.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.doesNotExist', { value: challengeTrackerTitle }))
       return
     }
     const challengeTracker = Object.values(game.challengeTracker).find(ct => ct.challengeTrackerOptions.title === challengeTrackerTitle)
     if (!challengeTracker) {
-      ui.notifications.error(`Challenge Tracker '${challengeTrackerTitle}' does not exist.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.doesNotExist', { value: challengeTrackerTitle }))
       return
     }
     if (!game.user.isGM && !Utils.checkUserId(challengeTracker.ownerId)) {
-      ui.notifications.error(`User '${game.user.name}' does not own Challenge Tracker '${challengeTrackerTitle}'.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notOwned', { value: challengeTrackerTitle }))
       return
     }
     const executorId = game.userId
@@ -1262,12 +1271,12 @@ export class ChallengeTracker extends Application {
   **/
   static hideById (challengeTrackerId = null) {
     if (!challengeTrackerId) {
-      ui.notifications.error('No ID supplied to the \'ChallengeTracker.hideById\' function.')
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notSupplied', { parameter: 'id', function: 'ChallengeTracker.hideById' }))
       return
     }
     const userRole = game.user.role
     if (!game.user.isGM && !Utils.checkAllowShow(userRole)) {
-      ui.notifications.error(`User '${game.user.name}' lacks permission to the 'ChallengeTracker.hideById' function.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notAllowed', { function: 'ChallengeTracker.hideById' }))
       return
     }
     if (!game.challengeTracker) {
@@ -1280,7 +1289,7 @@ export class ChallengeTracker extends Application {
       return
     }
     if (!game.user.isGM && !Utils.checkUserId(challengeTracker.ownerId)) {
-      ui.notifications.error(`User '${game.user.name}' does not own Challenge Tracker '${challengeTrackerId}'.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notOwned', { value: challengeTrackerId }))
       return
     }
     const executorId = game.userId
@@ -1293,25 +1302,25 @@ export class ChallengeTracker extends Application {
   **/
   static hideByTitle (challengeTrackerTitle = null) {
     if (!challengeTrackerTitle) {
-      ui.notifications.error('No title supplied to the \'ChallengeTracker.hideByTitle\' function.')
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notSupplied', { parameter: 'title', function: 'ChallengeTracker.hideByTitle' }))
       return
     }
     const userRole = game.user.role
     if (!game.user.isGM || !Utils.checkAllowShow(userRole)) {
-      ui.notifications.error(`User '${user.game.name}' lacks permission to use the 'ChallengeTracker.hideByTitle' function.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notAllowed', { function: 'ChallengeTracker.hideByTitle' }))
       return
     }
     if (!game.challengeTracker) {
-      ui.notifications.error(`Challenge Tracker '${challengeTrackerTitle}' does not exist.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.doesNotExist', { value: challengeTrackerTitle }))
       return
     }
     const challengeTracker = Object.values(game.challengeTracker).find(ct => ct.challengeTrackerOptions.title === challengeTrackerTitle)
     if (!challengeTracker) {
-      ui.notifications.error(`Challenge Tracker '${challengeTrackerTitle}' does not exist.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.doesNotExist', { value: challengeTrackerTitle }))
       return
     }
     if (!game.user.isGM && !Utils.checkUserId(challengeTracker.ownerId)) {
-      ui.notifications.error(`User '${user.game.name}' does not own Challenge Tracker '${challengeTrackerTitle}'.`)
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notOwned', { value: challengeTrackerTitle }))
       return
     }
     const executorId = game.userId
@@ -1345,7 +1354,7 @@ export class ChallengeTracker extends Application {
   * @param {boolean} challengeTrackerOptions.windowed true = Windowed, false = Windowless
   **/
   static setById (challengeTrackerId, challengeTrackerOptions) {
-    if (!this.validateOptions(challengeTrackerOptions)) return
+    if (!ChallengeTracker.validateOptions(challengeTrackerOptions)) return
     let ownerId = game.userId
 
     // Set flag
@@ -1392,7 +1401,7 @@ export class ChallengeTracker extends Application {
   * @param {boolean} challengeTrackerOptions.windowed true = Windowed, false = Windowless
   **/
   static setByTitle (challengeTrackerTitle, challengeTrackerOptions) {
-    if (!this.validateOptions(challengeTrackerOptions)) return
+    if (!ChallengeTracker.validateOptions(challengeTrackerOptions)) return
     const ownerId = game.userId
 
     // Set flag
@@ -1413,26 +1422,28 @@ export class ChallengeTracker extends Application {
 
   /**
   * Delete all Challenge Trackers
+  * Show dialog then pass to _deleteAll()
   **/
   static deleteAll () {
     // eslint-disable-next-line no-undef
     (() => new Dialog({
-      title: 'Delete All Challenge Trackers',
-      content: '<p>Are you sure you want to delete <u>all</u> Challenge Trackers?</p>',
+      title: game.i18n.localize('challengeTracker.labels.deleteAllDialog.title'),
+      content: `<p>${game.i18n.localize('challengeTracker.labels.deleteAllDialog.body')}</p>`,
       buttons: {
         yes: {
           icon: '<i class="fas fa-check"></i>',
-          label: 'Yes',
+          label: game.i18n.localize('challengeTracker.labels.yes'),
           callback: () => { ChallengeTracker._deleteAll() }
         },
         no: {
           icon: '<i class="fas fa-times"></i>',
-          label: 'No'
+          label: game.i18n.localize('challengeTracker.labels.no')
         }
       }
     }).render(true))()
   }
 
+  /* Deleta all Challenge Tracker */
   static _deleteAll () {
     const ownerId = game.userId
     const challengeTrackerList = ChallengeTrackerFlag.getList(ownerId)
@@ -1456,7 +1467,7 @@ export class ChallengeTracker extends Application {
   **/
   static deleteById (challengeTrackerId = null) {
     if (!challengeTrackerId) {
-      ui.notifications.error('No ID supplied to the \'ChallengeTracker.deleteById\' function.')
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notSupplied', { parameter: 'id', function: 'ChallengeTracker.deleteById' }))
       return
     }
     let ownerId = game.userId
@@ -1487,7 +1498,7 @@ export class ChallengeTracker extends Application {
   **/
   static deleteByTitle (challengeTrackerTitle = null) {
     if (!challengeTrackerTitle) {
-      ui.notifications.error('No title supplied to the \'ChallengeTracker.deleteByTitle\' function.')
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notSupplied', { parameter: 'title', function: 'ChallengeTracker.deleteByTitle' }))
       return
     }
     const ownerId = game.userId
@@ -1511,7 +1522,7 @@ export class ChallengeTracker extends Application {
   */
   static getById (challengeTrackerId = null) {
     if (!challengeTrackerId) {
-      ui.notifications.error('No ID supplied to the \'ChallengeTracker.getById\' function.')
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notSupplied', { parameter: 'id', function: 'ChallengeTracker.getById' }))
       return
     }
 
@@ -1533,8 +1544,7 @@ export class ChallengeTracker extends Application {
     if (challengeTracker) {
       return challengeTracker.challengeTrackerOptions
     }
-
-    ui.notifications.error(`Challenge Tracker '${challengeTrackerId}' does not exist.`)
+    ui.notifications.error(game.i18n.format('challengeTracker.errors.doesNotExist', { value: challengeTrackerId }))
     return null
   }
 
@@ -1544,7 +1554,7 @@ export class ChallengeTracker extends Application {
   */
   static getByTitle (challengeTrackerTitle = null) {
     if (!challengeTrackerTitle) {
-      ui.notifications.error('No title supplied to the \'ChallengeTracker.getByTitle\' function.')
+      ui.notifications.error(game.i18n.format('challengeTracker.errors.notSupplied', { parameter: 'title', function: 'ChallengeTracker.getByTitle' }))
       return
     }
 
@@ -1563,7 +1573,7 @@ export class ChallengeTracker extends Application {
       return challengeTracker.challengeTrackerOptions
     }
 
-    ui.notifications.error(`Challenge Tracker '${challengeTrackerTitle}' does not exist.`)
+    ui.notifications.error(game.i18n.format('challengeTracker.errors.doesNotExist', { value: challengeTrackerTitle }))
     return null
   }
 
@@ -1597,10 +1607,10 @@ export class ChallengeTracker extends Application {
 
     if (errors.length > 0) {
       for (const key of errors) {
-        let keyQuery = ''
-        const keyMatch = Utils.fuzzyMatch(key, schema)
-        if (keyMatch) keyQuery = ` Did you mean '${keyMatch}'?`
-        ui.notifications.error(`Property '${key}' is not a valid option.${keyQuery}`)
+        let fuzzyQuery = ''
+        const fuzzyResult = Utils.fuzzyMatch(key, schema)
+        if (fuzzyResult) fuzzyQuery = ` ${game.i18n.format('challengeTracker.labels.fuzzyQuery', { fuzzyResult })}`
+        ui.notifications.error(`${game.i18n.format('challengeTracker.errors.notValid', { parameter: key })}${fuzzyQuery}`)
       }
       return false
     }

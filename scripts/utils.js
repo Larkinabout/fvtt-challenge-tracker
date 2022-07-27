@@ -20,6 +20,20 @@ export class Utils {
     return new Promise((resolve) => setTimeout(resolve, milliseconds))
   }
 
+  static functionToString (func) {
+    return `(${func.toString()})()`
+  }
+
+  static stringToFunction (string) {
+    if (!string) return
+    // eslint-disable-next-line no-new-func
+    const func = Function(string)
+    if (typeof func !== 'function') {
+      return null
+    }
+    return func
+  }
+
   /**
   * @param color Hex value format: #ffffff, ffffff, #ffffffff or ffffffff
   * @param decimal lighten or darken decimal value, example 0.5 to lighten by 50% or 1.5 to darken by 50%.

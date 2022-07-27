@@ -24,7 +24,7 @@ export class ChallengeTrackerForm extends FormApplication {
       width: 'auto',
       id: 'challenge-tracker-form',
       template: ChallengeTrackerSettings.templates.challengeTrackerForm,
-      title: ChallengeTrackerSettings.title,
+      title: game.i18n.localize('challengeTracker.labels.challengeTrackerFormTitle'),
       userId: game.userId,
       closeOnSubmit: false,
       submitOnChange: true
@@ -62,7 +62,7 @@ export class ChallengeTrackerForm extends FormApplication {
   **/
   static open (userName = null) {
     let userId
-    if (userName) {
+    if (game.user.isGM && userName) {
       userId = game.users.find(u => u.name === userName).id
       if (!userId) {
         ui.notifications.info(`User '${userName}' does not exist.`)
@@ -90,12 +90,17 @@ export class ChallengeTrackerForm extends FormApplication {
     const challengeTrackerId = clickedElement.parents('li')?.data()?.challengeTrackerId
 
     switch (action) {
+      case 'open' : {
+        ChallengeTracker.open(null, null, { id: challengeTrackerId, ownerId })
+        this.render(false, { width: 'auto', height: 'auto' })
+        break
+      }
       case 'edit': {
         await ChallengeTrackerEditForm.open(ownerId, challengeTrackerId)
         break
       }
-      case 'open' : {
-        ChallengeTracker.open(null, null, { id: challengeTrackerId, ownerId })
+      case 'copy': {
+        await ChallengeTrackerFlag.copy(ownerId, challengeTrackerId)
         this.render(false, { width: 'auto', height: 'auto' })
         break
       }
@@ -130,7 +135,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
       width: '300px',
       id: 'challenge-tracker-edit-form',
       template: ChallengeTrackerSettings.templates.challengeTrackerEditForm,
-      title: `Edit ${ChallengeTrackerSettings.title}`,
+      title: game.i18n.localize('challengeTracker.labels.challengeTrackerEditFormTitle'),
       userId: game.userId,
       closeOnSubmit: true
     }
@@ -160,7 +165,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
           persist: true,
           show: false,
           size: null,
-          title: ChallengeTrackerSettings.title,
+          title: game.i18n.localize('challengeTracker.labels.challengeTrackerTitle'),
           windowed: true
         }
       }
@@ -201,7 +206,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
     if (flag) {
       challengeTrackerOptions = foundry.utils.mergeObject(flag, formData)
     } else {
-      const title = formData.title ?? 'Challenge Tracker'
+      const title = formData.title ?? game.i18n.localize('challengeTracker.labels.challengeTrackerTitle')
       const persist = true
       const id = challengeTrackerId
       challengeTrackerOptions = foundry.utils.mergeObject(formData, { ownerId, id, persist, title })

@@ -11,22 +11,25 @@
           </div>
         </div>
         <div class="challenge-tracker-form-button-group">
-          <button type="button" title="Edit the Challenge Tracker" data-action="edit" class="flex0 challenge-tracker-button">
-            <i class="fas fa-pen"></i>Edit
+          <button type="button" title="{{localize "challengeTracker.labels.form.openTooltip"}}" data-action="open" class="flex0 challenge-tracker-button">
+            <i class="fas fa-folder-open"></i>{{localize "challengeTracker.labels.form.open"}}
           </button>
-          <button type="button" title="Open the Challenge Tracker" data-action="open" class="flex0 challenge-tracker-button">
-            <i class="fas fa-folder-open"></i>Open
+          <button type="button" title="{{localize "challengeTracker.labels.form.editTooltip"}}" data-action="edit" class="flex0 challenge-tracker-button">
+            <i class="fas fa-pen"></i>{{localize "challengeTracker.labels.form.edit"}}
           </button>
-          <button type="button" title="Delete the Challenge Tracker" data-action="delete" class="flex0 challenge-tracker-button">
-            <i class="fas fa-trash"></i>Delete
+          <button type="button" title="{{localize "challengeTracker.labels.form.copyTooltip"}}" data-action="copy" class="flex0 challenge-tracker-button">
+            <i class="fas fa-copy"></i>{{localize "challengeTracker.labels.form.copy"}}
+          </button>
+          <button type="button" title="{{localize "challengeTracker.labels.form.deleteTooltip"}}" data-action="delete" class="flex0 challenge-tracker-button">
+            <i class="fas fa-trash"></i>{{localize "challengeTracker.labels.form.delete"}}
           </button>
         </div>
       </li>
     {{/each}}
   </ul>
   <footer class="flexrow">
-    <button type="button" title="Create a new Challenge Tracker" data-action="new" class="challenge-tracker-button">
-      <i class="fas fa-plus"></i>Create New
+    <button type="button" title="{{localize "challengeTracker.labels.form.newTooltip"}}" data-action="new" class="challenge-tracker-button">
+      <i class="fas fa-plus"></i>{{localize "challengeTracker.labels.form.new"}}
     </button>
   </footer>
 </form>

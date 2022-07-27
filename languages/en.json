@@ -2,7 +2,69 @@
   "challengeTracker": {
     "labels": {
       "challengeTrackerTitle": "Challenge Tracker",
-      "challengeTrackerButtonTitle": "Challenge Tracker"
+      "challengeTrackerFormTitle": "Challenge Tracker List",
+      "challengeTrackerEditFormTitle": "Edit Challenge Tracker",
+      "challengeTrackerButtonTitle": "Challenge Tracker",
+      "yes": "Yes",
+      "no": "No",
+      "deleteAllDialog": {
+        "title": "Delete All Challenge Trackers",
+        "body": "Are you sure you wish to delete all Challenge Trackers?"
+      },
+      "form": {
+        "open": "Open",
+        "openTooltip": "Open the Challenge Tracker",
+        "copy": "Copy",
+        "copyTooltip": "Copy the Challenge Tracker",
+        "edit": "Edit",
+        "editTooltip": "Edit the Challenge Tracker",
+        "delete": "Delete",
+        "deleteTooltip": "Delete the Challenge Tracker",
+        "new": "Create New",
+        "newTooltip": "Create a new Challenge Tracker"
+      },
+      "editForm": {
+        "title": "Title",
+        "titleTooltip": "Set the title of the challenge tracker",
+        "size": "Size",
+        "sizeTooltip": "Set the size of the challenge tracker in pixels",
+        "show": "Show to Others",
+        "showTooltip": "Show the challenge tracker to others",
+        "windowed": "Windowed",
+        "windowedTooltip": "Display the challenge tracker in a window",
+        "outerTitle": "Outer",
+        "outerTotal": "Total Segments",
+        "outerTotalTooltip": "Set the number of segments on the outer ring",
+        "outerCurrent": "Current Segments",
+        "outerCurrentTooltip": "Set the number of current segments on the outer ring",
+        "outerColor": "Color",
+        "outerColorTooltip": "Set the hex color of the outer ring",
+        "outerBackgroundColor": "Background Color",
+        "outerBackgroundColorTooltip": "Set the background hex color of the outer ring",
+        "innerTitle": "Inner",
+        "innerTotal": "Total Segments",
+        "innerTotalTooltip": "Set the number of segments on the inner circle",
+        "innerCurrent": "Current Segments",
+        "innerCurrentTooltip": "Set the number of current segments on the inner circle",
+        "innerColor": "Color",
+        "innerColorTooltip": "Set the hex color of the inner circle",
+        "innerBackgroundColor": "Background Color",
+        "innerBackgroundColorTooltip": "Set the background hex color of the inner circle",
+        "frameTitle": "Frame",
+        "frameWidth": "Width",
+        "frameWidthTooltip": "Set the width of the frame",
+        "frameColor": "Color",
+        "frameColorTooltip": "Set the hex color of the frame",
+        "save": "Save and Close"
+      },
+      "fuzzyQuery": "Did you mean '{fuzzyResult}'?"
+    },
+    "errors": {
+      "doesNotExist": "Challenge Tracker '{value}' does not exist.",
+      "notAllowed": "Function '{function}' is not allowed for the user.",
+      "notOwned": "Challenge Tracker '{value}' is not owned by the user.", 
+      "notSupplied":  "Parameter '{parameter}' was not supplied to function '{function}'.",
+      "notValid": "Parameter '{parameter}' is not valid."
     },
     "settings": {
       "displayButton" : {
@@ -11,30 +73,48 @@
     	},
       "buttonLocation" : {
         "name": "Button Location",
-        "hint": "Set the location of the Challenge Tracker button (Requires reload)"
+        "hint": "Set the location of the Challenge Tracker button (Requires reload)",
+        "choices" : {
+          "playerList": "Player List",
+          "token": "Token Controls",
+          "measure": "Measurement Controls",
+          "tiles": "Tile Controls",
+          "drawing": "Drawing Tools",
+          "walls": "Wall Controls",
+          "lighting": "Lighting Controls",
+          "sound": "Sound Controls",
+          "notes": "Journal Notes",
+          "none": "None"
+        }
     	},
       "allowShow" : {
         "name": "Allow Show to Others",
-        "hint": "Allow users with this role (and above) to show Challenge Trackers to others (Requires reload)"
+        "hint": "Allow users with this role (and above) to show Challenge Trackers to others (Requires reload)",
+        "choices" : {
+          "4": "Game Master",
+          "3": "Assistant GM",
+          "2": "Trusted Player",
+          "1": "Player"
+        }
     	},
       "outerBackgroundColor" : {
         "name": "Outer Background Color",
-        "hint": "Set the default background color for the outer ring",
+        "hint": "Set the default background color of the outer ring",
         "label": "Color Picker"
     	},
       "outerColor" : {
         "name": "Outer Color",
-        "hint": "Set the default color for the outer ring",
+        "hint": "Set the default color of the outer ring",
         "label": "Color Picker"
     	},
       "innerBackgroundColor" : {
         "name": "Inner Background Color",
-        "hint": "Set the default background color for the inner circle",
+        "hint": "Set the default background color of the inner circle",
         "label": "Color Picker"
     	},
       "innerColor" : {
         "name": "Inner Color",
-        "hint": "Set the default color for the inner circle",
+        "hint": "Set the default color of the inner circle",
         "label": "Color Picker"
     	},
       "frameColor" : {
@@ -44,15 +124,22 @@
     	},
       "frameWidth" : {
         "name": "Frame Width",
-        "hint": "Set the width of the frame"
+        "hint": "Set the width of the frame",
+        "choices" : {
+          "none": "None",
+          "extraThin": "Extra Thin",
+          "thin": "Thin",
+          "medium": "Medium",
+          "thick": "Thick"
+        }
     	},
       "size" : {
         "name": "Size",
-        "hint": "Set the default size of the challenge tracker in pixels"
+        "hint": "Set the default size of the Challenge Tracker in pixels"
     	},
       "windowed" : {
         "name": "Windowed",
-        "hint": "Set the challenge tracker to windowed by default"
+        "hint": "Set the Challenge Tracker to windowed by default"
     	},
       "scroll" : {
         "name": "Scroll",

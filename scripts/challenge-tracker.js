@@ -57,11 +57,7 @@ Hooks.once('ready', async () => {
     hideAll: ChallengeTracker.hideAll,
     hideById: ChallengeTracker.hideById,
     hideByTitle: ChallengeTracker.hideByTitle,
-    updateSize: ChallengeTracker.updateSize,
-    updateWindowed: ChallengeTracker.updateWindowed,
-    updateScroll: ChallengeTracker.updateScroll,
-    validateOptions: ChallengeTracker.validateOptions,
-    openForm: ChallengeTrackerForm.open
+    openList: ChallengeTrackerForm.open
   }
 })
 
@@ -74,7 +70,18 @@ Hooks.on('renderPlayerList', (playerList, html) => {
     await Utils.sleep(100)
 
     const tooltip = game.i18n.localize('challengeTracker.labels.challengeTrackerButtonTitle')
-    const icon = ChallengeTrackerSettings.icon
+    const icon =
+    `<svg width="100%" height="100%" viewBox="-5 -5 110 110" xmlns="http://www.w3.org/2000/svg">
+      <title>${game.i18n.localize('challengeTracker.labels.challengeTrackerListTitle')}</title>
+      <ellipse stroke-width="7" id="outer_circle" cx="50" cy="50" rx="50" ry="50" stroke="currentColor" fill="none" fill-opacity="0"/>
+      <ellipse stroke-width="7" id="inner_circle" cx="50" cy="50" rx="30" ry="30" stroke="currentColor" fill="none" fill-opacity="0"/>
+      <line stroke-width="7" id="svg_4" x1="50" x2="50" y1="0" y2="50" stroke="currentColor" fill="none" fill-opacity="0"/>
+      <line stroke-width="7" id="svg_5" x1="50" x2="76" y1="50" y2="65" stroke="currentColor" fill="none" fill-opacity="0"/>
+      <line stroke-width="7" id="svg_6" x1="50" x2="24" y1="50" y2="65" stroke="currentColor" fill="none" fill-opacity="0"/>
+      <line stroke-width="7" id="svg_8" x1="50" x2="50" y1="80" y2="100" stroke="currentColor" fill="none" fill-opacity="0"/>
+      <line stroke-width="7" id="svg_9" x1="0" x2="20" y1="50" y2="50" stroke="currentColor" fill="none" fill-opacity="0"/>
+      <line stroke-width="7" id="svg_11" x1="80" x2="100" y1="50" y2="50" stroke="currentColor" fill="none" fill-opacity="0"/>
+    </svg>`
 
     const listElement = html.find('li')
     for (const element of listElement) {
@@ -121,7 +128,19 @@ Hooks.on('getSceneControlButtons', (controls) => {
 
 Hooks.on('renderSceneControls', (controls, html) => {
   const controlButton = html.find('.challenge-tracker-control-button')
-  controlButton.replaceWith(`<span id="challenge-tracker-control-button">${ChallengeTrackerSettings.icon}</span>`)
+  const icon =
+  `<svg width="100%" height="100%" viewBox="-5 -5 110 110" xmlns="http://www.w3.org/2000/svg">
+    <title>${game.i18n.localize('challengeTracker.labels.challengeTrackerListTitle')}</title>
+    <ellipse stroke-width="7" id="outer_circle" cx="50" cy="50" rx="50" ry="50" stroke="currentColor" fill="none" fill-opacity="0"/>
+    <ellipse stroke-width="7" id="inner_circle" cx="50" cy="50" rx="30" ry="30" stroke="currentColor" fill="none" fill-opacity="0"/>
+    <line stroke-width="7" id="svg_4" x1="50" x2="50" y1="0" y2="50" stroke="currentColor" fill="none" fill-opacity="0"/>
+    <line stroke-width="7" id="svg_5" x1="50" x2="76" y1="50" y2="65" stroke="currentColor" fill="none" fill-opacity="0"/>
+    <line stroke-width="7" id="svg_6" x1="50" x2="24" y1="50" y2="65" stroke="currentColor" fill="none" fill-opacity="0"/>
+    <line stroke-width="7" id="svg_8" x1="50" x2="50" y1="80" y2="100" stroke="currentColor" fill="none" fill-opacity="0"/>
+    <line stroke-width="7" id="svg_9" x1="0" x2="20" y1="50" y2="50" stroke="currentColor" fill="none" fill-opacity="0"/>
+    <line stroke-width="7" id="svg_11" x1="80" x2="100" y1="50" y2="50" stroke="currentColor" fill="none" fill-opacity="0"/>
+  </svg>`
+  controlButton.replaceWith(`<span id="challenge-tracker-control-button">${icon}</span>`)
 })
 
 /* Draw the challenge trackers once rendered */

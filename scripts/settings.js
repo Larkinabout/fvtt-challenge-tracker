@@ -25,16 +25,16 @@ export class Settings {
       config: true,
       type: String,
       choices: {
-        'player-list': 'Player List',
-        token: 'Token Controls',
-        measure: 'Measurement Controls',
-        tiles: 'Tile Controls',
-        drawing: 'Drawing Tools',
-        walls: 'Wall Controls',
-        lighting: 'Lighting Controls',
-        sound: 'Sound Controls',
-        notes: 'Journal Notes',
-        none: 'None'
+        'player-list': game.i18n.localize('challengeTracker.settings.buttonLocation.choices.playerList'),
+        token: game.i18n.localize('challengeTracker.settings.buttonLocation.choices.token'),
+        measure: game.i18n.localize('challengeTracker.settings.buttonLocation.choices.measure'),
+        tiles: game.i18n.localize('challengeTracker.settings.buttonLocation.choices.tiles'),
+        drawing: game.i18n.localize('challengeTracker.settings.buttonLocation.choices.drawing'),
+        walls: game.i18n.localize('challengeTracker.settings.buttonLocation.choices.walls'),
+        lighting: game.i18n.localize('challengeTracker.settings.buttonLocation.choices.lighting'),
+        sound: game.i18n.localize('challengeTracker.settings.buttonLocation.choices.sound'),
+        notes: game.i18n.localize('challengeTracker.settings.buttonLocation.choices.notes'),
+        none: game.i18n.localize('challengeTracker.settings.buttonLocation.choices.none')
       },
       default: 'player-list',
       onChange: foundry.utils.debounce(() => window.location.reload(), 100)
@@ -47,10 +47,10 @@ export class Settings {
       config: true,
       type: String,
       choices: {
-        4: 'Game Master',
-        3: 'Assistant GM',
-        2: 'Trusted Player',
-        1: 'Player'
+        4: game.i18n.localize('challengeTracker.settings.allowShow.choices.4'),
+        3: game.i18n.localize('challengeTracker.settings.allowShow.choices.3'),
+        2: game.i18n.localize('challengeTracker.settings.allowShow.choices.2'),
+        1: game.i18n.localize('challengeTracker.settings.allowShow.choices.1')
       },
       default: 4,
       onChange: foundry.utils.debounce(() => window.location.reload(), 100)
@@ -78,11 +78,11 @@ export class Settings {
       config: true,
       type: String,
       choices: {
-        none: 'None',
-        'extra-thin': 'Extra Thin',
-        thin: 'Thin',
-        medium: 'Medium',
-        thick: 'Thick'
+        none: game.i18n.localize('challengeTracker.settings.frameWidth.choices.none'),
+        'extra-thin': game.i18n.localize('challengeTracker.settings.frameWidth.choices.extraThin'),
+        thin: game.i18n.localize('challengeTracker.settings.frameWidth.choices.thin'),
+        medium: game.i18n.localize('challengeTracker.settings.frameWidth.choices.medium'),
+        thick: game.i18n.localize('challengeTracker.settings.frameWidth.choices.thick')
       },
       default: 'medium',
       onChange: (frameWidth) => { ChallengeTracker.updateFrameWidth(frameWidth) }
@@ -120,6 +120,44 @@ export class Settings {
   }
 
   static initColorSettings () {
+    new window.Ardittristan.ColorSetting('challenge-tracker', 'innerBackgroundColor', {
+      name: game.i18n.localize('challengeTracker.settings.innerBackgroundColor.name'),
+      hint: game.i18n.localize('challengeTracker.settings.innerBackgroundColor.hint'),
+      label: game.i18n.localize('challengeTracker.settings.innerBackgroundColor.label'),
+      scope: 'world',
+      restricted: true,
+      defaultColor: '#b0000066',
+      onChange: (innerBackgroundColor) => {
+        ChallengeTracker.updateColorAndDraw(
+          game.settings.get('challenge-tracker', 'outerBackgroundColor'),
+          game.settings.get('challenge-tracker', 'outerColor'),
+          innerBackgroundColor,
+          game.settings.get('challenge-tracker', 'innerColor'),
+          game.settings.get('challenge-tracker', 'frameColor')
+        )
+      },
+      insertAfter: 'challenge-tracker.frameWidth'
+    })
+
+    new window.Ardittristan.ColorSetting('challenge-tracker', 'innerColor', {
+      name: game.i18n.localize('challengeTracker.settings.innerColor.name'),
+      hint: game.i18n.localize('challengeTracker.settings.innerColor.hint'),
+      label: game.i18n.localize('challengeTracker.settings.innerColor.label'),
+      scope: 'world',
+      restricted: true,
+      defaultColor: '#dc0000ff',
+      onChange: (innerColor) => {
+        ChallengeTracker.updateColorAndDraw(
+          game.settings.get('challenge-tracker', 'outerBackgroundColor'),
+          game.settings.get('challenge-tracker', 'outerColor'),
+          game.settings.get('challenge-tracker', 'innerBackgroundColor'),
+          innerColor,
+          game.settings.get('challenge-tracker', 'frameColor')
+        )
+      },
+      insertAfter: 'challenge-tracker.frameWidth'
+    })
+
     new window.Ardittristan.ColorSetting('challenge-tracker', 'outerBackgroundColor', {
       name: game.i18n.localize('challengeTracker.settings.outerBackgroundColor.name'),
       hint: game.i18n.localize('challengeTracker.settings.outerBackgroundColor.hint'),
@@ -136,7 +174,7 @@ export class Settings {
           game.settings.get('challenge-tracker', 'frameColor')
         )
       },
-      insertAfter: 'challenge-tracker.allowShow'
+      insertAfter: 'challenge-tracker.frameWidth'
     })
 
     new window.Ardittristan.ColorSetting('challenge-tracker', 'outerColor', {
@@ -155,45 +193,7 @@ export class Settings {
           game.settings.get('challenge-tracker', 'frameColor')
         )
       },
-      insertAfter: 'challenge-tracker.allowShow'
-    })
-
-    new window.Ardittristan.ColorSetting('challenge-tracker', 'innerBackgroundColor', {
-      name: game.i18n.localize('challengeTracker.settings.innerBackgroundColor.name'),
-      hint: game.i18n.localize('challengeTracker.settings.innerBackgroundColor.hint'),
-      label: game.i18n.localize('challengeTracker.settings.innerBackgroundColor.label'),
-      scope: 'world',
-      restricted: true,
-      defaultColor: '#b0000066',
-      onChange: (innerBackgroundColor) => {
-        ChallengeTracker.updateColorAndDraw(
-          game.settings.get('challenge-tracker', 'outerBackgroundColor'),
-          game.settings.get('challenge-tracker', 'outerColor'),
-          innerBackgroundColor,
-          game.settings.get('challenge-tracker', 'innerColor'),
-          game.settings.get('challenge-tracker', 'frameColor')
-        )
-      },
-      insertAfter: 'challenge-tracker.allowShow'
-    })
-
-    new window.Ardittristan.ColorSetting('challenge-tracker', 'innerColor', {
-      name: game.i18n.localize('challengeTracker.settings.innerColor.name'),
-      hint: game.i18n.localize('challengeTracker.settings.innerColor.hint'),
-      label: game.i18n.localize('challengeTracker.settings.innerColor.label'),
-      scope: 'world',
-      restricted: true,
-      defaultColor: '#DC0000ff',
-      onChange: (innerColor) => {
-        ChallengeTracker.updateColorAndDraw(
-          game.settings.get('challenge-tracker', 'outerBackgroundColor'),
-          game.settings.get('challenge-tracker', 'outerColor'),
-          game.settings.get('challenge-tracker', 'innerBackgroundColor'),
-          innerColor,
-          game.settings.get('challenge-tracker', 'frameColor')
-        )
-      },
-      insertAfter: 'challenge-tracker.allowShow'
+      insertAfter: 'challenge-tracker.frameWidth'
     })
 
     new window.Ardittristan.ColorSetting('challenge-tracker', 'frameColor', {
@@ -202,7 +202,7 @@ export class Settings {
       label: game.i18n.localize('challengeTracker.settings.frameColor.label'),
       scope: 'world',
       restricted: true,
-      defaultColor: '#0F1414',
+      defaultColor: '#0f1414',
       onChange: (frameColor) => {
         ChallengeTracker.updateColorAndDraw(
           game.settings.get('challenge-tracker', 'outerBackgroundColor'),
@@ -212,7 +212,7 @@ export class Settings {
           frameColor
         )
       },
-      insertAfter: 'challenge-tracker.allowShow'
+      insertAfter: 'challenge-tracker.frameWidth'
     })
   }
 }
