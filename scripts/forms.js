@@ -1,6 +1,5 @@
 import { ChallengeTrackerSettings, ChallengeTracker } from './main.js'
 import { ChallengeTrackerFlag } from './flags.js'
-import jscolor from './lib/jscolor.js'
 
 Hooks.on('closeChallengeTrackerForm', () => {
   const buttonLocation = game.settings.get('challenge-tracker', 'buttonLocation')
@@ -16,6 +15,11 @@ Hooks.on('closeChallengeTrackerForm', () => {
 
 /* Display challenge trackers in a list with options */
 export class ChallengeTrackerForm extends FormApplication {
+  constructor (options) {
+    super(options)
+    this.scrollTop = 0
+  }
+
   static get defaultOptions () {
     const defaults = super.defaultOptions
 
@@ -44,7 +48,16 @@ export class ChallengeTrackerForm extends FormApplication {
 
   /* Initialise the ChallengeTrackerForm */
   static init () {
-    this.challengeTrackerForm = new ChallengeTrackerForm()
+    game.challengeTrackerForm = new ChallengeTrackerForm()
+    game.challengeTrackerForm._init()
+  }
+
+  _init () {
+    Hooks.on('renderChallengeTrackerForm', async () => {
+      const ul = $('ul.challenge-tracker-form')[0]
+      if (!ul) return
+      ul.scrollTop = this.scrollTop
+    })
   }
 
   /**
@@ -53,7 +66,7 @@ export class ChallengeTrackerForm extends FormApplication {
   **/
   static openByEvent (event) {
     const userId = $(event.currentTarget).parents('[data-user-id]')?.data()?.userId
-    ChallengeTrackerForm.challengeTrackerForm.render(true, { userId })
+    game.challengeTrackerForm.render(true, { userId })
   }
 
   /**
@@ -71,7 +84,7 @@ export class ChallengeTrackerForm extends FormApplication {
     } else {
       userId = game.userId
     }
-    ChallengeTrackerForm.challengeTrackerForm.render(true, { userId })
+    game.challengeTrackerForm.render(true, { userId })
   }
 
   activateListeners (html) {
@@ -84,15 +97,16 @@ export class ChallengeTrackerForm extends FormApplication {
   * @param {object} event Event trigger
   **/
   async _handleButtonClick (event) {
+    event.preventDefault()
     const clickedElement = $(event.currentTarget)
     const action = clickedElement.data().action
     const ownerId = clickedElement.parents('[data-owner-id]')?.data()?.ownerId
     const challengeTrackerId = clickedElement.parents('li')?.data()?.challengeTrackerId
-
+    const ul = $('ul.challenge-tracker-form')[0]
+    this.scrollTop = ul.scrollTop
     switch (action) {
       case 'open' : {
         ChallengeTracker.open(null, null, { id: challengeTrackerId, ownerId })
-        this.render(false, { width: 'auto', height: 'auto' })
         break
       }
       case 'edit': {
@@ -101,20 +115,49 @@ export class ChallengeTrackerForm extends FormApplication {
       }
       case 'copy': {
         await ChallengeTrackerFlag.copy(ownerId, challengeTrackerId)
-        this.render(false, { width: 'auto', height: 'auto' })
         break
       }
       case 'delete': {
         await ChallengeTrackerFlag.unset(ownerId, challengeTrackerId)
+        break
+      }
+      case 'move-up': {
+        await this.move('up', ownerId, challengeTrackerId)
+        this.render(false, { width: 'auto', height: 'auto' })
+        break
+      }
+      case 'move-down': {
+        await this.move('down', ownerId, challengeTrackerId)
         this.render(false, { width: 'auto', height: 'auto' })
         break
       }
       case 'new': {
         await ChallengeTrackerEditForm.open(ownerId)
-        this.render(false, { width: 'auto', height: 'auto' })
         break
       }
     }
+    this.render(false, { width: 'auto', height: 'auto' })
+  }
+
+  async move (direction, ownerId, challengeTrackerId) {
+    const flagLength = Object.keys(game.users.get(ownerId).data.flags['challenge-tracker']).length
+    const challengeTracker1 = ChallengeTrackerFlag.get(ownerId, challengeTrackerId)
+    if (!challengeTracker1) return
+    const originalPosition = challengeTracker1.listPosition
+    if ((direction === 'up' && originalPosition === 1) ||
+      (direction === 'down' && originalPosition >= flagLength)) return
+    let newPosition = null
+    switch (direction) {
+      case 'up':
+        newPosition = originalPosition - 1
+        break
+      case 'down':
+        newPosition = originalPosition + 1
+        break
+    }
+    const challengeTracker2 = Object.values(game.users.get(ownerId).data.flags['challenge-tracker']).find(ct => ct.listPosition === newPosition)
+    await ChallengeTrackerFlag.set(ownerId, { id: challengeTrackerId, listPosition: newPosition })
+    if (challengeTracker2) await ChallengeTrackerFlag.set(ownerId, { id: challengeTracker2.id, listPosition: originalPosition })
   }
 }
 
@@ -124,7 +167,6 @@ export class ChallengeTrackerEditForm extends FormApplication {
     super()
     this.ownerId = ownerId
     this.challengeTrackerId = challengeTrackerId
-    this.jscolor = jscolor
   }
 
   static get defaultOptions () {
@@ -152,6 +194,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
       return {
         challengeTracker: {
           frameColor: null,
+          frameWidth: 'medium',
           id: `${ChallengeTrackerSettings.id}-${Math.random().toString(16).slice(2)}`,
           innerBackgroundColor: null,
           innerColor: null,
@@ -190,7 +233,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
 
   activateListeners (html) {
     super.activateListeners(html)
-    this.jscolor.install()
+    ColorPicker.install()
   }
 
   /**
@@ -209,7 +252,8 @@ export class ChallengeTrackerEditForm extends FormApplication {
       const title = formData.title ?? game.i18n.localize('challengeTracker.labels.challengeTrackerTitle')
       const persist = true
       const id = challengeTrackerId
-      challengeTrackerOptions = foundry.utils.mergeObject(formData, { ownerId, id, persist, title })
+      const listPosition = Object.keys(game.users.get(ownerId).data.flags['challenge-tracker']).length + 1
+      challengeTrackerOptions = foundry.utils.mergeObject(formData, { ownerId, id, listPosition, persist, title })
     }
     await ChallengeTrackerFlag.set(ownerId, challengeTrackerOptions)
     await ChallengeTracker.draw(challengeTrackerOptions)

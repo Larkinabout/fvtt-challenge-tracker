@@ -1,4 +1,4 @@
-import { ChallengeTrackerSettings, ChallengeTracker } from './main.js'
+import { ChallengeTrackerSettings } from './main.js'
 import { ChallengeTrackerForm } from './forms.js'
 
 export class ChallengeTrackerFlag {
@@ -10,9 +10,16 @@ export class ChallengeTrackerFlag {
     const challengeTrackerList = []
     if (!game.users.get(userId)?.data.flags['challenge-tracker']) return
     const flagKeys = Object.keys(game.users.get(userId)?.data.flags['challenge-tracker'])
+    const flagsLength = flagKeys.length
     for (const flagKey of flagKeys) {
-      challengeTrackerList.push(game.users.get(userId)?.getFlag(ChallengeTrackerSettings.id, flagKey))
+      const flagData = game.users.get(userId)?.getFlag(ChallengeTrackerSettings.id, flagKey)
+      const moveUpDisabled = (flagData.listPosition === 1) ? 'disabled' : ''
+      const moveDownDisabled = (flagData.listPosition >= flagsLength) ? 'disabled' : ''
+      const mergedFlagData = foundry.utils.mergeObject(flagData, { moveUpDisabled, moveDownDisabled })
+      challengeTrackerList.push(mergedFlagData)
     }
+    challengeTrackerList.sort((a, b) => a.listPosition < b.listPosition ? 1 : -1)
+    challengeTrackerList.reverse()
     return challengeTrackerList
   }
 
@@ -39,6 +46,7 @@ export class ChallengeTrackerFlag {
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
   * @param {number} challengeTrackerOptions.innerTotal Number of segments for the inner circle
+  * @param {number} challengeTrackerOptions.listPosition Position of the challenge tracker in the Challenge Tracker list
   * @param {string} challengeTrackerOptions.outerBackgroundColor Hex color of the outer ring background
   * @param {string} challengeTrackerOptions.outerColor Hex color of the outer ring
   * @param {number} challengeTrackerOptions.outerCurrent Number of filled segments of the outer ring
@@ -51,7 +59,7 @@ export class ChallengeTrackerFlag {
   **/
   static async set (ownerId, challengeTrackerOptions) {
     await game.users.get(ownerId)?.setFlag(ChallengeTrackerSettings.id, challengeTrackerOptions.id, challengeTrackerOptions)
-    ChallengeTrackerForm.challengeTrackerForm?.render(false, { width: 'auto', height: 'auto' })
+    game.challengeTrackerForm?.render(false, { width: 'auto', height: 'auto' })
   }
 
   /**
@@ -67,7 +75,8 @@ export class ChallengeTrackerFlag {
       return
     }
     const deletedFlag = await game.users.get(ownerId)?.unsetFlag(ChallengeTrackerSettings.id, challengeTrackerId)
-    ChallengeTrackerForm.challengeTrackerForm?.render(false, { width: 'auto', height: 'auto' })
+    ChallengeTrackerFlag.setListPosition()
+    game.challengeTrackerForm?.render(false, { width: 'auto', height: 'auto' })
     ui.notifications.info(`Challenge Tracker '${challengeTrackerId}' deleted.`)
     return deletedFlag
   }
@@ -92,6 +101,18 @@ export class ChallengeTrackerFlag {
         const challengeTrackerOptions = foundry.utils.mergeObject(flag, { ownerId: game.userId })
         await game.user.setFlag(ChallengeTrackerSettings.id, flagKey, challengeTrackerOptions)
       }
+    }
+  }
+
+  static setListPosition () {
+    const userId = game.userId
+    const challengeTrackerList = ChallengeTrackerFlag.getList(userId)
+    if (!challengeTrackerList) return
+    let listPosition = 1
+    for (const challengeTracker of challengeTrackerList) {
+      challengeTracker.listPosition = listPosition
+      ChallengeTrackerFlag.set(userId, { id: challengeTracker.id, listPosition })
+      listPosition++
     }
   }
 }

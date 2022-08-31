@@ -14,6 +14,7 @@ export class ChallengeTrackerSettings {
     'innerColor',
     'innerCurrent',
     'innerTotal',
+    'listPosition',
     'openFunction',
     'outerBackgroundColor',
     'outerColor',
@@ -48,6 +49,7 @@ export class ChallengeTracker extends Application {
       innerBackgroundColor: null,
       frameColor: null,
       frameWidth: null,
+      listPosition: null,
       size: null,
       windowed: null,
       title: ChallengeTrackerSettings.title,
@@ -169,6 +171,7 @@ export class ChallengeTracker extends Application {
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
   * @param {number} challengeTrackerOptions.innerTotal Number of segments for the inner circle
+  * @param {number} challengeTrackerOptions.listPosition Position of the challenge tracker in the Challenge Tracker list
   * @param {string} challengeTrackerOptions.outerBackgroundColor Hex color of the outer ring background
   * @param {string} challengeTrackerOptions.outerColor Hex color of the outer ring
   * @param {number} challengeTrackerOptions.outerCurrent Number of filled segments of the outer ring
@@ -197,6 +200,7 @@ export class ChallengeTracker extends Application {
       innerColor: null,
       innerCurrent: 0,
       innerTotal: 3,
+      listPosition: null,
       openFunction: null,
       outerBackgroundColor: null,
       outerColor: null,
@@ -272,6 +276,11 @@ export class ChallengeTracker extends Application {
     challengeTrackerOptions.id = challengeTrackerOptions.id ??
       `${ChallengeTrackerSettings.id}-${Math.random().toString(16).slice(2)}`
 
+    // Set listPosition
+    challengeTrackerOptions.listPosition = challengeTrackerOptions.listPosition ??
+      Object.keys(game.users.get(ownerId).data.flags['challenge-tracker']).length + 1 ??
+      1
+
     // Set title
     challengeTrackerOptions.title = challengeTrackerOptions.title ?? game.i18n?.localize('challengeTracker.labels.challengeTrackerTitle')
 
@@ -314,6 +323,7 @@ export class ChallengeTracker extends Application {
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
   * @param {number} challengeTrackerOptions.innerTotal Number of segments for the inner circle
+  * @param {number} challengeTrackerOptions.listPosition Position of the challenge tracker in the Challenge Tracker list
   * @param {string} challengeTrackerOptions.outerBackgroundColor Hex color of the outer ring background
   * @param {string} challengeTrackerOptions.outerColor Hex color of the outer ring
   * @param {number} challengeTrackerOptions.outerCurrent Number of filled segments of the outer ring

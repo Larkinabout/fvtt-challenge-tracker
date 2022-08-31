@@ -14,7 +14,7 @@ Hooks.once('init', () => {
   })
 })
 
-Hooks.once('colorSettingsInitialized', async () => {
+Hooks.once('colorPickerReady', () => {
   Settings.initColorSettings()
 })
 
@@ -27,12 +27,13 @@ Hooks.once('socketlib.ready', () => {
 
 Hooks.once('ready', async () => {
   if (game.user.isGM) {
-    try { window.Ardittristan.ColorSetting.tester } catch {
-      ui.notifications.notify("Challenge Tracker: To use the color pickers, enable the 'lib - colorsettings' module.")
+    if (!ColorPicker) {
+      ui.notifications.notify("Challenge Tracker: To use the color pickers, enable the 'ColorPicker for Foundry VTT' module.")
     }
   }
 
   ChallengeTrackerFlag.setOwner()
+  ChallengeTrackerFlag.setListPosition()
 
   // Initialise Challenge Tracker
   game.challengeTracker = []

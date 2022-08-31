@@ -20,6 +20,8 @@
         "editTooltip": "Edit the Challenge Tracker",
         "delete": "Delete",
         "deleteTooltip": "Delete the Challenge Tracker",
+        "moveUpTooltip": "Move the Challenge Tracker up the list",
+        "moveDownTooltip": "Move the Challenge Tracker down the list",
         "new": "Create New",
         "newTooltip": "Create a new Challenge Tracker"
       },

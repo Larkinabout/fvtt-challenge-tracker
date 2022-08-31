@@ -110,8 +110,14 @@
 .challenge-tracker-form-button-group {
   display: flex;
   justify-content: flex-start;
-  gap: 0.25em;
+  gap: 1px;
   padding-top: 0.5em; 
+}
+
+.challenge-tracker-form-button-col-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .challenge-tracker-form-button-box {
@@ -120,11 +126,28 @@
 }
 
 .challenge-tracker-button {
-  width: 70px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.challenge-tracker-button:disabled {
+  background-color: transparent;
+  color: transparent;
+  cursor: default;
+}
+
+.challenge-tracker-button.icon-with-text {
+  width: 70px;
+}
+
+.challenge-tracker-button.icon-only {
+  width: 30px;
+}
+
+.challenge-tracker-button.icon-only > i {
+  margin-right: 0;
 }
 
 .challenge-tracker-form-box {
@@ -147,7 +170,7 @@
 	margin-top: 2px;
 }
 
-input[data-jscolor] {
+input[data-color-picker] {
   width: calc(100% - 2px);
   min-width: 20px;
   height: var(--form-field-height);
