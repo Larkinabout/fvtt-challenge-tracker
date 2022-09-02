@@ -84,7 +84,7 @@ Example `closeFunction: () => { ui.notifications.info('Goodbye!') }`
 ### **foregroundImage**
 Set the foreground/set image of the challenge tracker
 
-Example `backgroundImage: 'https://.../images/vintage-clock-face.webp'`
+Example `foregroundImage: 'https://.../images/vintage-clock-face.webp'`
 
 ### **frameColor**
 Set the hex color of the frame. The 'Frame Color' module setting will be ignored.
