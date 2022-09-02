@@ -6,10 +6,12 @@ export class ChallengeTrackerSettings {
   static id = 'challenge-tracker'
 
   static schema = [
+    'backgroundImage',
     'closeFunction',
     'frameColor',
     'frameWidth',
     'id',
+    'image',
     'innerBackgroundColor',
     'innerColor',
     'innerCurrent',
@@ -38,25 +40,27 @@ export class ChallengeTrackerSettings {
 export class ChallengeTracker extends Application {
   constructor (
     challengeTrackerOptions = {
-      show: false,
-      outerTotal: 1,
-      innerTotal: 1,
-      outerCurrent: 0,
-      innerCurrent: 0,
-      outerColor: null,
-      outerBackgroundColor: null,
-      innerColor: null,
-      innerBackgroundColor: null,
+      backgroundImage: null,
+      closeFunction: null,
       frameColor: null,
       frameWidth: null,
-      listPosition: null,
-      size: null,
-      windowed: null,
-      title: ChallengeTrackerSettings.title,
       id: null,
-      persist: false,
+      image: null,
+      innerBackgroundColor: null,
+      innerColor: null,
+      innerCurrent: 0,
+      innerTotal: 1,
+      listPosition: null,
       openFunction: null,
-      closeFunction: null
+      outerBackgroundColor: null,
+      outerColor: null,
+      outerCurrent: 0,
+      outerTotal: 1,
+      persist: false,
+      show: false,
+      size: null,
+      title: ChallengeTrackerSettings.title,
+      windowed: null
     },
     options,
     ownerId = null,
@@ -92,21 +96,23 @@ export class ChallengeTracker extends Application {
       : false
 
     // Local Options
-    this.frameWidth = null
-    this.size = null
-    this.windowed = null
-    this.outerColor = null
-    this.innerColor = null
     this.frameColor = null
-    this.outerColorShade = null
-    this.innerColorShade = null
-    this.outerBackgroundColor = null
-    this.innerBackgroundColor = null
-    this.outerBackgroundColorShade = null
-    this.innerBackgroundColorShade = null
     this.frameColorHighlight1 = null
     this.frameColorHighlight2 = null
-    this.setVariables() // Set values from challengeTrackerOptions or module settings for local variables
+    this.frameWidth = null
+    this.innerBackgroundColor = null
+    this.innerBackgroundColorShade = null
+    this.innerColor = null
+    this.innerColorShade = null
+    this.outerBackgroundColor = null
+    this.outerBackgroundColorShade = null
+    this.outerColor = null
+    this.outerColorShade = null
+    this.size = null
+    this.windowed = null
+    this.backgroundImage = new Image()
+    this.image = new Image()
+    //this.setVariables() // Set values from challengeTrackerOptions or module settings for local variables
 
     // Canvas
     this.canvasFrame = undefined
@@ -132,13 +138,21 @@ export class ChallengeTracker extends Application {
   }
 
   /* Set values from challengeTrackerOptions or module settings for local variables */
-  setVariables () {
+  async setVariables () {
     this.frameWidth = this.challengeTrackerOptions.frameWidth ??
       game.settings.get('challenge-tracker', 'frameWidth')
     this.size = this.challengeTrackerOptions.size ??
       game.settings.get('challenge-tracker', 'size')
     this.windowed = this.challengeTrackerOptions.windowed ??
       game.settings.get('challenge-tracker', 'windowed')
+
+    if (this.challengeTrackerOptions.image && this.image.src !== this.challengeTrackerOptions.image) {
+      this.image.src = this.challengeTrackerOptions.image
+    }
+    if (this.challengeTrackerOptions.backgroundImage && this.backgroundImage.src !== this.challengeTrackerOptions.backgroundImage) {
+      this.backgroundImage.src = this.challengeTrackerOptions.backgroundImage
+    }
+    await this.loadImages()
 
     // Base Colors
     this.outerBackgroundColor = (this.challengeTrackerOptions.outerBackgroundColor)
@@ -160,13 +174,29 @@ export class ChallengeTracker extends Application {
     this.updateColor(this.outerBackgroundColor, this.outerColor, this.innerBackgroundColor, this.innerColor, this.frameColor)
   }
 
+  async loadImages () {
+    let counter = 0
+    while (
+      (
+        (this.challengeTrackerOptions.image && !this.image.complete) ||
+        (this.challengeTrackerOptions.backgroundImage && !this.backgroundImage.complete)
+      ) &&
+      counter < 10
+    ) {
+      await Utils.sleep(1000)
+      counter++
+    }
+  }
+
   /**
   * Open a Challenge Tracker
   * @param {number} outerTotal Number of segments for the outer ring
   * @param {number} innerTotal Number of segments for the inner circle
   * @param {array} [challengeTrackerOptions] Challenge Tracker Options
+  * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.image Image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -192,10 +222,12 @@ export class ChallengeTracker extends Application {
     let outerTotal = 4
     let innerTotal = 0
     let challengeTrackerOptions = {
+      backgroundImage: null,
       closeFunction: null,
       frameColor: null,
       frameWidth: null,
       id: null,
+      image: null,
       innerBackgroundColor: null,
       innerColor: null,
       innerCurrent: 0,
@@ -317,8 +349,10 @@ export class ChallengeTracker extends Application {
   /**
   * Open Challenge Tracker by id or open a new Challenge Tracker
   * @param {array} [challengeTrackerOptions] Challenge Tracker Options
+  * @param {string} challengeTrackerOptions.backgroundImage Background image link 
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.image Image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -488,11 +522,9 @@ export class ChallengeTracker extends Application {
     } else {
       this.element.addClass('windowless')
     }
-  }
 
-  /* Add event listeners for GM */
-  activateListenersPostDraw () {
     if (game.user.isGM || Utils.checkUserId(this.ownerId)) {
+      this.canvasFrame = this.element.find('#challenge-tracker-canvas-frame')[0]
       this.eventListenerController = new AbortController()
       this.eventListenerSignal = this.eventListenerController.signal
       document.addEventListener('mousemove', (event) => this.challengeTrackerMouseMoveEvent(event),
@@ -642,8 +674,10 @@ export class ChallengeTracker extends Application {
   /**
   * Draw Challenge Tracker by Id
   * @param {array} [challengeTrackerOptions=null] Challenge Tracker Options
+  * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.image Image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -658,20 +692,10 @@ export class ChallengeTracker extends Application {
   * @param {string} challengeTrackerOptions.title Title of the challenge tracker
   * @param {boolean} challengeTrackerOptions.windowed true = Windowed, false = Windowless
   **/
-  static async draw (challengeTrackerOptions = null) {
-    const challengeTrackerId = challengeTrackerOptions.id
-    if (challengeTrackerId) {
-      const challengeTracker = Object.values(game.challengeTracker).find(ct => ct.challengeTrackerOptions.id === challengeTrackerId)
-      if (!challengeTracker) return
-      challengeTracker.challengeTrackerOptions = challengeTrackerOptions
-      challengeTracker.setVariables()
-      challengeTracker.updateShowHide()
-      challengeTracker._draw()
-    } else {
-      for (const challengeTracker of Object.values(game.challengeTracker)) {
-        challengeTracker._draw()
-      }
-    }
+  async draw (challengeTrackerOptions = null) {
+    if (challengeTrackerOptions) this.challengeTrackerOptions = challengeTrackerOptions
+    this.updateShowHide()
+    this._draw()
   }
 
   /* Draw the Challenge Tracker */
@@ -698,8 +722,10 @@ export class ChallengeTracker extends Application {
   /**
   * Draw Challenge Tracker by ID
   * @param {array} challengeTrackerOptions Challenge Tracker Options
+  * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.image Image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -715,9 +741,10 @@ export class ChallengeTracker extends Application {
   * @param {boolean} challengeTrackerOptions.windowed true = Windowed, false = Windowless
   * @param {array} options id, template, title
   **/
-  static drawHandler (challengeTrackerOptions, options) {
+  static async drawHandler (challengeTrackerOptions, options) {
     const challengeTracker = Object.values(game.challengeTracker).find(ct => ct.id === options.id)
     if (!challengeTracker) return
+    await challengeTracker.setVariables()
     challengeTracker.drawCanvas(challengeTrackerOptions)
     if (challengeTrackerOptions.windowed) {
       challengeTracker.element.removeClass('windowless')
@@ -729,8 +756,10 @@ export class ChallengeTracker extends Application {
   /**
   * Draw the Challenge Tracker canvas
   * @param {array} challengeTrackerOptions Challenge Tracker Options
+  * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.image Image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -781,6 +810,8 @@ export class ChallengeTracker extends Application {
     this.contextFrame = this.canvasFrame.getContext('2d')
     const canvas = this.element.find('#challenge-tracker-canvas')[0]
     const context = canvas.getContext('2d')
+    const canvasImage = this.element.find('#challenge-tracker-canvas-image')[0]
+    const contextImage = canvasImage.getContext('2d')
 
     windowApp.style.width = 'auto'
     windowApp.style.height = 'auto'
@@ -790,16 +821,72 @@ export class ChallengeTracker extends Application {
     this.canvasFrame.setAttribute('width', canvasSize)
     canvas.setAttribute('height', canvasSize)
     canvas.setAttribute('width', canvasSize)
+    canvasImage.setAttribute('height', canvasSize)
+    canvasImage.setAttribute('width', canvasSize)
     this.innerArc = new Path2D()
     this.outerArc = new Path2D()
 
+    const outerRemaining = this.challengeTrackerOptions.outerTotal - this.challengeTrackerOptions.outerCurrent
+    const innerRemaining = this.challengeTrackerOptions.innerTotal - this.challengeTrackerOptions.innerCurrent
     const outerSliceRadians = (360 / this.challengeTrackerOptions.outerTotal) * Math.PI / 180
     const innerSliceRadians = (360 / this.challengeTrackerOptions.innerTotal) * Math.PI / 180
     const startAngle = 1.5 * Math.PI
     const outerEndAngle = (outerSliceRadians * this.challengeTrackerOptions.outerCurrent) + 1.5 * Math.PI
     const innerEndAngle = (innerSliceRadians * this.challengeTrackerOptions.innerCurrent) + 1.5 * Math.PI
 
-    // Clear drawing on canvas element
+    // IMAGE CANVAS
+
+    // Clear drawing on canvas image element
+    contextImage.clearRect(0, 0, canvasSize, canvasSize)
+
+    // DRAW FOREGROUND IMAGE
+    if (this.challengeTrackerOptions.image) {
+      if (this.challengeTrackerOptions.outerCurrent > 0) {
+        contextImage.beginPath()
+        contextImage.moveTo(halfCanvasSize, halfCanvasSize)
+        contextImage.arc(halfCanvasSize, halfCanvasSize, radius, startAngle, outerEndAngle)
+        contextImage.fillStyle = 'rgba(0, 0, 0, 1)'
+        contextImage.fill()
+        contextImage.closePath()
+      }
+      if (this.challengeTrackerOptions.innerTotal > 0) {
+        // Remove centre of outer ring for the inner circle
+        contextImage.save()
+        contextImage.beginPath()
+        contextImage.arc(halfCanvasSize, halfCanvasSize, radius / 5 * 3, 0, 2 * Math.PI)
+        contextImage.globalCompositeOperation = 'destination-out'
+        contextImage.fillStyle = 'rgba(0, 0, 0, 1)'
+        contextImage.fill()
+        contextImage.closePath()
+        contextImage.restore()
+      }
+      if (this.challengeTrackerOptions.innerCurrent > 0) {
+        contextImage.beginPath()
+        contextImage.moveTo(halfCanvasSize, halfCanvasSize)
+        contextImage.arc(
+          halfCanvasSize,
+          halfCanvasSize,
+          radius / 5 * 3,
+          startAngle,
+          innerEndAngle
+        )
+        contextImage.fillStyle = 'rgba(0, 0, 0, 1)'
+        contextImage.fill()
+        contextImage.closePath()
+      }
+      contextImage.globalCompositeOperation = 'source-atop'
+      contextImage.drawImage(this.image, lineWidth, lineWidth, canvasSize - (lineWidth * 2), canvasSize - (lineWidth * 2))
+    }
+
+    // DRAW BACKGROUND IMAGE
+    if (this.challengeTrackerOptions.backgroundImage) {
+      contextImage.globalCompositeOperation = 'destination-over'
+      contextImage.drawImage(this.backgroundImage, lineWidth, lineWidth, canvasSize - (lineWidth * 2), canvasSize - (lineWidth * 2))
+    }
+
+    // CANVAS
+
+    // Clear drawing on background canvas element
     context.clearRect(0, 0, canvasSize, canvasSize)
 
     // Set outer ring background gradient
@@ -815,13 +902,18 @@ export class ChallengeTracker extends Application {
     outerBackgroundGradient.addColorStop(1, this.outerBackgroundColorShade)
 
     // Draw outer ring background
-    context.beginPath()
-    context.moveTo(halfCanvasSize, halfCanvasSize)
-    context.arc(halfCanvasSize, halfCanvasSize, radius, 0, 2 * Math.PI)
-    context.fillStyle = outerBackgroundGradient
-    context.fill()
-    context.closePath()
-
+    if (outerRemaining > 0) {
+      context.beginPath()
+      context.moveTo(halfCanvasSize, halfCanvasSize)
+      if (outerRemaining === this.challengeTrackerOptions.outerTotal) {
+        context.arc(halfCanvasSize, halfCanvasSize, radius, startAngle, -0.5 * Math.PI, true)
+      } else {
+        context.arc(halfCanvasSize, halfCanvasSize, radius, startAngle, outerEndAngle, true)
+      }
+      context.fillStyle = outerBackgroundGradient
+      context.fill()
+      context.closePath()
+    }
     // Set outer ring gradient
     const outerGradient = context.createRadialGradient(
       halfCanvasSize,
@@ -835,14 +927,14 @@ export class ChallengeTracker extends Application {
     outerGradient.addColorStop(1, this.outerColorShade)
 
     // Draw outer ring current arc
-    context.beginPath()
-    context.moveTo(halfCanvasSize, halfCanvasSize)
     if (this.challengeTrackerOptions.outerCurrent > 0) {
+      context.beginPath()
+      context.moveTo(halfCanvasSize, halfCanvasSize)
       context.arc(halfCanvasSize, halfCanvasSize, radius, startAngle, outerEndAngle)
+      context.fillStyle = outerGradient
+      context.fill()
+      context.closePath()
     }
-    context.fillStyle = outerGradient
-    context.fill()
-    context.closePath()
 
     if (this.challengeTrackerOptions.innerTotal > 0) {
       // Remove centre of outer ring for the inner circle
@@ -868,12 +960,32 @@ export class ChallengeTracker extends Application {
       innerBackgroundGradient.addColorStop(1, this.innerBackgroundColorShade)
 
       // Draw inner circle background
-      context.beginPath()
-      context.moveTo(halfCanvasSize, halfCanvasSize)
-      context.arc(halfCanvasSize, halfCanvasSize, radius / 5 * 3, 0, 2 * Math.PI)
-      context.fillStyle = innerBackgroundGradient
-      context.fill()
-      context.closePath()
+      if (innerRemaining > 0) {
+        context.beginPath()
+        context.moveTo(halfCanvasSize, halfCanvasSize)
+        if (innerRemaining === this.challengeTrackerOptions.innerTotal) {
+          context.arc(
+            halfCanvasSize,
+            halfCanvasSize,
+            radius / 5 * 3,
+            startAngle,
+            -0.5 * Math.PI,
+            true
+          )
+        } else {
+          context.arc(
+            halfCanvasSize,
+            halfCanvasSize,
+            radius / 5 * 3,
+            startAngle,
+            innerEndAngle,
+            true
+          )
+        }
+        context.fillStyle = innerBackgroundGradient
+        context.fill()
+        context.closePath()
+      }
 
       // Set inner circle gradient
       const innerGradient = context.createRadialGradient(
@@ -888,9 +1000,9 @@ export class ChallengeTracker extends Application {
       innerGradient.addColorStop(1, this.innerColorShade)
 
       // Draw inner circle current arc
-      context.beginPath()
-      context.moveTo(halfCanvasSize, halfCanvasSize)
       if (this.challengeTrackerOptions.innerCurrent > 0) {
+        context.beginPath()
+        context.moveTo(halfCanvasSize, halfCanvasSize)
         context.arc(
           halfCanvasSize,
           halfCanvasSize,
@@ -898,11 +1010,13 @@ export class ChallengeTracker extends Application {
           startAngle,
           innerEndAngle
         )
+        context.fillStyle = innerGradient
+        context.fill()
+        context.closePath()
       }
-      context.fillStyle = innerGradient
-      context.fill()
-      context.closePath()
     }
+
+    // FRAME CANVAS
 
     // Clear drawing on canvasFrame element
     this.contextFrame.clearRect(0, 0, canvasSize, canvasSize)
@@ -1346,8 +1460,10 @@ export class ChallengeTracker extends Application {
   * Set Challenge Tracker by ID
   * @param {string} [challengeTrackerId = null] ID of the Challenge Tracker
   * @param {array} [challengeTrackerOptions] Challenge Tracker Options
+  * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.image Image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -1393,8 +1509,10 @@ export class ChallengeTracker extends Application {
   * Set Challenge Tracker by title
   * @param {string} [challengeTrackerTitle = null] Title of the Challenge Tracker
   * @param {array} [challengeTrackerOptions] Challenge Tracker Options
+  * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.image Image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -1590,8 +1708,10 @@ export class ChallengeTracker extends Application {
   /**
   * Validate Challenge Tracker options
   * @param {array} [challengeTrackerOptions] Challenge Tracker Options
+  * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
+  * @param {string} challengeTrackerOptions.image Image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle

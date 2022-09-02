@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="challenge-tracker-form-box">
-      <h3>{{localize "challengeTracker.labels.editForm.outerTitle"}}</h3>
+      <h2>{{localize "challengeTracker.labels.editForm.outerTitle"}}</h2>
       <div class="form-group" title="{{localize "challengeTracker.labels.editForm.outerTotalTooltip"}}">
         <label for="outerTotal">{{localize "challengeTracker.labels.editForm.outerTotal"}}:</label>
         <input type="number" id="outerTotal" name="outerTotal" data-dtype="Number" value="{{outerTotal}}">
@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="challenge-tracker-form-box">
-      <h3>{{localize "challengeTracker.labels.editForm.innerTitle"}}</h3>
+      <h2>{{localize "challengeTracker.labels.editForm.innerTitle"}}</h2>
       <div class="form-group" title="{{localize "challengeTracker.labels.editForm.innerTotalTooltip"}}">
         <label for="innerTotal">{{localize "challengeTracker.labels.editForm.innerTotal"}}:</label>
         <input type="number" id="innerTotal" name="innerTotal" data-dtype="Number" value="{{innerTotal}}">
@@ -58,7 +58,20 @@
       </div>
     </div>
     <div class="challenge-tracker-form-box">
-      <h3>{{localize "challengeTracker.labels.editForm.frameTitle"}}</h3>
+      <h2>{{localize "challengeTracker.labels.editForm.imageTitle"}}</h2>
+      <div class="form-group" title="{{localize "challengeTracker.labels.editForm.imageTooltip"}}">
+        <label for="image">{{localize "challengeTracker.labels.editForm.image"}}:</label><br>
+         <input type="text" id="image" name="image" data-dtype="text" value="{{image}}">
+        {{filePicker target="image" type="text"}}
+      </div>
+      <div class="form-group" title="{{localize "challengeTracker.labels.editForm.backgroundImageTooltip"}}">
+        <label for="backgroundImage">{{localize "challengeTracker.labels.editForm.backgroundImage"}}:</label><br>
+         <input type="text" id="backgroundImage" name="backgroundImage" data-dtype="text" value="{{backgroundImage}}">
+        {{filePicker target="backgroundImage" type="text"}}
+      </div>
+    </div>
+    <div class="challenge-tracker-form-box">
+      <h2>{{localize "challengeTracker.labels.editForm.frameTitle"}}</h2>
       <div class="form-group" title="{{localize "challengeTracker.labels.editForm.frameWidthTooltip"}}">
         <label for="frameWidth">{{localize "challengeTracker.labels.editForm.frameWidth"}}:</label>
         <select id="frameWidth" name="frameWidth">

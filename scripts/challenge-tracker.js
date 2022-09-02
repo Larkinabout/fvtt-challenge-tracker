@@ -145,13 +145,7 @@ Hooks.on('renderSceneControls', (controls, html) => {
 })
 
 /* Draw the challenge trackers once rendered */
-Hooks.on('renderChallengeTracker', async () => {
+Hooks.on('renderChallengeTracker', async (challengeTracker) => {
   if (!game.challengeTracker) return
-  for (const challengeTracker of Object.values(game.challengeTracker)) {
-    if (challengeTracker._state === 1) {
-      challengeTracker.setVariables()
-      challengeTracker._draw()
-      challengeTracker.activateListenersPostDraw()
-    }
-  }
+  challengeTracker._draw()
 })

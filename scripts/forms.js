@@ -193,9 +193,11 @@ export class ChallengeTrackerEditForm extends FormApplication {
     } else {
       return {
         challengeTracker: {
+          backgroundImage: null,
           frameColor: null,
           frameWidth: 'medium',
           id: `${ChallengeTrackerSettings.id}-${Math.random().toString(16).slice(2)}`,
+          image: null,
           innerBackgroundColor: null,
           innerColor: null,
           innerCurrent: 0,
@@ -252,10 +254,11 @@ export class ChallengeTrackerEditForm extends FormApplication {
       const title = formData.title ?? game.i18n.localize('challengeTracker.labels.challengeTrackerTitle')
       const persist = true
       const id = challengeTrackerId
-      const listPosition = Object.keys(game.users.get(ownerId).data.flags['challenge-tracker']).length + 1
+      const listPosition = Object.keys(game.users.get(ownerId).data.flags['challenge-tracker'] || {}).length + 1
       challengeTrackerOptions = foundry.utils.mergeObject(formData, { ownerId, id, listPosition, persist, title })
     }
     await ChallengeTrackerFlag.set(ownerId, challengeTrackerOptions)
-    await ChallengeTracker.draw(challengeTrackerOptions)
+    const challengeTracker = Object.values(game.challengeTracker).find(ct => ct.challengeTrackerOptions.id === challengeTrackerId)
+    if (challengeTracker) challengeTracker.draw(challengeTrackerOptions)
   }
 }
