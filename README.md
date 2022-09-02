@@ -70,10 +70,21 @@ Set the default background color of the inner circle. Default is #b0000066.
 
 # Advanced Options
 More options can be set  using an optional array parameter: `ChallengeTracker.open(successes failures, {options})` where options is a comma-separated list of any of the following parameters in the format `option: value`:
+
+### **backgroundImage**
+Set the background/unset image of the challenge tracker
+
+Example `backgroundImage: 'https://.../images/vintage-clock-face.webp'`
+
 ### **closeFunction**
 Execute a function when a Challenge Tracker is closed.
 
 Example `closeFunction: () => { ui.notifications.info('Goodbye!') }`
+
+### **foregroundImage**
+Set the foreground/set image of the challenge tracker
+
+Example `foregroundImage: 'https://.../images/vintage-clock-face.webp'`
 
 ### **frameColor**
 Set the hex color of the frame. The 'Frame Color' module setting will be ignored.

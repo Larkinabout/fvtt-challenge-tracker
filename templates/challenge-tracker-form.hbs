@@ -11,16 +11,24 @@
           </div>
         </div>
         <div class="challenge-tracker-form-button-group">
-          <button type="button" title="{{localize "challengeTracker.labels.form.openTooltip"}}" data-action="open" class="flex0 challenge-tracker-button">
+          <div class="challenge-tracker-form-button-col-group">
+            <button type="button" title="{{localize "challengeTracker.labels.form.moveUpTooltip"}}" data-action="move-up" class="flex0 challenge-tracker-button icon-only" {{moveUpDisabled}}>
+              <i class="fas fa-caret-up"></i>
+            </button>
+            <button type="button" title="{{localize "challengeTracker.labels.form.moveDownTooltip"}}" data-action="move-down" class="flex0 challenge-tracker-button icon-only" {{moveDownDisabled}}>
+              <i class="fas fa-caret-down"></i>
+            </button>
+          </div>
+          <button type="button" title="{{localize "challengeTracker.labels.form.openTooltip"}}" data-action="open" class="flex0 challenge-tracker-button icon-with-text">
             <i class="fas fa-folder-open"></i>{{localize "challengeTracker.labels.form.open"}}
           </button>
-          <button type="button" title="{{localize "challengeTracker.labels.form.editTooltip"}}" data-action="edit" class="flex0 challenge-tracker-button">
+          <button type="button" title="{{localize "challengeTracker.labels.form.editTooltip"}}" data-action="edit" class="flex0 challenge-tracker-button icon-with-text">
             <i class="fas fa-pen"></i>{{localize "challengeTracker.labels.form.edit"}}
           </button>
-          <button type="button" title="{{localize "challengeTracker.labels.form.copyTooltip"}}" data-action="copy" class="flex0 challenge-tracker-button">
+          <button type="button" title="{{localize "challengeTracker.labels.form.copyTooltip"}}" data-action="copy" class="flex0 challenge-tracker-button icon-with-text">
             <i class="fas fa-copy"></i>{{localize "challengeTracker.labels.form.copy"}}
           </button>
-          <button type="button" title="{{localize "challengeTracker.labels.form.deleteTooltip"}}" data-action="delete" class="flex0 challenge-tracker-button">
+          <button type="button" title="{{localize "challengeTracker.labels.form.deleteTooltip"}}" data-action="delete" class="flex0 challenge-tracker-button icon-with-text">
             <i class="fas fa-trash"></i>{{localize "challengeTracker.labels.form.delete"}}
           </button>
         </div>

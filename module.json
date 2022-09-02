@@ -16,7 +16,7 @@
   "socket": true,
   "dependencies": [
     {
-      "name": "colorsettings"
+      "name": "color-picker"
     },
     {
       "name": "socketlib"

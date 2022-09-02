@@ -14,7 +14,7 @@ Hooks.once('init', () => {
   })
 })
 
-Hooks.once('colorSettingsInitialized', async () => {
+Hooks.once('colorPickerReady', () => {
   Settings.initColorSettings()
 })
 
@@ -27,12 +27,13 @@ Hooks.once('socketlib.ready', () => {
 
 Hooks.once('ready', async () => {
   if (game.user.isGM) {
-    try { window.Ardittristan.ColorSetting.tester } catch {
-      ui.notifications.notify("Challenge Tracker: To use the color pickers, enable the 'lib - colorsettings' module.")
+    if (typeof ColorPicker === 'undefined') {
+      ui.notifications.notify("Challenge Tracker: To use this module, install and enable the 'Color Picker' module.")
     }
   }
 
   ChallengeTrackerFlag.setOwner()
+  ChallengeTrackerFlag.setListPosition()
 
   // Initialise Challenge Tracker
   game.challengeTracker = []
@@ -144,13 +145,7 @@ Hooks.on('renderSceneControls', (controls, html) => {
 })
 
 /* Draw the challenge trackers once rendered */
-Hooks.on('renderChallengeTracker', async () => {
+Hooks.on('renderChallengeTracker', async (challengeTracker) => {
   if (!game.challengeTracker) return
-  for (const challengeTracker of Object.values(game.challengeTracker)) {
-    if (challengeTracker._state === 1) {
-      challengeTracker.setVariables()
-      challengeTracker._draw()
-      challengeTracker.activateListenersPostDraw()
-    }
-  }
+  challengeTracker._draw()
 })

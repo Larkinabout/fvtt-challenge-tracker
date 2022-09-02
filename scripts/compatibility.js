@@ -1,7 +1,7 @@
 export class ChallengeTrackerCompatibility {
   // Fix for minimal UI's autohide/toggle
   static minmalUiPlayerList (html) {
-    if (game.modules.get('minimal-ui').active) {
+    if (game.modules.get('minimal-ui')?.active) {
       const playersListElement = html.find('#player-list')
       const minimalUiPlayerListSetting = game.settings.get('minimal-ui', 'playerList')
       if (minimalUiPlayerListSetting === 'autohide') {
