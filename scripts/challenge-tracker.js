@@ -120,7 +120,7 @@ Hooks.on('getSceneControlButtons', (controls) => {
         if (toggle) {
           ChallengeTrackerForm.open()
         } else {
-          ChallengeTrackerForm.challengeTrackerForm.close()
+          game.challengeTrackerForm.close()
         }
       },
       toggle: true

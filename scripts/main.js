@@ -310,7 +310,7 @@ export class ChallengeTracker extends Application {
 
     // Set listPosition
     challengeTrackerOptions.listPosition = challengeTrackerOptions.listPosition ??
-      Object.keys(game.users.get(ownerId).data.flags['challenge-tracker']).length + 1 ??
+      Object.keys(game.users.get(ownerId).flags['challenge-tracker']).length + 1 ??
       1
 
     // Set title
@@ -1487,7 +1487,7 @@ export class ChallengeTracker extends Application {
     if (game.user.isGM) {
       for (const user of game.users.entries()) {
         const userId = user[0]
-        const flagKey = Object.keys(game.users.get(userId)?.data.flags[ChallengeTrackerSettings.id]).find(ct => ct.id === challengeTrackerId)
+        const flagKey = Object.keys(game.users.get(userId)?.flags[ChallengeTrackerSettings.id]).find(ct => ct.id === challengeTrackerId)
         if (flagKey) ownerId = userId
       }
     }
@@ -1533,7 +1533,7 @@ export class ChallengeTracker extends Application {
     const ownerId = game.userId
 
     // Set flag
-    const flagKey = Object.keys(game.user.data.flags[ChallengeTrackerSettings.id]).find(ct => ct.title === challengeTrackerTitle)
+    const flagKey = Object.keys(game.user.flags[ChallengeTrackerSettings.id]).find(ct => ct.title === challengeTrackerTitle)
     if (flagKey) {
       const flagData = ChallengeTrackerFlag.get(ownerId, flagKey)
       challengeTrackerOptions = foundry.utils.mergeObject(flagData, challengeTrackerOptions)
@@ -1604,7 +1604,7 @@ export class ChallengeTracker extends Application {
     if (game.user.isGM) {
       for (const user of game.users.entries()) {
         const userId = user[0]
-        const flagKey = Object.keys(game.users.get(userId)?.data.flags[ChallengeTrackerSettings.id]).find(ct => ct.id === challengeTrackerId)
+        const flagKey = Object.keys(game.users.get(userId)?.flags[ChallengeTrackerSettings.id]).find(ct => ct.id === challengeTrackerId)
         if (flagKey) {
           ownerId = userId
           break
@@ -1632,7 +1632,7 @@ export class ChallengeTracker extends Application {
     const ownerId = game.userId
 
     // Delete flag
-    const flagKey = Object.keys(game.user.data.flags[ChallengeTrackerSettings.id]).find(ct => ct.title === challengeTrackerTitle)
+    const flagKey = Object.keys(game.user.flags[ChallengeTrackerSettings.id]).find(ct => ct.title === challengeTrackerTitle)
     if (flagKey) {
       ChallengeTrackerFlag.unset(ownerId, flagKey)
     }
@@ -1660,7 +1660,7 @@ export class ChallengeTracker extends Application {
     if (game.user.isGM) {
       for (const user of game.users.entries()) {
         const userId = user[0]
-        const flagKey = Object.keys(game.users.get(userId)?.data.flags[ChallengeTrackerSettings.id]).find(ct => ct.id === challengeTrackerId)
+        const flagKey = Object.keys(game.users.get(userId)?.flags[ChallengeTrackerSettings.id]).find(ct => ct.id === challengeTrackerId)
         if (flagKey) ownerId = userId
       }
     }
@@ -1689,7 +1689,7 @@ export class ChallengeTracker extends Application {
     const ownerId = game.userId
 
     // Get flag
-    const challengeTrackerId = Object.entries(game.user.data.flags[ChallengeTrackerSettings.id]).find(ct => ct[1].title === challengeTrackerTitle)[0]
+    const challengeTrackerId = Object.entries(game.user.flags[ChallengeTrackerSettings.id]).find(ct => ct[1].title === challengeTrackerTitle)[0]
     if (challengeTrackerId) {
       const flagData = ChallengeTrackerFlag.get(ownerId, challengeTrackerId)
       if (flagData) return flagData

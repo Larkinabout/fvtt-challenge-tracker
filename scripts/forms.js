@@ -140,7 +140,7 @@ export class ChallengeTrackerForm extends FormApplication {
   }
 
   async move (direction, ownerId, challengeTrackerId) {
-    const flagLength = Object.keys(game.users.get(ownerId).data.flags['challenge-tracker']).length
+    const flagLength = Object.keys(game.users.get(ownerId).flags['challenge-tracker']).length
     const challengeTracker1 = ChallengeTrackerFlag.get(ownerId, challengeTrackerId)
     if (!challengeTracker1) return
     const originalPosition = challengeTracker1.listPosition
@@ -155,7 +155,7 @@ export class ChallengeTrackerForm extends FormApplication {
         newPosition = originalPosition + 1
         break
     }
-    const challengeTracker2 = Object.values(game.users.get(ownerId).data.flags['challenge-tracker']).find(ct => ct.listPosition === newPosition)
+    const challengeTracker2 = Object.values(game.users.get(ownerId).flags['challenge-tracker']).find(ct => ct.listPosition === newPosition)
     await ChallengeTrackerFlag.set(ownerId, { id: challengeTrackerId, listPosition: newPosition })
     if (challengeTracker2) await ChallengeTrackerFlag.set(ownerId, { id: challengeTracker2.id, listPosition: originalPosition })
   }
@@ -254,7 +254,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
       const title = formData.title ?? game.i18n.localize('challengeTracker.labels.challengeTrackerTitle')
       const persist = true
       const id = challengeTrackerId
-      const listPosition = Object.keys(game.users.get(ownerId).data.flags['challenge-tracker'] || {}).length + 1
+      const listPosition = Object.keys(game.users.get(ownerId).flags['challenge-tracker'] || {}).length + 1
       challengeTrackerOptions = foundry.utils.mergeObject(formData, { ownerId, id, listPosition, persist, title })
     }
     await ChallengeTrackerFlag.set(ownerId, challengeTrackerOptions)

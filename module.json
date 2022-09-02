@@ -1,12 +1,14 @@
 {
-  "name": "challenge-tracker",
+  "id": "challenge-tracker",
   "title": "Challenge Tracker",
   "description": "An interactive aid to track successes and failures in challenges à la D&D 4e-inspired skill challenges and Blades in the Dark progress clocks",
-  "version": "0.8",
+  "version": "0.0",
   "library": "false",
-  "manifestPlusVersion": "1.0.0",
-  "minimumCoreVersion": "9",
-  "compatibleCoreVersion": "9",
+  "manifestPlusVersion": "1.2.0",
+  "compatibility": {
+    "minimum": 10,
+    "verified": 10
+  },
   "authors": [
     {
       "name": "Larkinabout",
@@ -14,17 +16,17 @@
     }
   ],
   "socket": true,
-  "dependencies": [
-    {
-      "name": "color-picker"
-    },
-    {
-      "name": "socketlib"
-    }
-  ],
-  "conflicts": [
-
-  ],
+  "relationships": {
+    "systems": [],
+    "requires": [
+      {
+        "id": "color-picker"
+      },
+      {
+        "id": "socketlib"
+      }
+    ]
+  },
   "esmodules": [
     "./scripts/challenge-tracker.js"
   ],
