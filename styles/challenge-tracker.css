@@ -160,9 +160,16 @@
   padding-top: 0;
 }
 
+.challenge-tracker-form-file-picker-group {
+  display: flex;
+}
+
 .challenge-tracker-edit-form {
-  width: 300px !important;
+  padding: 0 0.5em 0.5em 0;
+  width: 400px !important;
   row-gap: 2px;
+  overflow: auto;
+  max-height: 600px
 }
 
 .challenge-tracker-submit-button {

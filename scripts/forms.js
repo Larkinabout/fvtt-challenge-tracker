@@ -174,7 +174,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
 
     const overrides = {
       height: 'auto',
-      width: '300px',
+      width: '400px',
       id: 'challenge-tracker-edit-form',
       template: ChallengeTrackerSettings.templates.challengeTrackerEditForm,
       title: game.i18n.localize('challengeTracker.labels.challengeTrackerEditFormTitle'),
@@ -197,7 +197,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
           frameColor: null,
           frameWidth: 'medium',
           id: `${ChallengeTrackerSettings.id}-${Math.random().toString(16).slice(2)}`,
-          image: null,
+          foregroundImage: null,
           innerBackgroundColor: null,
           innerColor: null,
           innerCurrent: 0,
@@ -230,7 +230,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
   static async open (ownerId, challengeTrackerId = null) {
     ChallengeTrackerEditForm.challengeTrackerEditForm.ownerId = ownerId
     ChallengeTrackerEditForm.challengeTrackerEditForm.challengeTrackerId = challengeTrackerId
-    ChallengeTrackerEditForm.challengeTrackerEditForm.render(true)
+    ChallengeTrackerEditForm.challengeTrackerEditForm.render(true, { width: '400px', height: 'auto' })
   }
 
   activateListeners (html) {

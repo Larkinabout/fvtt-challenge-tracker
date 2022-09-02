@@ -11,7 +11,7 @@ export class ChallengeTrackerSettings {
     'frameColor',
     'frameWidth',
     'id',
-    'image',
+    'foregroundImage',
     'innerBackgroundColor',
     'innerColor',
     'innerCurrent',
@@ -45,7 +45,7 @@ export class ChallengeTracker extends Application {
       frameColor: null,
       frameWidth: null,
       id: null,
-      image: null,
+      foregroundImage: null,
       innerBackgroundColor: null,
       innerColor: null,
       innerCurrent: 0,
@@ -111,7 +111,7 @@ export class ChallengeTracker extends Application {
     this.size = null
     this.windowed = null
     this.backgroundImage = new Image()
-    this.image = new Image()
+    this.foregroundImage = new Image()
     //this.setVariables() // Set values from challengeTrackerOptions or module settings for local variables
 
     // Canvas
@@ -146,8 +146,8 @@ export class ChallengeTracker extends Application {
     this.windowed = this.challengeTrackerOptions.windowed ??
       game.settings.get('challenge-tracker', 'windowed')
 
-    if (this.challengeTrackerOptions.image && this.image.src !== this.challengeTrackerOptions.image) {
-      this.image.src = this.challengeTrackerOptions.image
+    if (this.challengeTrackerOptions.foregroundImage && this.foregroundImage.src !== this.challengeTrackerOptions.foregroundImage) {
+      this.foregroundImage.src = this.challengeTrackerOptions.foregroundImage
     }
     if (this.challengeTrackerOptions.backgroundImage && this.backgroundImage.src !== this.challengeTrackerOptions.backgroundImage) {
       this.backgroundImage.src = this.challengeTrackerOptions.backgroundImage
@@ -178,7 +178,7 @@ export class ChallengeTracker extends Application {
     let counter = 0
     while (
       (
-        (this.challengeTrackerOptions.image && !this.image.complete) ||
+        (this.challengeTrackerOptions.foregroundImage && !this.foregroundImage.complete) ||
         (this.challengeTrackerOptions.backgroundImage && !this.backgroundImage.complete)
       ) &&
       counter < 10
@@ -196,7 +196,7 @@ export class ChallengeTracker extends Application {
   * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
-  * @param {string} challengeTrackerOptions.image Image link
+  * @param {string} challengeTrackerOptions.foregroundImage Foreground image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -227,7 +227,7 @@ export class ChallengeTracker extends Application {
       frameColor: null,
       frameWidth: null,
       id: null,
-      image: null,
+      foregroundImage: null,
       innerBackgroundColor: null,
       innerColor: null,
       innerCurrent: 0,
@@ -349,10 +349,10 @@ export class ChallengeTracker extends Application {
   /**
   * Open Challenge Tracker by id or open a new Challenge Tracker
   * @param {array} [challengeTrackerOptions] Challenge Tracker Options
-  * @param {string} challengeTrackerOptions.backgroundImage Background image link 
+  * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
-  * @param {string} challengeTrackerOptions.image Image link
+  * @param {string} challengeTrackerOptions.foregroundImage Foreground image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -677,7 +677,7 @@ export class ChallengeTracker extends Application {
   * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
-  * @param {string} challengeTrackerOptions.image Image link
+  * @param {string} challengeTrackerOptions.foregroundImage Foreground image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -725,7 +725,7 @@ export class ChallengeTracker extends Application {
   * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
-  * @param {string} challengeTrackerOptions.image Image link
+  * @param {string} challengeTrackerOptions.foregroundImage Foreground image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -759,7 +759,7 @@ export class ChallengeTracker extends Application {
   * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
-  * @param {string} challengeTrackerOptions.image Image link
+  * @param {string} challengeTrackerOptions.foregroundImage Foreground image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -840,7 +840,7 @@ export class ChallengeTracker extends Application {
     contextImage.clearRect(0, 0, canvasSize, canvasSize)
 
     // DRAW FOREGROUND IMAGE
-    if (this.challengeTrackerOptions.image) {
+    if (this.challengeTrackerOptions.foregroundImage) {
       if (this.challengeTrackerOptions.outerCurrent > 0) {
         contextImage.beginPath()
         contextImage.moveTo(halfCanvasSize, halfCanvasSize)
@@ -875,7 +875,7 @@ export class ChallengeTracker extends Application {
         contextImage.closePath()
       }
       contextImage.globalCompositeOperation = 'source-atop'
-      contextImage.drawImage(this.image, lineWidth, lineWidth, canvasSize - (lineWidth * 2), canvasSize - (lineWidth * 2))
+      contextImage.drawImage(this.foregroundImage, lineWidth, lineWidth, canvasSize - (lineWidth * 2), canvasSize - (lineWidth * 2))
     }
 
     // DRAW BACKGROUND IMAGE
@@ -1463,7 +1463,7 @@ export class ChallengeTracker extends Application {
   * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
-  * @param {string} challengeTrackerOptions.image Image link
+  * @param {string} challengeTrackerOptions.foregroundImage Foreground image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -1512,7 +1512,7 @@ export class ChallengeTracker extends Application {
   * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
-  * @param {string} challengeTrackerOptions.image Image link
+  * @param {string} challengeTrackerOptions.foregroundImage Foreground image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle
@@ -1711,7 +1711,7 @@ export class ChallengeTracker extends Application {
   * @param {string} challengeTrackerOptions.backgroundImage Background image link
   * @param {string} challengeTrackerOptions.frameColor Hex color of the frame
   * @param {string} challengeTrackerOptions.id Unique identifier of the challenge tracker
-  * @param {string} challengeTrackerOptions.image Image link
+  * @param {string} challengeTrackerOptions.foregroundImage Foreground image link
   * @param {string} challengeTrackerOptions.innerBackgroundColor Hex color of the inner circle background
   * @param {string} challengeTrackerOptions.innerColor Hex color of the inner circle
   * @param {number} challengeTrackerOptions.innerCurrent Number of filled segments of the inner circle

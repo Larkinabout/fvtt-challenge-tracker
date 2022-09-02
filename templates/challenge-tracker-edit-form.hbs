@@ -29,13 +29,13 @@
         <label for="outerCurrent">{{localize "challengeTracker.labels.editForm.outerCurrent"}}:</label>
         <input type="number" id="outerCurrent" name="outerCurrent" data-dtype="Number" value="{{outerCurrent}}">
       </div>
+      <div class="form-group" title="{{localize "challengeTracker.labels.editForm.outerBackgroundColorTooltip"}}">
+        <label for="outerBackgroundColor">{{localize "challengeTracker.labels.editForm.outerBackgroundColor"}}:</label>
+        <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{outerBackgroundColor}}" name="outerBackgroundColor" id="outerBackgroundColor">
+      </div>
       <div class="form-group" title="{{localize "challengeTracker.labels.editForm.outerColorTooltip"}}">
         <label for="outerColor">{{localize "challengeTracker.labels.editForm.outerColor"}}:</label>
         <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{outerColor}}" name="outerColor" id="outerColor">
-      </div>
-      <div class="form-group" title="{{localize "challengeTracker.labels.editForm.outerBackgoundColorTooltip"}}">
-        <label for="outerBackgroundColor">{{localize "challengeTracker.labels.editForm.outerBackgroundColor"}}:</label>
-        <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{outerBackgroundColor}}" name="outerBackgroundColor" id="outerBackgroundColor">
       </div>
     </div>
     <div class="challenge-tracker-form-box">
@@ -48,26 +48,30 @@
         <label for="innerCurrent">{{localize "challengeTracker.labels.editForm.innerCurrent"}}:</label>
         <input type="number" id="innerCurrent" name="innerCurrent" data-dtype="Number" value="{{innerCurrent}}">
       </div>
-      <div class="form-group" title="{{localize "challengeTracker.labels.editForm.innerColorTooltip"}}">
-        <label for="innerColor">{{localize "challengeTracker.labels.editForm.innerColor"}}:</label>
-        <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{innerColor}}" name="innerColor" id="innerColor">
-      </div>
       <div class="form-group" title="{{localize "challengeTracker.labels.editForm.innerBackgroundColorTooltip"}}">
         <label for="innerBackgroundColor">{{localize "challengeTracker.labels.editForm.innerBackgroundColor"}}:</label>
         <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{innerBackgroundColor}}" name="innerBackgroundColor" id="innerBackgroundColor">
       </div>
+      <div class="form-group" title="{{localize "challengeTracker.labels.editForm.innerColorTooltip"}}">
+        <label for="innerColor">{{localize "challengeTracker.labels.editForm.innerColor"}}:</label>
+        <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{innerColor}}" name="innerColor" id="innerColor">
+      </div>
     </div>
     <div class="challenge-tracker-form-box">
       <h2>{{localize "challengeTracker.labels.editForm.imageTitle"}}</h2>
-      <div class="form-group" title="{{localize "challengeTracker.labels.editForm.imageTooltip"}}">
-        <label for="image">{{localize "challengeTracker.labels.editForm.image"}}:</label><br>
-         <input type="text" id="image" name="image" data-dtype="text" value="{{image}}">
-        {{filePicker target="image" type="text"}}
-      </div>
       <div class="form-group" title="{{localize "challengeTracker.labels.editForm.backgroundImageTooltip"}}">
-        <label for="backgroundImage">{{localize "challengeTracker.labels.editForm.backgroundImage"}}:</label><br>
-         <input type="text" id="backgroundImage" name="backgroundImage" data-dtype="text" value="{{backgroundImage}}">
-        {{filePicker target="backgroundImage" type="text"}}
+        <label for="backgroundImage">{{localize "challengeTracker.labels.editForm.backgroundImage"}}:</label>
+        <div class="challenge-tracker-form-file-picker-group">
+          <input type="text" id="backgroundImage" name="backgroundImage" data-dtype="text" value="{{backgroundImage}}">
+          {{filePicker target="backgroundImage" type="text"}}
+        </div>
+      </div>
+      <div class="form-group" title="{{localize "challengeTracker.labels.editForm.foregroundImageTooltip"}}">
+        <label for="foregroundImage">{{localize "challengeTracker.labels.editForm.foregroundImage"}}:</label>
+        <div class="challenge-tracker-form-file-picker-group">
+          <input type="text" id="foregroundImage" name="foregroundImage" data-dtype="text" value="{{foregroundImage}}">
+          {{filePicker target="foregroundImage" type="text"}}
+        </div>
       </div>
     </div>
     <div class="challenge-tracker-form-box">

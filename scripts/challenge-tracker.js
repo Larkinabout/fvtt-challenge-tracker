@@ -27,8 +27,8 @@ Hooks.once('socketlib.ready', () => {
 
 Hooks.once('ready', async () => {
   if (game.user.isGM) {
-    if (!ColorPicker) {
-      ui.notifications.notify("Challenge Tracker: To use the color pickers, enable the 'ColorPicker for Foundry VTT' module.")
+    if (typeof ColorPicker === 'undefined') {
+      ui.notifications.notify("Challenge Tracker: To use this module, install and enable the 'Color Picker' module.")
     }
   }
 
