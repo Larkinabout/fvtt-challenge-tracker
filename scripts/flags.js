@@ -8,8 +8,8 @@ export class ChallengeTrackerFlag {
   **/
   static getList (userId) {
     const challengeTrackerList = []
-    if (!game.users.get(userId)?.data.flags['challenge-tracker']) return
-    const flagKeys = Object.keys(game.users.get(userId)?.data.flags['challenge-tracker'])
+    if (!game.users.get(userId)?.flags['challenge-tracker']) return
+    const flagKeys = Object.keys(game.users.get(userId)?.flags['challenge-tracker'])
     const flagsLength = flagKeys.length
     for (const flagKey of flagKeys) {
       const flagData = game.users.get(userId)?.getFlag(ChallengeTrackerSettings.id, flagKey)
@@ -29,8 +29,8 @@ export class ChallengeTrackerFlag {
   * @param {string} challengeTrackerId Unique identifier for the Challenge Tracker
   **/
   static get (ownerId, challengeTrackerId) {
-    if (!game.users.get(ownerId)?.data.flags['challenge-tracker']) return
-    const flagKey = Object.keys(game.users.get(ownerId)?.data.flags['challenge-tracker']).find(ct => ct === challengeTrackerId)
+    if (!game.users.get(ownerId)?.flags['challenge-tracker']) return
+    const flagKey = Object.keys(game.users.get(ownerId)?.flags['challenge-tracker']).find(ct => ct === challengeTrackerId)
     if (!flagKey) return
     const challengeTracker = game.users.get(ownerId)?.getFlag(ChallengeTrackerSettings.id, flagKey)
     return challengeTracker
@@ -68,7 +68,7 @@ export class ChallengeTrackerFlag {
   * @param {string} challengeTrackerId Unique identifier for the Challenge Tracker
   **/
   static async unset (ownerId, challengeTrackerId) {
-    const flagKey = Object.keys(game.users.get(ownerId)?.data.flags['challenge-tracker'])
+    const flagKey = Object.keys(game.users.get(ownerId)?.flags['challenge-tracker'])
       .find(ct => ct === challengeTrackerId)
     if (!flagKey) {
       ui.notifications.error(game.i18n.format('challengeTracker.errors.doesNotExist', { value: challengeTrackerId }))
@@ -93,8 +93,8 @@ export class ChallengeTrackerFlag {
   }
 
   static async setOwner () {
-    if (!game.user.data.flags['challenge-tracker']) return
-    const flagKeys = Object.keys(game.user.data.flags['challenge-tracker'])
+    if (!game.user.flags['challenge-tracker']) return
+    const flagKeys = Object.keys(game.user.flags['challenge-tracker'])
     for (const flagKey of flagKeys) {
       const flag = await game.user.getFlag(ChallengeTrackerSettings.id, flagKey)
       if (flag.ownerId !== game.userId) {
