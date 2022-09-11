@@ -1,8 +1,9 @@
 import { ChallengeTrackerSettings, ChallengeTracker } from './main.js'
 import { ChallengeTrackerFlag } from './flags.js'
+import { Utils } from './utils.js'
 
 Hooks.on('closeChallengeTrackerForm', () => {
-  const buttonLocation = game.settings.get('challenge-tracker', 'buttonLocation')
+  const buttonLocation = Utils.getSetting('challenge-tracker', 'buttonLocation')
   const controls = ui.controls
   const controlsControls = controls.controls
   const control = controlsControls.find(c => c.name === buttonLocation)
@@ -106,7 +107,7 @@ export class ChallengeTrackerForm extends FormApplication {
     this.scrollTop = ul.scrollTop
     switch (action) {
       case 'open' : {
-        ChallengeTracker.open(null, null, { id: challengeTrackerId, ownerId })
+        ChallengeTracker.open({ id: challengeTrackerId, ownerId })
         break
       }
       case 'edit': {

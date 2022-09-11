@@ -1,12 +1,14 @@
+import { ChallengeTrackerSettings } from './main.js'
+
 export class Utils {
   static checkAllowShow (userRole) {
-    const allowShow = game.settings.get('challenge-tracker', 'allowShow')
+    const allowShow = Utils.getSetting('challenge-tracker', 'allowShow', ChallengeTrackerSettings.default.allowShow)
     if (userRole >= allowShow) return true
     return false
   }
 
   static checkDisplayButton (userRole) {
-    const displayButton = game.settings.get('challenge-tracker', 'displayButton')
+    const displayButton = Utils.getSetting('challenge-tracker', 'displayButton', ChallengeTrackerSettings.default.displayButton)
     if (userRole >= displayButton) return true
     return false
   }
@@ -14,6 +16,14 @@ export class Utils {
   static checkUserId (userId) {
     if (game.userId === userId) return true
     return false
+  }
+
+  static getSetting (namespace, key, defaultValue = null) {
+    let value = defaultValue ?? null
+    if (game.settings.settings.get(`${namespace}.${key}`)) {
+      value = game.settings.get(namespace, key)
+    }
+    return value
   }
 
   static async sleep (milliseconds) {

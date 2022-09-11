@@ -1,6 +1,5 @@
 import { Utils } from './utils.js'
 import { ChallengeTrackerFlag } from './flags.js'
-import { ChallengeTrackerForm } from './forms.js'
 
 export class ChallengeTrackerSettings {
   static id = 'challenge-tracker'
@@ -30,6 +29,36 @@ export class ChallengeTrackerSettings {
     'windowed'
   ]
 
+  static default =
+    {
+      allowShow: 4,
+      backgroundImage: null,
+      buttonLocation: 'player-list',
+      closeFunction: null,
+      displayButton: 1,
+      frameColor: '#0f1414',
+      frameWidth: 'medium',
+      id: null,
+      foregroundImage: null,
+      innerBackgroundColor: '#1b6f1b66',
+      innerColor: '#dc0000ff',
+      innerCurrent: 0,
+      innerTotal: 0,
+      listPosition: null,
+      openFunction: null,
+      outerBackgroundColor: '#b0000066',
+      outerColor: '#228b22ff',
+      outerCurrent: 0,
+      outerTotal: 4,
+      ownerId: null,
+      persist: false,
+      scroll: true,
+      show: false,
+      size: 400,
+      title: game.i18n?.localize('challengeTracker.labels.challengeTrackerTitle'),
+      windowed: false
+    }
+
   static templates = {
     challengeTracker: 'modules/challenge-tracker/templates/challenge-tracker.hbs',
     challengeTrackerForm: 'modules/challenge-tracker/templates/challenge-tracker-form.hbs',
@@ -48,16 +77,16 @@ export class ChallengeTracker extends Application {
       foregroundImage: null,
       innerBackgroundColor: null,
       innerColor: null,
-      innerCurrent: 0,
-      innerTotal: 1,
+      innerCurrent: ChallengeTrackerSettings.default.innerCurrent,
+      innerTotal: ChallengeTrackerSettings.default.innerTotal,
       listPosition: null,
       openFunction: null,
       outerBackgroundColor: null,
       outerColor: null,
-      outerCurrent: 0,
-      outerTotal: 1,
-      persist: false,
-      show: false,
+      outerCurrent: ChallengeTrackerSettings.default.outerCurrent,
+      outerTotal: ChallengeTrackerSettings.default.outerTotal,
+      persist: ChallengeTrackerSettings.default.persist,
+      show: ChallengeTrackerSettings.default.show,
       size: null,
       title: ChallengeTrackerSettings.title,
       windowed: null
@@ -77,10 +106,10 @@ export class ChallengeTracker extends Application {
     this.challengeTrackerOptions.show = [true, false].includes(challengeTrackerOptions.show)
       ? challengeTrackerOptions.show
       : false
-    this.challengeTrackerOptions.outerTotal = challengeTrackerOptions.outerTotal ?? 4
-    this.challengeTrackerOptions.innerTotal = challengeTrackerOptions.innerTotal ?? 3
-    this.challengeTrackerOptions.outerCurrent = challengeTrackerOptions.outerCurrent ?? 0
-    this.challengeTrackerOptions.innerCurrent = challengeTrackerOptions.innerCurrent ?? 0
+    this.challengeTrackerOptions.outerTotal = challengeTrackerOptions.outerTotal ?? ChallengeTrackerSettings.default.outerTotal
+    this.challengeTrackerOptions.innerTotal = challengeTrackerOptions.innerTotal ?? ChallengeTrackerSettings.default.innerTotal
+    this.challengeTrackerOptions.outerCurrent = challengeTrackerOptions.outerCurrent ?? ChallengeTrackerSettings.default.outerCurrent
+    this.challengeTrackerOptions.innerCurrent = challengeTrackerOptions.innerCurrent ?? ChallengeTrackerSettings.default.innerCurrent
     this.challengeTrackerOptions.outerColor = challengeTrackerOptions.outerColor ?? null
     this.challengeTrackerOptions.outerBackgroundColor = challengeTrackerOptions.outerBackgroundColor ?? null
     this.challengeTrackerOptions.innerColor = challengeTrackerOptions.innerColor ?? null
@@ -112,7 +141,7 @@ export class ChallengeTracker extends Application {
     this.windowed = null
     this.backgroundImage = new Image()
     this.foregroundImage = new Image()
-    //this.setVariables() // Set values from challengeTrackerOptions or module settings for local variables
+    // this.setVariables() // Set values from challengeTrackerOptions or module settings for local variables
 
     // Canvas
     this.canvasFrame = undefined
@@ -140,11 +169,11 @@ export class ChallengeTracker extends Application {
   /* Set values from challengeTrackerOptions or module settings for local variables */
   async setVariables () {
     this.frameWidth = this.challengeTrackerOptions.frameWidth ??
-      game.settings.get('challenge-tracker', 'frameWidth')
+      Utils.getSetting('challenge-tracker', 'frameWidth', ChallengeTrackerSettings.default.frameWidth)
     this.size = this.challengeTrackerOptions.size ??
-      game.settings.get('challenge-tracker', 'size')
+      Utils.getSetting('challenge-tracker', 'size', ChallengeTrackerSettings.default.size)
     this.windowed = this.challengeTrackerOptions.windowed ??
-      game.settings.get('challenge-tracker', 'windowed')
+      Utils.getSetting('challenge-tracker', 'windowed', ChallengeTrackerSettings.default.windowed)
 
     if (this.challengeTrackerOptions.foregroundImage && this.foregroundImage.src !== this.challengeTrackerOptions.foregroundImage) {
       this.foregroundImage.src = this.challengeTrackerOptions.foregroundImage
@@ -157,19 +186,19 @@ export class ChallengeTracker extends Application {
     // Base Colors
     this.outerBackgroundColor = (this.challengeTrackerOptions.outerBackgroundColor)
       ? this.challengeTrackerOptions.outerBackgroundColor
-      : game.settings.get('challenge-tracker', 'outerBackgroundColor')
+      : Utils.getSetting('challenge-tracker', 'outerBackgroundColor', ChallengeTrackerSettings.default.outerBackgroundColor)
     this.outerColor = (this.challengeTrackerOptions.outerColor)
       ? this.challengeTrackerOptions.outerColor
-      : game.settings.get('challenge-tracker', 'outerColor')
+      : Utils.getSetting('challenge-tracker', 'outerColor', ChallengeTrackerSettings.default.outerColor)
     this.innerBackgroundColor = (this.challengeTrackerOptions.innerBackgroundColor)
       ? this.challengeTrackerOptions.innerBackgroundColor
-      : game.settings.get('challenge-tracker', 'innerBackgroundColor')
+      : Utils.getSetting('challenge-tracker', 'innerBackgroundColor', ChallengeTrackerSettings.default.innerBackgroundColor)
     this.innerColor = (this.challengeTrackerOptions.innerColor)
       ? this.challengeTrackerOptions.innerColor
-      : game.settings.get('challenge-tracker', 'innerColor')
+      : Utils.getSetting('challenge-tracker', 'innerColor', ChallengeTrackerSettings.default.innerColor)
     this.frameColor = (this.challengeTrackerOptions.frameColor)
       ? this.challengeTrackerOptions.frameColor
-      : game.settings.get('challenge-tracker', 'frameColor')
+      : Utils.getSetting('challenge-tracker', 'frameColor', ChallengeTrackerSettings.default.frameColor)
 
     this.updateColor(this.outerBackgroundColor, this.outerColor, this.innerBackgroundColor, this.innerColor, this.frameColor)
   }
@@ -219,8 +248,6 @@ export class ChallengeTracker extends Application {
     arg3 = null
   ) {
     // Set defaults
-    let outerTotal = 4
-    let innerTotal = 0
     let challengeTrackerOptions = {
       backgroundImage: null,
       closeFunction: null,
@@ -230,53 +257,53 @@ export class ChallengeTracker extends Application {
       foregroundImage: null,
       innerBackgroundColor: null,
       innerColor: null,
-      innerCurrent: 0,
-      innerTotal: 3,
+      innerCurrent: ChallengeTrackerSettings.default.innerCurrent,
+      innerTotal: ChallengeTrackerSettings.default.innerTotal,
       listPosition: null,
       openFunction: null,
       outerBackgroundColor: null,
       outerColor: null,
-      outerCurrent: 0,
-      outerTotal: 4,
+      outerCurrent: ChallengeTrackerSettings.default.outerCurrent,
+      outerTotal: ChallengeTrackerSettings.default.outerTotal,
       ownerId: null,
-      persist: false,
-      show: false,
-      size: null,
-      title: game.i18n?.localize('challengeTracker.labels.challengeTrackerTitle'),
+      persist: ChallengeTrackerSettings.default.persist,
+      show: ChallengeTrackerSettings.default.show,
+      size: ChallengeTrackerSettings.default.size,
+      title: ChallengeTrackerSettings.default.title,
       windowed: null
     }
     switch (arguments.length) {
       case 1:
         if (typeof arg1 === 'object') {
           challengeTrackerOptions = arg1
-          outerTotal = challengeTrackerOptions.outerTotal ?? outerTotal
-          innerTotal = challengeTrackerOptions.innerTotal ?? innerTotal
         }
         if (typeof arg1 === 'number') {
-          outerTotal = arg1
+          challengeTrackerOptions.outerTotal = arg1
         }
         break
       case 2:
         if (typeof arg1 === 'number') {
-          outerTotal = arg1
+          challengeTrackerOptions.outerTotal = arg1
         }
         if (typeof arg2 === 'object') {
           challengeTrackerOptions = arg2
-          innerTotal = challengeTrackerOptions.innerTotal ?? innerTotal
+          challengeTrackerOptions.outerTotal = arg1
         }
         if (typeof arg2 === 'number') {
-          innerTotal = arg2
+          challengeTrackerOptions.innerTotal = arg2
         }
         break
       case 3:
         if (typeof arg1 === 'number') {
-          outerTotal = arg1
+          challengeTrackerOptions.outerTotal = arg1
         }
         if (typeof arg2 === 'number') {
-          innerTotal = arg2
+          challengeTrackerOptions.innerTotal = arg2
         }
         if (typeof arg3 === 'object') {
           challengeTrackerOptions = arg3
+          challengeTrackerOptions.outerTotal = arg1
+          challengeTrackerOptions.innerTotal = arg2
         }
     }
 
@@ -301,20 +328,19 @@ export class ChallengeTracker extends Application {
       }
     }
 
-    challengeTrackerOptions.outerTotal = challengeTrackerOptions.outerTotal ?? outerTotal
-    challengeTrackerOptions.innerTotal = challengeTrackerOptions.innerTotal ?? innerTotal
-
     // Set unique id for each Challenge Tracker
     challengeTrackerOptions.id = challengeTrackerOptions.id ??
       `${ChallengeTrackerSettings.id}-${Math.random().toString(16).slice(2)}`
 
     // Set listPosition
-    challengeTrackerOptions.listPosition = challengeTrackerOptions.listPosition ??
-      Object.keys(game.users.get(ownerId).flags['challenge-tracker']).length + 1 ??
-      1
+    const flagLength = (game.user.flags['challenge-tracker']) ? Object.keys(game.users.get(ownerId).flags['challenge-tracker']).length + 1 : 1
+
+    challengeTrackerOptions.listPosition =
+      challengeTrackerOptions.listPosition ??
+      flagLength
 
     // Set title
-    challengeTrackerOptions.title = challengeTrackerOptions.title ?? game.i18n?.localize('challengeTracker.labels.challengeTrackerTitle')
+    challengeTrackerOptions.title = challengeTrackerOptions.title ?? ChallengeTrackerSettings.default.title
 
     // Convert functions to string
     if (challengeTrackerOptions.openFunction) {
@@ -507,7 +533,7 @@ export class ChallengeTracker extends Application {
     const hasPermission = (game.user.isGM || Utils.checkUserId(this.ownerId))
     // Update elements on window header
     if (hasPermission) {
-      this.updateCloseElement(game.settings.get('challenge-tracker', 'size'))
+      this.updateCloseElement(Utils.getSetting('challenge-tracker', 'size', ChallengeTrackerSettings.default.size))
       const showHideElement = this.element.find('.show-hide')
       if (showHideElement.length === 0) this.element.find('.close').before('<a class="show-hide"></a>')
       this.updateShowHideElement()
@@ -539,7 +565,7 @@ export class ChallengeTracker extends Application {
       this.canvasFrame.addEventListener('contextmenu', (event) => this.challengeTrackerContextMenuEvent(event),
         { signal: this.eventListenerSignal }
       )
-      if (game.settings.get('challenge-tracker', 'scroll')) {
+      if (Utils.getSetting('challenge-tracker', 'scroll', ChallengeTrackerSettings.default.scroll)) {
         if (this.eventListenerSignalScroll == null || this.eventListenerSignalScroll.aborted) {
           this.eventListenerControllerScroll = new AbortController()
           this.eventListenerSignalScroll = this.eventListenerControllerScroll.signal
@@ -587,7 +613,8 @@ export class ChallengeTracker extends Application {
   * @param {object} event Listener event
   **/
   challengeTrackerContextMenuEvent (event) {
-    if (this.challengeTrackerOptions.innerTotal > 0 && this.contextFrame.isPointInPath(this.innerArc, event.offsetX, event.offsetY)) {
+    if (this.challengeTrackerOptions.innerTotal > 0 &&
+      this.contextFrame.isPointInPath(this.innerArc, event.offsetX, event.offsetY)) {
       event.preventDefault()
       this.challengeTrackerOptions.innerCurrent = (this.challengeTrackerOptions.innerCurrent === 0)
         ? this.challengeTrackerOptions.innerTotal
@@ -874,7 +901,7 @@ export class ChallengeTracker extends Application {
         contextImage.fill()
         contextImage.closePath()
       }
-      contextImage.globalCompositeOperation = 'source-atop'
+      contextImage.globalCompositeOperation = 'source-in'
       contextImage.drawImage(this.foregroundImage, lineWidth, lineWidth, canvasSize - (lineWidth * 2), canvasSize - (lineWidth * 2))
     }
 
