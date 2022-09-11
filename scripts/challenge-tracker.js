@@ -64,7 +64,7 @@ Hooks.once('ready', async () => {
 
 /* Add buttons to the Player List */
 Hooks.on('renderPlayerList', (playerList, html) => {
-  const buttonLocation = game.settings.get('challenge-tracker', 'buttonLocation')
+  const buttonLocation = Utils.getSetting('challenge-tracker', 'buttonLocation')
   if (buttonLocation !== 'player-list' || !Utils.checkDisplayButton(game.user.role)) return
   (async () => {
     // Sleep to let system and modules load elements onto the Player List
@@ -107,7 +107,7 @@ Hooks.on('renderPlayerList', (playerList, html) => {
 })
 
 Hooks.on('getSceneControlButtons', (controls) => {
-  const buttonLocation = game.settings.get('challenge-tracker', 'buttonLocation')
+  const buttonLocation = Utils.getSetting('challenge-tracker', 'buttonLocation', ChallengeTrackerSettings.default.buttonLocation)
   if (!Utils.checkDisplayButton(game.user.role)) return
   if (buttonLocation === 'player-list' || buttonLocation === 'none') return
   controls
