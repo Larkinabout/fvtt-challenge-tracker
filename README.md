@@ -1,7 +1,7 @@
 # Challenge Tracker
 An interactive aid to track successes and failures in challenges à la D&D 4e-inspired skill challenges and Blades in the Dark progress clocks.
 
-![Challenge Tracker](./images/challenge-tracker.png) ![Progress Clock](./images/challenge-tracker-progress-clock.png)
+![Challenge Tracker](./images/challenge-tracker.gif)
 
 # Features
 - **Versatile:** Works for D&D 4e-inspired skill challenges, Blades in the Dark progress clocks, or as a resource/countdown tracker.
@@ -38,6 +38,21 @@ An interactive aid to track successes and failures in challenges à la D&D 4e-in
 # Module Settings
 Module settings are found in Foundry VTT under Game Settings > Configure Settings > Module Settings > Challenge Tracker.
 
+### **Frame Color**
+Set the default color of the frame. Default is #0f1414.
+
+### **Outer Color**
+Set the default color of the outer ring. Default is #228b22ff.
+
+### **Outer Background**
+Set the default background color of the outer ring. Default is #1b6f1b66.
+
+### **Inner Color**
+Set the default color of the inner circle. Default is #dc0000ff.
+
+### **Inner Background Color**
+Set the default background color of the inner circle. Default is #b0000066.
+
 ### **Display Button**
 Display the Challenge Tracker button to users with the selected role and above. Default is Player.
 
@@ -53,20 +68,11 @@ Set the default size of the Challenge Tracker in pixels. Default is 400.
 ### **Frame Width**
 Set the width of the frame. Default is Medium.
 
-### **Frame Color**
-Set the default color of the frame. Default is #0f1414.
+### **Scroll**
+Enable the scroll wheel for increasing or decreasing segments. Default is true.
 
-### **Outer Color**
-Set the default color of the outer ring. Default is #228b22ff.
-
-### **Outer Background**
-Set the default background color of the outer ring. Default is #1b6f1b66.
-
-### **Inner Color**
-Set the default color of the inner circle. Default is #dc0000ff.
-
-### **Inner Background Color**
-Set the default background color of the inner circle. Default is #b0000066.
+## **Windowed**
+Set Challenge Trackers to windowed by default. Default is true.
 
 # Advanced Options
 More options can be set  using an optional array parameter: `ChallengeTracker.open(successes failures, {options})` where options is a comma-separated list of any of the following parameters in the format `option: value`:
@@ -147,6 +153,11 @@ Example: `outerCurrent: 3`
 Set to `true` to persist the Challenge Tracker across sessions. Default is `false`.
 
 Example: `persist: true`
+
+### *scroll**
+Set to `true` to enable the scroll wheel for increasing or decreasing segments. Default is `true`.
+
+Example: `scroll: false`
 
 ### **show**
 Set to `true` to show the Challenge Tracker to your players. Default is `false`. This option will be ignored when the user's role is not equal to or greater than the role selected in the 'Allow Show to Others' module setting.
@@ -272,14 +283,14 @@ Examples:
 
 # Example Challenge Trackers
 ### Progress Clock
-`ChallengeTracker.open(8, 0, {show: true, title: 'Progress Clock'})`
+`ChallengeTracker.open(4, {show: true, frameWidth: 'none', outerBackgroundColor: '#00000000', outerColor: '#00000000', backgroundImage: 'modules/challenge-tracker/presets/blades-in-the-dark/blades-in-the-dark-4-white.webp', foregroundImage: 'modules/challenge-tracker/presets/blades-in-the-dark/blades-in-the-dark-black.webp', size: 150, title: 'Progress Clock'})`  
 
-![challenge-tracker-macro](./images/challenge-tracker-progress-clock.png)
+![Progress Clock](./images/progress-clock.gif)
 
-### Health & Mana
-`ChallengeTracker.open(10, 5, {show: true, outerCurrent: 10, innerCurrent: 5, outerColor: '#DC0000', innerColor: '#0040FF', title: 'Health & Mana'})`  
+### Doomsday Clock
+`ChallengeTracker.open(12, {show: true, frameWidth: 'none', outerBackgroundColor: '#00000000', outerColor: '#00000000', backgroundImage: 'modules/challenge-tracker/presets/misc/blessed-landscape.webp', foregroundImage: 'modules/challenge-tracker/presets/misc/doomed-landscape.webp', title: 'Doomsday Clock'})`  
 
-![challenge-tracker-macro](./images/challenge-tracker-health-mana.png)
+![Doomsday Clock](./images/doomsday-clock.gif)
 
 
 

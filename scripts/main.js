@@ -23,6 +23,7 @@ export class ChallengeTrackerSettings {
     'outerTotal',
     'ownerId',
     'persist',
+    'scroll',
     'show',
     'size',
     'title',
@@ -86,6 +87,7 @@ export class ChallengeTracker extends Application {
       outerCurrent: ChallengeTrackerSettings.default.outerCurrent,
       outerTotal: ChallengeTrackerSettings.default.outerTotal,
       persist: ChallengeTrackerSettings.default.persist,
+      scroll: ChallengeTrackerSettings.default.scroll,
       show: ChallengeTrackerSettings.default.show,
       size: null,
       title: ChallengeTrackerSettings.title,
@@ -116,6 +118,7 @@ export class ChallengeTracker extends Application {
     this.challengeTrackerOptions.innerBackgroundColor = challengeTrackerOptions.innerBackgroundColor ?? null
     this.challengeTrackerOptions.frameColor = challengeTrackerOptions.frameColor ?? null
     this.challengeTrackerOptions.frameWidth = challengeTrackerOptions.frameWidth ?? null
+    this.challengeTrackerOptions.scroll = challengeTrackerOptions.scroll ?? null
     this.challengeTrackerOptions.size = challengeTrackerOptions.size ?? null
     this.challengeTrackerOptions.windowed = [true, false].includes(challengeTrackerOptions.windowed)
       ? challengeTrackerOptions.windowed
@@ -137,6 +140,7 @@ export class ChallengeTracker extends Application {
     this.outerBackgroundColorShade = null
     this.outerColor = null
     this.outerColorShade = null
+    this.scroll = null
     this.size = null
     this.windowed = null
     this.backgroundImage = new Image()
@@ -170,6 +174,9 @@ export class ChallengeTracker extends Application {
   async setVariables () {
     this.frameWidth = this.challengeTrackerOptions.frameWidth ??
       Utils.getSetting('challenge-tracker', 'frameWidth', ChallengeTrackerSettings.default.frameWidth)
+    this.scroll = this.challengeTrackerOptions.scroll ??
+      Utils.getSetting('challenge-tracker', 'scroll', ChallengeTrackerSettings.default.scroll)
+    this.updateScroll(this.scroll)
     this.size = this.challengeTrackerOptions.size ??
       Utils.getSetting('challenge-tracker', 'size', ChallengeTrackerSettings.default.size)
     this.windowed = this.challengeTrackerOptions.windowed ??
@@ -237,6 +244,7 @@ export class ChallengeTracker extends Application {
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
   * @param {string} challengeTrackerOptions.ownerId Owner of the challenge tracker
   * @param {boolean} challengeTrackerOptions.persist true = Persist, false = Do not persist
+  * @param {boolean} challengeTrackerOptions.scroll true = Enable, false = Disable
   * @param {boolean} challengeTrackerOptions.show true = Show, false = Hide
   * @param {number} challengeTrackerOptions.size Size of the challenge tracker in pixels
   * @param {string} challengeTrackerOptions.title Title of the challenge tracker
@@ -267,6 +275,7 @@ export class ChallengeTracker extends Application {
       outerTotal: ChallengeTrackerSettings.default.outerTotal,
       ownerId: null,
       persist: ChallengeTrackerSettings.default.persist,
+      scroll: ChallengeTrackerSettings.default.scroll,
       show: ChallengeTrackerSettings.default.show,
       size: ChallengeTrackerSettings.default.size,
       title: ChallengeTrackerSettings.default.title,
@@ -389,6 +398,7 @@ export class ChallengeTracker extends Application {
   * @param {number} challengeTrackerOptions.outerCurrent Number of filled segments of the outer ring
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
   * @param {boolean} challengeTrackerOptions.persist true = Persist, false = Do not persist
+  * @param {boolean} challengeTrackerOptions.scroll true = Enable, false = Disable
   * @param {boolean} challengeTrackerOptions.show true = Show, false = Hide
   * @param {number} challengeTrackerOptions.size Size of the challenge tracker in pixels
   * @param {string} challengeTrackerOptions.title Title of the challenge tracker
@@ -565,7 +575,7 @@ export class ChallengeTracker extends Application {
       this.canvasFrame.addEventListener('contextmenu', (event) => this.challengeTrackerContextMenuEvent(event),
         { signal: this.eventListenerSignal }
       )
-      if (Utils.getSetting('challenge-tracker', 'scroll', ChallengeTrackerSettings.default.scroll)) {
+      if (this.scroll) {
         if (this.eventListenerSignalScroll == null || this.eventListenerSignalScroll.aborted) {
           this.eventListenerControllerScroll = new AbortController()
           this.eventListenerSignalScroll = this.eventListenerControllerScroll.signal
@@ -638,7 +648,6 @@ export class ChallengeTracker extends Application {
     const x = this.mousePosition.x - rect.left
     const y = this.mousePosition.y - rect.top
     if (this.challengeTrackerOptions.innerTotal > 0 && this.contextFrame.isPointInPath(this.innerArc, x, y)) {
-      console.log(event.code)
       if (event.code === 'Minus') {
         if (this.challengeTrackerOptions.innerTotal > 1) this.challengeTrackerOptions.innerTotal--
         this.challengeTrackerOptions.innerCurrent =
@@ -652,7 +661,6 @@ export class ChallengeTracker extends Application {
         this._draw()
       }
     } else if (this.contextFrame.isPointInPath(this.outerArc, x, y)) {
-      console.log(event.code)
       if (event.code === 'Minus') {
         if (this.challengeTrackerOptions.outerTotal > 1) this.challengeTrackerOptions.outerTotal--
         this._draw()
@@ -714,6 +722,7 @@ export class ChallengeTracker extends Application {
   * @param {number} challengeTrackerOptions.outerCurrent Number of filled segments of the outer ring
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
   * @param {boolean} challengeTrackerOptions.persist true = Persist, false = Do not persist
+  * @param {boolean} challengeTrackerOptions.scroll true = Enable, false = Disable
   * @param {boolean} challengeTrackerOptions.show true = Show, false = Hide
   * @param {number} challengeTrackerOptions.size Size of the challenge tracker in pixels
   * @param {string} challengeTrackerOptions.title Title of the challenge tracker
@@ -762,6 +771,7 @@ export class ChallengeTracker extends Application {
   * @param {number} challengeTrackerOptions.outerCurrent Number of filled segments of the outer ring
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
   * @param {boolean} challengeTrackerOptions.persist true = Persist, false = Do not persist
+  * @param {boolean} challengeTrackerOptions.scroll true = Enable, false = Disable
   * @param {boolean} challengeTrackerOptions.show true = Show, false = Hide
   * @param {number} challengeTrackerOptions.size Size of the challenge tracker in pixels
   * @param {string} challengeTrackerOptions.title Title of the challenge tracker
@@ -796,6 +806,7 @@ export class ChallengeTracker extends Application {
   * @param {number} challengeTrackerOptions.outerCurrent Number of filled segments of the outer ring
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
   * @param {boolean} challengeTrackerOptions.persist true = Persist, false = Do not persist
+  * @param {boolean} challengeTrackerOptions.scroll true = Enable, false = Disable
   * @param {boolean} challengeTrackerOptions.show true = Show, false = Hide
   * @param {number} challengeTrackerOptions.size Size of the challenge tracker in pixels
   * @param {string} challengeTrackerOptions.title Title of the challenge tracker
@@ -1236,10 +1247,11 @@ export class ChallengeTracker extends Application {
   * Enable/disable scroll wheel event on all Challenge Trackers based on the module setting
   * @param {boolean} scroll Enable (true) or disable (false) the scroll wheel event
   **/
-  static updateScroll (scroll) {
+  updateScroll (scroll) {
     if (!game.challengeTracker) return
     for (const challengeTracker of Object.values(game.challengeTracker)) {
-      if (scroll) {
+      challengeTracker.scroll = challengeTracker.challengeTrackerOptions.scroll ?? scroll
+      if (challengeTracker.scroll) {
         if (challengeTracker.eventListenerSignalScroll == null || challengeTracker.eventListenerSignalScroll.aborted) {
           challengeTracker.eventListenerControllerScroll = new AbortController()
           challengeTracker.eventListenerSignalScroll = challengeTracker.eventListenerControllerScroll.signal
@@ -1501,6 +1513,7 @@ export class ChallengeTracker extends Application {
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
   * @param {string} challengeTrackerOptions.ownerId Owner of the challenge tracker
   * @param {boolean} challengeTrackerOptions.persist true = Persist, false = Do not persist
+  * @param {boolean} challengeTrackerOptions.scroll true = Enable, false = Disable
   * @param {boolean} challengeTrackerOptions.show true = Show, false = Hide
   * @param {number} challengeTrackerOptions.size Size of the challenge tracker in pixels
   * @param {string} challengeTrackerOptions.title Title of the challenge tracker
@@ -1550,6 +1563,7 @@ export class ChallengeTracker extends Application {
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
   * @param {string} challengeTrackerOptions.ownerId Owner of the challenge tracker
   * @param {boolean} challengeTrackerOptions.persist true = Persist, false = Do not persist
+  * @param {boolean} challengeTrackerOptions.scroll true = Enable, false = Disable
   * @param {boolean} challengeTrackerOptions.show true = Show, false = Hide
   * @param {number} challengeTrackerOptions.size Size of the challenge tracker in pixels
   * @param {string} challengeTrackerOptions.title Title of the challenge tracker
@@ -1749,6 +1763,7 @@ export class ChallengeTracker extends Application {
   * @param {number} challengeTrackerOptions.outerTotal Number of segments for the outer ring
   * @param {string} challengeTrackerOptions.ownerId Owner of the challenge tracker
   * @param {boolean} challengeTrackerOptions.persist true = Persist, false = Do not persist
+  * @param {boolean} challengeTrackerOptions.scroll true = Enable, false = Disable
   * @param {boolean} challengeTrackerOptions.show true = Show, false = Hide
   * @param {number} challengeTrackerOptions.size Size of the challenge tracker in pixels
   * @param {string} challengeTrackerOptions.title Title of the challenge tracker

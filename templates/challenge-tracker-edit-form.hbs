@@ -10,6 +10,10 @@
         <label for="size">{{localize "challengeTracker.labels.editForm.size"}}:</label>
         <input type="number" id="size" name="size" data-dtype="Number" value="{{size}}">
       </div>
+      <div class="form-group" title="{{localize "challengeTracker.labels.editForm.scrollTooltip"}}">
+        <label for="scroll">{{localize "challengeTracker.labels.editForm.scroll"}}:</label>
+        <input type="checkbox" name="scroll" data-dtype="Boolean" {{checked scroll}}>
+      </div>
       <div class="form-group" title="{{localize "challengeTracker.labels.editForm.showTooltip"}}">
         <label for="show">{{localize "challengeTracker.labels.editForm.show"}}:</label>
         <input type="checkbox" name="show" data-dtype="Boolean" {{checked show}}>

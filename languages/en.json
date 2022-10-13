@@ -28,6 +28,8 @@
       "editForm": {
         "title": "Title",
         "titleTooltip": "The title of the challenge tracker",
+        "scroll": "Scroll",
+        "scrollTooltip": "Use the scroll wheel to increase and decrease segments",
         "size": "Size",
         "sizeTooltip": "The size of the challenge tracker in pixels",
         "show": "Show to Others",
@@ -146,11 +148,11 @@
     	},
       "windowed" : {
         "name": "Windowed",
-        "hint": "Set the Challenge Tracker to windowed by default"
+        "hint": "Display the Challenge Trackers in a window by default"
     	},
       "scroll" : {
         "name": "Scroll",
-        "hint": "Enable the scroll wheel for increasing/decreasing segments"
+        "hint": "Use the scroll wheel to increase and decrease segments"
     	}
     }
   }
