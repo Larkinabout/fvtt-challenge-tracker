@@ -1,5 +1,4 @@
-import { ChallengeTrackerSettings } from './main.js'
-import { ChallengeTrackerForm } from './forms.js'
+import { MODULE } from './constants.js'
 
 export class ChallengeTrackerFlag {
   /**
@@ -12,7 +11,7 @@ export class ChallengeTrackerFlag {
     const flagKeys = Object.keys(game.users.get(userId)?.flags['challenge-tracker'])
     const flagsLength = flagKeys.length
     for (const flagKey of flagKeys) {
-      const flagData = game.users.get(userId)?.getFlag(ChallengeTrackerSettings.id, flagKey)
+      const flagData = game.users.get(userId)?.getFlag(MODULE.ID, flagKey)
       const moveUpDisabled = (flagData.listPosition === 1) ? 'disabled' : ''
       const moveDownDisabled = (flagData.listPosition >= flagsLength) ? 'disabled' : ''
       const mergedFlagData = foundry.utils.mergeObject(flagData, { moveUpDisabled, moveDownDisabled })
@@ -32,7 +31,7 @@ export class ChallengeTrackerFlag {
     if (!game.users.get(ownerId)?.flags['challenge-tracker']) return
     const flagKey = Object.keys(game.users.get(ownerId)?.flags['challenge-tracker']).find(ct => ct === challengeTrackerId)
     if (!flagKey) return
-    const challengeTracker = game.users.get(ownerId)?.getFlag(ChallengeTrackerSettings.id, flagKey)
+    const challengeTracker = game.users.get(ownerId)?.getFlag(MODULE.ID, flagKey)
     return challengeTracker
   }
 
@@ -58,7 +57,7 @@ export class ChallengeTrackerFlag {
   * @param {boolean} challengeTrackerOptions.windowed true = Windowed, false = Windowless
   **/
   static async set (ownerId, challengeTrackerOptions) {
-    await game.users.get(ownerId)?.setFlag(ChallengeTrackerSettings.id, challengeTrackerOptions.id, challengeTrackerOptions)
+    await game.users.get(ownerId)?.setFlag(MODULE.ID, challengeTrackerOptions.id, challengeTrackerOptions)
     game.challengeTrackerForm?.render(false, { width: 'auto', height: 'auto' })
   }
 
@@ -74,7 +73,7 @@ export class ChallengeTrackerFlag {
       ui.notifications.error(game.i18n.format('challengeTracker.errors.doesNotExist', { value: challengeTrackerId }))
       return
     }
-    const deletedFlag = await game.users.get(ownerId)?.unsetFlag(ChallengeTrackerSettings.id, challengeTrackerId)
+    const deletedFlag = await game.users.get(ownerId)?.unsetFlag(MODULE.ID, challengeTrackerId)
     ChallengeTrackerFlag.setListPosition()
     game.challengeTrackerForm?.render(false, { width: 'auto', height: 'auto' })
     ui.notifications.info(`Challenge Tracker '${challengeTrackerId}' deleted.`)
@@ -84,7 +83,7 @@ export class ChallengeTrackerFlag {
   static async copy (ownerId, challengeTrackerId) {
     const flagData = ChallengeTrackerFlag.get(ownerId, challengeTrackerId)
     if (!flagData) return
-    const newChallengeTrackerId = `${ChallengeTrackerSettings.id}-${Math.random().toString(16).slice(2)}`
+    const newChallengeTrackerId = `${MODULE.ID}-${Math.random().toString(16).slice(2)}`
     const challengeTrackerTitle = flagData.title
     const newChallengeTrackerTitle = `Copy of ${challengeTrackerTitle}`
     const challengeTrackerOptions =
@@ -96,10 +95,10 @@ export class ChallengeTrackerFlag {
     if (!game.user.flags['challenge-tracker']) return
     const flagKeys = Object.keys(game.user.flags['challenge-tracker'])
     for (const flagKey of flagKeys) {
-      const flag = await game.user.getFlag(ChallengeTrackerSettings.id, flagKey)
+      const flag = await game.user.getFlag(MODULE.ID, flagKey)
       if (flag.ownerId !== game.userId) {
         const challengeTrackerOptions = foundry.utils.mergeObject(flag, { ownerId: game.userId })
-        await game.user.setFlag(ChallengeTrackerSettings.id, flagKey, challengeTrackerOptions)
+        await game.user.setFlag(MODULE.ID, flagKey, challengeTrackerOptions)
       }
     }
   }
@@ -114,5 +113,10 @@ export class ChallengeTrackerFlag {
       ChallengeTrackerFlag.set(userId, { id: challengeTracker.id, listPosition })
       listPosition++
     }
+  }
+
+  static setPosition (id, position) {
+    const userId = game.userId
+    ChallengeTrackerFlag.set(userId, { id, position })
   }
 }

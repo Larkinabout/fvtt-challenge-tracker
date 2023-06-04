@@ -1,9 +1,10 @@
-import { ChallengeTrackerSettings, ChallengeTracker } from './main.js'
+import { ChallengeTracker } from './main.js'
+import { MODULE, TEMPLATES } from './constants.js'
 import { ChallengeTrackerFlag } from './flags.js'
 import { Utils } from './utils.js'
 
 Hooks.on('closeChallengeTrackerForm', () => {
-  const buttonLocation = Utils.getSetting('challenge-tracker', 'buttonLocation')
+  const buttonLocation = Utils.getSetting('buttonLocation')
   const controls = ui.controls
   const controlsControls = controls.controls
   const control = controlsControls.find(c => c.name === buttonLocation)
@@ -28,8 +29,8 @@ export class ChallengeTrackerForm extends FormApplication {
       height: 'auto',
       width: 'auto',
       id: 'challenge-tracker-form',
-      template: ChallengeTrackerSettings.templates.challengeTrackerForm,
-      title: game.i18n.localize('challengeTracker.labels.challengeTrackerFormTitle'),
+      template: TEMPLATES.challengeTrackerForm,
+      title: game.i18n.localize('challengeTracker.labels.form.title'),
       userId: game.userId,
       closeOnSubmit: false,
       submitOnChange: true
@@ -177,8 +178,8 @@ export class ChallengeTrackerEditForm extends FormApplication {
       height: 'auto',
       width: '400px',
       id: 'challenge-tracker-edit-form',
-      template: ChallengeTrackerSettings.templates.challengeTrackerEditForm,
-      title: game.i18n.localize('challengeTracker.labels.challengeTrackerEditFormTitle'),
+      template: TEMPLATES.challengeTrackerEditForm,
+      title: game.i18n.localize('challengeTracker.labels.editForm.title'),
       userId: game.userId,
       closeOnSubmit: true
     }
@@ -197,7 +198,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
           backgroundImage: null,
           frameColor: null,
           frameWidth: 'medium',
-          id: `${ChallengeTrackerSettings.id}-${Math.random().toString(16).slice(2)}`,
+          id: `${MODULE.ID}-${Math.random().toString(16).slice(2)}`,
           foregroundImage: null,
           innerBackgroundColor: null,
           innerColor: null,
@@ -211,7 +212,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
           persist: true,
           show: false,
           size: null,
-          title: game.i18n.localize('challengeTracker.labels.challengeTrackerTitle'),
+          title: game.i18n.localize('challengeTracker.labels.title'),
           windowed: true
         }
       }
@@ -252,7 +253,7 @@ export class ChallengeTrackerEditForm extends FormApplication {
     if (flag) {
       challengeTrackerOptions = foundry.utils.mergeObject(flag, formData)
     } else {
-      const title = formData.title ?? game.i18n.localize('challengeTracker.labels.challengeTrackerTitle')
+      const title = formData.title ?? game.i18n.localize('challengeTracker.labels.title')
       const persist = true
       const id = challengeTrackerId
       const listPosition = Object.keys(game.users.get(ownerId).flags['challenge-tracker'] || {}).length + 1

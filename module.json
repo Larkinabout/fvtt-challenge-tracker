@@ -2,12 +2,11 @@
   "id": "challenge-tracker",
   "title": "Challenge Tracker",
   "description": "An interactive aid to track successes and failures in challenges à la D&D 4e-inspired skill challenges and Blades in the Dark progress clocks",
-  "version": "0.0",
+  "version": "This is auto replaced",
   "library": "false",
-  "manifestPlusVersion": "1.2.0",
   "compatibility": {
-    "minimum": 10,
-    "verified": 10
+    "minimum": "10",
+    "verified": "11.300"
   },
   "authors": [
     {
@@ -28,7 +27,7 @@
     ]
   },
   "esmodules": [
-    "./scripts/challenge-tracker.js"
+    "./scripts/init.js"
   ],
   "scripts": [
   ],
@@ -43,8 +42,8 @@
     }
   ],
   "url": "https://github.com/Larkinabout/fvtt-challenge-tracker",
-  "manifest": "https://github.com/Larkinabout/fvtt-challenge-tracker/releases/latest/download/module.json",
-  "download": "https://github.com/Larkinabout/fvtt-challenge-tracker/releases/latest/download/module.zip",
+  "manifest": "This is auto replaced",
+  "download": "This is auto replaced",
   "readme": "https://github.com/Larkinabout/fvtt-challenge-tracker#readme",
   "media": [
     {

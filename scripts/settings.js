@@ -1,9 +1,10 @@
-import { ChallengeTrackerSettings, ChallengeTracker } from './main.js'
+import { ChallengeTracker } from './main.js'
+import { DEFAULTS, MODULE } from './constants.js'
 import { Utils } from './utils.js'
 
 export class Settings {
   static init () {
-    game.settings.register('challenge-tracker', 'displayButton', {
+    game.settings.register(MODULE.ID, 'displayButton', {
       name: game.i18n.localize('challengeTracker.settings.displayButton.name'),
       hint: game.i18n.localize('challengeTracker.settings.displayButton.hint'),
       scope: 'world',
@@ -15,11 +16,11 @@ export class Settings {
         2: 'Trusted Player',
         1: 'Player'
       },
-      default: ChallengeTrackerSettings.default.displayButton,
-      onChange: foundry.utils.debounce(() => window.location.reload(), 100)
+      default: DEFAULTS.displayButton,
+      requiresReload: true
     })
 
-    game.settings.register('challenge-tracker', 'buttonLocation', {
+    game.settings.register(MODULE.ID, 'buttonLocation', {
       name: game.i18n.localize('challengeTracker.settings.buttonLocation.name'),
       hint: game.i18n.localize('challengeTracker.settings.buttonLocation.hint'),
       scope: 'world',
@@ -37,11 +38,11 @@ export class Settings {
         notes: game.i18n.localize('challengeTracker.settings.buttonLocation.choices.notes'),
         none: game.i18n.localize('challengeTracker.settings.buttonLocation.choices.none')
       },
-      default: ChallengeTrackerSettings.default.buttonLocation,
-      onChange: foundry.utils.debounce(() => window.location.reload(), 100)
+      default: DEFAULTS.buttonLocation,
+      requiresReload: true
     })
 
-    game.settings.register('challenge-tracker', 'allowShow', {
+    game.settings.register(MODULE.ID, 'allowShow', {
       name: game.i18n.localize('challengeTracker.settings.allowShow.name'),
       hint: game.i18n.localize('challengeTracker.settings.allowShow.hint'),
       scope: 'world',
@@ -53,26 +54,26 @@ export class Settings {
         2: game.i18n.localize('challengeTracker.settings.allowShow.choices.2'),
         1: game.i18n.localize('challengeTracker.settings.allowShow.choices.1')
       },
-      default: ChallengeTrackerSettings.default.allowShow,
-      onChange: foundry.utils.debounce(() => window.location.reload(), 100)
+      default: DEFAULTS.allowShow,
+      requiresReload: true
     })
 
-    game.settings.register('challenge-tracker', 'size', {
+    game.settings.register(MODULE.ID, 'size', {
       name: game.i18n.localize('challengeTracker.settings.size.name'),
       hint: game.i18n.localize('challengeTracker.settings.size.hint'),
       scope: 'world',
       config: true,
       type: Number,
       range: {
-        min: 200,
-        max: 600,
+        min: 100,
+        max: 500,
         step: 50
       },
-      default: ChallengeTrackerSettings.default.size,
+      default: DEFAULTS.size,
       onChange: (size) => { ChallengeTracker.updateSize(size) }
     })
 
-    game.settings.register('challenge-tracker', 'frameWidth', {
+    game.settings.register(MODULE.ID, 'frameWidth', {
       name: game.i18n.localize('challengeTracker.settings.frameWidth.name'),
       hint: game.i18n.localize('challengeTracker.settings.frameWidth.hint'),
       scope: 'world',
@@ -85,48 +86,57 @@ export class Settings {
         medium: game.i18n.localize('challengeTracker.settings.frameWidth.choices.medium'),
         thick: game.i18n.localize('challengeTracker.settings.frameWidth.choices.thick')
       },
-      default: ChallengeTrackerSettings.default.frameWidth,
+      default: DEFAULTS.frameWidth,
       onChange: (frameWidth) => { ChallengeTracker.updateFrameWidth(frameWidth) }
     })
 
-    game.settings.register('challenge-tracker', 'scroll', {
+    game.settings.register(MODULE.ID, 'scroll', {
       name: game.i18n.localize('challengeTracker.settings.scroll.name'),
       hint: game.i18n.localize('challengeTracker.settings.scroll.hint'),
       scope: 'client',
       config: true,
       type: Boolean,
-      default: ChallengeTrackerSettings.default.scroll,
+      default: DEFAULTS.scroll,
       onChange: (scroll) => { ChallengeTracker.updateScroll(scroll) }
     })
 
-    game.settings.register('challenge-tracker', 'windowed', {
+    game.settings.register(MODULE.ID, 'windowed', {
       name: game.i18n.localize('challengeTracker.settings.windowed.name'),
       hint: game.i18n.localize('challengeTracker.settings.windowed.hint'),
       scope: 'client',
       config: true,
       type: Boolean,
-      default: ChallengeTrackerSettings.default.windowed,
+      default: DEFAULTS.windowed,
       onChange: (windowed) => { ChallengeTracker.updateWindowed(windowed) }
+    })
+
+    game.settings.register(MODULE.ID, 'debug', {
+      name: game.i18n.localize('challengeTracker.settings.debug.name'),
+      hint: game.i18n.localize('challengeTracker.settings.debug.hint'),
+      scope: 'client',
+      config: true,
+      type: Boolean,
+      default: DEFAULTS.debug
     })
   }
 
   static initColorSettings () {
     ColorPicker.register(
-      'challenge-tracker',
+      MODULE.ID,
       'innerBackgroundColor',
       {
         name: game.i18n.localize('challengeTracker.settings.innerBackgroundColor.name'),
         hint: game.i18n.localize('challengeTracker.settings.innerBackgroundColor.hint'),
         scope: 'world',
         restricted: true,
-        default: ChallengeTrackerSettings.default.innerBackgroundColor,
+        default: DEFAULTS.innerBackgroundColor,
         onChange: (innerBackgroundColor) => {
           ChallengeTracker.updateColorAndDraw(
-            Utils.getSetting('challenge-tracker', 'outerBackgroundColor', ChallengeTrackerSettings.default.outerBackgroundColor),
-            Utils.getSetting('challenge-tracker', 'outerColor', ChallengeTrackerSettings.default.outerColor),
+            Utils.getSetting('outerBackgroundColor', DEFAULTS.outerBackgroundColor),
+            Utils.getSetting('outerColor', DEFAULTS.outerColor),
             innerBackgroundColor,
-            Utils.getSetting('challenge-tracker', 'innerColor', ChallengeTrackerSettings.default.innerColor),
-            Utils.getSetting('challenge-tracker', 'frameColor', ChallengeTrackerSettings.default.frameColor)
+            Utils.getSetting('innerColor', DEFAULTS.innerColor),
+            Utils.getSetting('frameColor', DEFAULTS.frameColor)
           )
         }
       },
@@ -137,21 +147,21 @@ export class Settings {
     )
 
     ColorPicker.register(
-      'challenge-tracker',
+      MODULE.ID,
       'innerColor',
       {
         name: game.i18n.localize('challengeTracker.settings.innerColor.name'),
         hint: game.i18n.localize('challengeTracker.settings.innerColor.hint'),
         scope: 'world',
         restricted: true,
-        default: ChallengeTrackerSettings.default.innerColor,
+        default: DEFAULTS.innerColor,
         onChange: (innerColor) => {
           ChallengeTracker.updateColorAndDraw(
-            Utils.getSetting('challenge-tracker', 'outerBackgroundColor', ChallengeTrackerSettings.default.outerBackgroundColor),
-            Utils.getSetting('challenge-tracker', 'outerColor', ChallengeTrackerSettings.default.outerColor),
-            Utils.getSetting('challenge-tracker', 'innerBackgroundColor', ChallengeTrackerSettings.default.innerBackgroundColor),
+            Utils.getSetting('outerBackgroundColor', DEFAULTS.outerBackgroundColor),
+            Utils.getSetting('outerColor', DEFAULTS.outerColor),
+            Utils.getSetting('innerBackgroundColor', DEFAULTS.innerBackgroundColor),
             innerColor,
-            Utils.getSetting('challenge-tracker', 'frameColor', ChallengeTrackerSettings.default.frameColor)
+            Utils.getSetting('frameColor', DEFAULTS.frameColor)
           )
         }
       },
@@ -162,21 +172,21 @@ export class Settings {
     )
 
     ColorPicker.register(
-      'challenge-tracker',
+      MODULE.ID,
       'outerBackgroundColor',
       {
         name: game.i18n.localize('challengeTracker.settings.outerBackgroundColor.name'),
         hint: game.i18n.localize('challengeTracker.settings.outerBackgroundColor.hint'),
         scope: 'world',
         restricted: true,
-        default: ChallengeTrackerSettings.default.outerBackgroundColor,
+        default: DEFAULTS.outerBackgroundColor,
         onChange: (outerBackgroundColor) => {
           ChallengeTracker.updateColorAndDraw(
             outerBackgroundColor,
-            Utils.getSetting('challenge-tracker', 'outerColor', ChallengeTrackerSettings.default.outerColor),
-            Utils.getSetting('challenge-tracker', 'innerBackgroundColor', ChallengeTrackerSettings.default.innerBackgroundColor),
-            Utils.getSetting('challenge-tracker', 'innerColor', ChallengeTrackerSettings.default.innerColor),
-            Utils.getSetting('challenge-tracker', 'frameColor', ChallengeTrackerSettings.default.frameColor)
+            Utils.getSetting('outerColor', DEFAULTS.outerColor),
+            Utils.getSetting('innerBackgroundColor', DEFAULTS.innerBackgroundColor),
+            Utils.getSetting('innerColor', DEFAULTS.innerColor),
+            Utils.getSetting('frameColor', DEFAULTS.frameColor)
           )
         }
       },
@@ -187,21 +197,21 @@ export class Settings {
     )
 
     ColorPicker.register(
-      'challenge-tracker',
+      MODULE.ID,
       'outerColor',
       {
         name: game.i18n.localize('challengeTracker.settings.outerColor.name'),
         hint: game.i18n.localize('challengeTracker.settings.outerColor.hint'),
         scope: 'world',
         restricted: true,
-        default: ChallengeTrackerSettings.default.outerColor,
+        default: DEFAULTS.outerColor,
         onChange: (outerColor) => {
           ChallengeTracker.updateColorAndDraw(
-            Utils.getSetting('challenge-tracker', 'outerBackgroundColor', ChallengeTrackerSettings.default.outerBackgroundColor),
+            Utils.getSetting('outerBackgroundColor', DEFAULTS.outerBackgroundColor),
             outerColor,
-            Utils.getSetting('challenge-tracker', 'innerBackgroundColor', ChallengeTrackerSettings.default.innerBackgroundColor),
-            Utils.getSetting('challenge-tracker', 'innerColor', ChallengeTrackerSettings.default.innerColor),
-            Utils.getSetting('challenge-tracker', 'frameColor', ChallengeTrackerSettings.default.frameColor)
+            Utils.getSetting('innerBackgroundColor', DEFAULTS.innerBackgroundColor),
+            Utils.getSetting('innerColor', DEFAULTS.innerColor),
+            Utils.getSetting('frameColor', DEFAULTS.frameColor)
           )
         }
       },
@@ -212,20 +222,20 @@ export class Settings {
     )
 
     ColorPicker.register(
-      'challenge-tracker',
+      MODULE.ID,
       'frameColor',
       {
         name: game.i18n.localize('challengeTracker.settings.frameColor.name'),
         hint: game.i18n.localize('challengeTracker.settings.frameColor.hint'),
         scope: 'world',
         restricted: true,
-        default: ChallengeTrackerSettings.default.frameColor,
+        default: DEFAULTS.frameColor,
         onChange: (frameColor) => {
           ChallengeTracker.updateColorAndDraw(
-            Utils.getSetting('challenge-tracker', 'outerBackgroundColor', ChallengeTrackerSettings.default.outerBackgroundColor),
-            Utils.getSetting('challenge-tracker', 'outerColor', ChallengeTrackerSettings.default.outerColor),
-            Utils.getSetting('challenge-tracker', 'innerBackgroundColor', ChallengeTrackerSettings.default.innerBackgroundColor),
-            Utils.getSetting('challenge-tracker', 'innerColor', ChallengeTrackerSettings.default.innerColor),
+            Utils.getSetting('outerBackgroundColor', DEFAULTS.outerBackgroundColor),
+            Utils.getSetting('outerColor', DEFAULTS.outerColor),
+            Utils.getSetting('innerBackgroundColor', DEFAULTS.innerBackgroundColor),
+            Utils.getSetting('innerColor', DEFAULTS.innerColor),
             frameColor
           )
         }

@@ -1,4 +1,5 @@
-import { ChallengeTracker, ChallengeTrackerSettings } from './main.js'
+import { ChallengeTracker } from './main.js'
+import { DEFAULTS } from './constants.js'
 import { Utils } from './utils.js'
 import { Settings } from './settings.js'
 import { ChallengeTrackerCompatibility } from './compatibility.js'
@@ -64,16 +65,15 @@ Hooks.once('ready', async () => {
 
 /* Add buttons to the Player List */
 Hooks.on('renderPlayerList', (playerList, html) => {
-  const buttonLocation = Utils.getSetting('challenge-tracker', 'buttonLocation')
+  const buttonLocation = Utils.getSetting('buttonLocation')
   if (buttonLocation !== 'player-list' || !Utils.checkDisplayButton(game.user.role)) return
   (async () => {
     // Sleep to let system and modules load elements onto the Player List
     await Utils.sleep(100)
 
-    const tooltip = game.i18n.localize('challengeTracker.labels.challengeTrackerButtonTitle')
+    const tooltip = game.i18n.localize('challengeTracker.labels.buttonTitle')
     const icon =
     `<svg width="100%" height="100%" viewBox="-5 -5 110 110" xmlns="http://www.w3.org/2000/svg">
-      <title>${game.i18n.localize('challengeTracker.labels.challengeTrackerListTitle')}</title>
       <ellipse stroke-width="7" id="outer_circle" cx="50" cy="50" rx="50" ry="50" stroke="currentColor" fill="none" fill-opacity="0"/>
       <ellipse stroke-width="7" id="inner_circle" cx="50" cy="50" rx="30" ry="30" stroke="currentColor" fill="none" fill-opacity="0"/>
       <line stroke-width="7" id="svg_4" x1="50" x2="50" y1="0" y2="50" stroke="currentColor" fill="none" fill-opacity="0"/>
@@ -89,7 +89,7 @@ Hooks.on('renderPlayerList', (playerList, html) => {
       const userId = $(element).data().userId
       if (game.user.isGM || userId === game.userId) {
         $(element).append(
-          `<button type='button' title='${tooltip}' class='challenge-tracker-player-list-button flex0'>${icon}</button>`
+          `<button type='button' class='challenge-tracker-player-list-button flex0'>${icon}</button>`
         )
       } else if (game.system.id === 'swade') {
         $(element).append(
@@ -107,14 +107,14 @@ Hooks.on('renderPlayerList', (playerList, html) => {
 })
 
 Hooks.on('getSceneControlButtons', (controls) => {
-  const buttonLocation = Utils.getSetting('challenge-tracker', 'buttonLocation', ChallengeTrackerSettings.default.buttonLocation)
+  const buttonLocation = Utils.getSetting('buttonLocation', DEFAULTS.buttonLocation)
   if (!Utils.checkDisplayButton(game.user.role)) return
   if (buttonLocation === 'player-list' || buttonLocation === 'none') return
   controls
     .find(c => c.name === buttonLocation)
     .tools.push({
       name: 'challenge-tracker',
-      title: game.i18n.localize('challengeTracker.labels.challengeTrackerButtonTitle'),
+      title: game.i18n.localize('challengeTracker.labels.buttonTitle'),
       icon: 'challenge-tracker-control-button',
       onClick: (toggle) => {
         if (toggle) {
@@ -131,7 +131,6 @@ Hooks.on('renderSceneControls', (controls, html) => {
   const controlButton = html.find('.challenge-tracker-control-button')
   const icon =
   `<svg width="100%" height="100%" viewBox="-5 -5 110 110" xmlns="http://www.w3.org/2000/svg">
-    <title>${game.i18n.localize('challengeTracker.labels.challengeTrackerListTitle')}</title>
     <ellipse stroke-width="7" id="outer_circle" cx="50" cy="50" rx="50" ry="50" stroke="currentColor" fill="none" fill-opacity="0"/>
     <ellipse stroke-width="7" id="inner_circle" cx="50" cy="50" rx="30" ry="30" stroke="currentColor" fill="none" fill-opacity="0"/>
     <line stroke-width="7" id="svg_4" x1="50" x2="50" y1="0" y2="50" stroke="currentColor" fill="none" fill-opacity="0"/>

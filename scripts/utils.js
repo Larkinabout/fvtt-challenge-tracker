@@ -1,39 +1,126 @@
-import { ChallengeTrackerSettings } from './main.js'
+import { DEFAULTS, MODULE } from './constants.js'
+
+/**
+ * Console logger
+ */
+export class Logger {
+  static info (message, notify = false) {
+    if (notify) ui.notifications.info(`Challenge Tracker | ${message}`)
+    else console.log(`Challenge Tracker Info | ${message}`)
+  }
+
+  static error (message, notify = false) {
+    if (notify) ui.notifications.error(`Challenge Tracker | ${message}`)
+    else console.error(`Challenge Tracker Error | ${message}`)
+  }
+
+  static debug (message, data) {
+    const isDebug = Utils.getSetting('debug')
+    if (isDebug) {
+      if (!data) {
+        console.log(`Challenge Tracker Debug | ${message}`)
+        return
+      }
+      const dataClone = Utils.deepClone(data)
+      console.log(`Challenge Tracker Debug | ${message}`, dataClone)
+    }
+  }
+}
 
 export class Utils {
-  static checkAllowShow (userRole) {
-    const allowShow = Utils.getSetting('challenge-tracker', 'allowShow', ChallengeTrackerSettings.default.allowShow)
+  /**
+    * Whether the user is allowed to use challenge trackers
+    * @public
+    * @param {number} userRole The user role
+    * @returns {boolean}
+    */
+  static checkAllow (userRole) {
+    const allowShow = this.getSetting('allowShow')
     if (userRole >= allowShow) return true
     return false
   }
 
+  /**
+   * Whether to display the challenge tracker list button
+   * @public
+   * @param {number} userRole The user role
+   * @returns {boolean}
+   */
   static checkDisplayButton (userRole) {
-    const displayButton = Utils.getSetting('challenge-tracker', 'displayButton', ChallengeTrackerSettings.default.displayButton)
+    const displayButton = this.getSetting('displayButton', DEFAULTS.displayButton)
     if (userRole >= displayButton) return true
     return false
   }
 
+  /**
+   * Whether the current user id matches the passed user id
+   * @public
+   * @param {string} userId The user id
+   * @returns {boolean}
+   */
   static checkUserId (userId) {
     if (game.userId === userId) return true
     return false
   }
 
-  static getSetting (namespace, key, defaultValue = null) {
+  /**
+     * Get setting value
+     * @public
+     * @param {string} key               The setting key
+     * @param {string=null} defaultValue The setting default value
+     * @returns {*}                      The setting value
+     */
+  static getSetting (key, defaultValue = null) {
     let value = defaultValue ?? null
-    if (game.settings.settings.get(`${namespace}.${key}`)) {
-      value = game.settings.get(namespace, key)
+    try {
+      value = game.settings.get(MODULE.ID, key)
+    } catch {
+      Logger.debug(`Setting '${key}' not found`)
     }
     return value
   }
 
+  /**
+ * Set setting value
+ * @public
+ * @param {string} key   The setting key
+ * @param {string} value The setting value
+ */
+  static async setSetting (key, value) {
+    if (game.settings.settings.get(`${MODULE.ID}.${key}`)) {
+      await game.settings.set(MODULE.ID, key, value)
+      Logger.debug(`Setting '${key}' set to '${value}'`)
+    } else {
+      Logger.debug(`Setting '${key}' not found`)
+    }
+  }
+
+  /**
+   * Sleep wait timer
+   * @public
+   * @param {number} milliseconds Time in milliseconds to wait
+   * @returns {Promise}
+   */
   static async sleep (milliseconds) {
     return new Promise((resolve) => setTimeout(resolve, milliseconds))
   }
 
+  /**
+   * Convert a function to a string
+   * @public
+   * @param {function} func The function
+   * @returns {string}
+   */
   static functionToString (func) {
     return `(${func.toString()})()`
   }
 
+  /**
+   * Convert a string to a function
+   * @public
+   * @param {string} string The string
+   * @returns {function}
+   */
   static stringToFunction (string) {
     if (!string) return
     // eslint-disable-next-line no-new-func
@@ -45,9 +132,11 @@ export class Utils {
   }
 
   /**
-  * @param color Hex value format: #ffffff, ffffff, #ffffffff or ffffffff
-  * @param decimal lighten or darken decimal value, example 0.5 to lighten by 50% or 1.5 to darken by 50%.
-  **/
+   * Lighten or darken colors
+   * @public
+   * @param color Hex value format: #ffffff, ffffff, #ffffffff or ffffffff
+   * @param decimal lighten or darken decimal value, example 0.5 to lighten by 50% or 1.5 to darken by 50%.
+   */
   static shadeColor (color, decimal) {
     const base = color.startsWith('#') ? 1 : 0
 
@@ -71,17 +160,24 @@ export class Utils {
     return `#${rr}${gg}${bb}${aa}`
   }
 
-  static fuzzyMatch (a, b) {
-    if (a.length < 3) return null
+  /**
+   * Perform a fuzzy match against a string list
+   * @public
+   * @param {string} stringToMatch
+   * @param {string} stringList
+   * @returns {string}
+   */
+  static fuzzyMatch (stringToMatch, stringList) {
+    if (stringToMatch.length < 3) return null
     const matchList = []
     let elementSub = null
-    for (const element of b) {
+    for (const element of stringList) {
       elementSub = element
       let charCount = 0
       if (elementSub.length === 0) break
-      if (a === element) return element
-      for (let i = 0; i < a.length; i++) {
-        const aChar = a.charCodeAt(i)
+      if (stringToMatch === element) return element
+      for (let i = 0; i < stringToMatch.length; i++) {
+        const aChar = stringToMatch.charCodeAt(i)
         for (let j = 0; j < element.length; j++) {
           const elementChar = elementSub.charCodeAt(j)
           if (aChar === elementChar) {
@@ -93,11 +189,7 @@ export class Utils {
       }
       if (charCount > 0) matchList[element] = charCount
     }
-    const maxValueKey = getMaxValueKey(matchList)
-    if (matchList[maxValueKey] / a.length >= 0.7) return maxValueKey
+    const maxValueKey = Object.keys(matchList).reduce((a, b) => matchList[a] > matchList[b] ? a : b)
+    if (matchList[maxValueKey] / stringToMatch.length >= 0.7) return maxValueKey
   }
-}
-
-function getMaxValueKey (obj) {
-  return Object.keys(obj).reduce((a, b) => obj[a] > obj[b] ? a : b)
 }
