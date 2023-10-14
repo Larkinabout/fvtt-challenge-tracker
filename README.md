@@ -1,3 +1,5 @@
+![Downloads](https://img.shields.io/github/downloads/Larkinabout/fvtt-challenge-tracker/latest/module.zip?color=2b82fc&label=DOWNLOADS&style=for-the-badge) [![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fchallenge-tracker&colorB=448d34&style=for-the-badge)](https://forge-vtt.com/bazaar#package=challenge-tracker)
+
 # Challenge Tracker
 An interactive aid to track successes and failures in challenges à la D&D 4e-inspired skill challenges and Blades in the Dark progress clocks.
 
