@@ -1,0 +1,136 @@
+{{#with challengeTracker}}
+<div id="challenge-tracker-edit-app" class="standard-form" data-owner-id="{{ownerId}}" data-challenge-tracker-id="{{id}}">
+  <div class="standard-form scrollable">
+    <fieldset>
+      <legend>{{localize "challengeTracker.labels.editForm.trackerOptions.mainTitle"}}</legend>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.titleTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.title"}}</label>
+        <div class="form-fields">
+          <input type="text" id="title" name="title" data-dtype="String" value="{{title}}">
+        </div>
+      </div>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.sizeTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.size"}}</label>
+        <div class="form-fields">
+          <input type="number" id="size" name="size" data-dtype="Number" value="{{size}}">
+        </div>
+      </div>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.scrollTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.scroll"}}</label>
+        <div class="form-fields">
+          <input type="checkbox" name="scroll" data-dtype="Boolean" {{checked scroll}}>
+        </div>
+      </div>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.showTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.show"}}</label>
+        <div class="form-fields">
+          <input type="checkbox" name="show" data-dtype="Boolean" {{checked show}}>
+        </div>
+      </div>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.windowedTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.windowed"}}</label><br>
+        <div class="form-fields">
+          <input type="checkbox" name="windowed" data-dtype="Boolean" {{checked windowed}}>
+        </div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>{{localize "challengeTracker.labels.editForm.trackerOptions.outerTitle"}}</legend>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.outerTotalTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.outerTotal"}}</label>
+        <div class="form-fields">
+          <input type="number" id="outerTotal" name="outerTotal" data-dtype="Number" value="{{outerTotal}}">
+        </div>
+      </div>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.outerCurrentTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.outerCurrent"}}</label>
+        <div class="form-fields">
+          <input type="number" id="outerCurrent" name="outerCurrent" data-dtype="Number" value="{{outerCurrent}}">
+        </div>
+      </div>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.outerBackgroundColorTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.outerBackgroundColor"}}</label>
+        <div class="form-fields">
+          <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{outerBackgroundColor}}" name="outerBackgroundColor" id="outerBackgroundColor">
+        </div>
+      </div>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.outerColorTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.outerColor"}}</label>
+        <div class="form-fields">
+          <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{outerColor}}" name="outerColor" id="outerColor">
+        </div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>{{localize "challengeTracker.labels.editForm.trackerOptions.innerTitle"}}</legend>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.innerTotalTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.innerTotal"}}</label>
+        <div class="form-fields">
+          <input type="number" id="innerTotal" name="innerTotal" data-dtype="Number" value="{{innerTotal}}">
+        </div>
+      </div>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.innerCurrentTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.innerCurrent"}}</label>
+        <div class="form-fields">
+          <input type="number" id="innerCurrent" name="innerCurrent" data-dtype="Number" value="{{innerCurrent}}">
+        </div>
+      </div>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.innerBackgroundColorTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.innerBackgroundColor"}}</label>
+        <div class="form-fields">
+          <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{innerBackgroundColor}}" name="innerBackgroundColor" id="innerBackgroundColor">
+        </div>
+      </div>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.innerColorTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.innerColor"}}</label>
+        <div class="form-fields">
+          <input data-color-picker="{required: false, alphaChannel:true, format:'hexa'}" value="{{innerColor}}" name="innerColor" id="innerColor">
+        </div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>{{localize "challengeTracker.labels.editForm.trackerOptions.imageTitle"}}</legend>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.backgroundImageTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.backgroundImage"}}</label>
+        <div class="form-fields">
+          <file-picker id="backgroundImage" name="backgroundImage" type="image" value="{{backgroundImage}}"></file-picker>
+        </div>
+      </div>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.foregroundImageTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.foregroundImage"}}</label>
+        <div class="form-fields">
+          <file-picker id="foregroundImage" name="foregroundImage" type="image" value="{{foregroundImage}}"></file-picker>
+        </div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>{{localize "challengeTracker.labels.editForm.trackerOptions.frameTitle"}}</legend>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.frameWidthTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.frameWidth"}}</label>
+        <div class="form-fields">
+          <select id="frameWidth" name="frameWidth">
+            {{#select frameWidth}}
+            <option value="none">{{localize "challengeTracker.settings.frameWidth.choices.none"}}</option>
+            <option value="extra-thin">{{localize "challengeTracker.settings.frameWidth.choices.extraThin"}}</option>
+            <option value="thin">{{localize "challengeTracker.settings.frameWidth.choices.thin"}}</option>
+            <option value="medium">{{localize "challengeTracker.settings.frameWidth.choices.medium"}}</option>
+            <option value="thick">{{localize "challengeTracker.settings.frameWidth.choices.thick"}}</option>
+            {{/select}}
+          </select>
+        </div>
+      </div>
+      <div class="form-group" data-tooltip="{{localize "challengeTracker.labels.editForm.trackerOptions.frameColorTooltip"}}">
+        <label>{{localize "challengeTracker.labels.editForm.trackerOptions.frameColor"}}</label>
+        <div class="form-fields">
+          <input data-color-picker="{required: false}" value="{{frameColor}}" name="frameColor" id="frameColor">
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <footer class="form-footer" data-application-part="footer">
+    <button type="submit" name="submit" class="save-button">
+      <i class="fas fa-solid fa-floppy-disk"></i>{{localize "challengeTracker.labels.editForm.save"}}
+    </button>
+  </footer>
+</div>
+{{/with}}

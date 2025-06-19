@@ -1,12 +1,4 @@
-.challenge-tracker.window-app {
-    height: auto;
-}
-
-.challenge-tracker.windowless.window-app .window-content {
-    background: transparent;
-}
-
-.challenge-tracker.window-app .window-content {
+.challenge-tracker-app .window-content {
     padding: 0;
     margin: 0;
     overflow: hidden;
@@ -27,32 +19,70 @@
     left: 0px;
 }
 
-.challenge-tracker.windowless {
+.challenge-tracker-app.windowless {
     background: unset;
     box-shadow: unset;
+    border: none;
+    display: block;
+    min-width: unset;
 }
 
-.challenge-tracker.windowless .window-header {
+.challenge-tracker-app.windowless .window-content {
+    backdrop-filter: none;
+    background: transparent;
+}
+
+.challenge-tracker-app.windowless .window-header {
+    background: unset;
     border: none;
-    flex: 0;
+    height: 0;
     line-height: 1;
-    visibility: hidden;
     overflow: visible;
     margin: 0;
     padding: 0;
     text-shadow: 0px 0px 2px #00000040, 0px 0px 5px #000000;
+    position: relative;
+    visibility: hidden;
+    top: 0;
 }
 
-.challenge-tracker.windowless:hover > .window-header {
+.challenge-tracker-app.windowless button.header-control {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.challenge-tracker-app.windowless button.header-control:not(:hover) {
+    background: var(--color-header-background);
+}
+
+.challenge-tracker-app:not(.windowless) button.header-control[data-action="drag"] {
+    display: none;
+}
+
+.challenge-tracker-app.windowless button.header-control[data-action="drag"] {
+    top: calc(var(--button-size) + 0.25em);
+}
+
+.challenge-tracker-app.windowless button.header-control[data-action="drag"]:hover {
+    cursor: grab;
+}
+
+.challenge-tracker-app.windowless button.header-control[data-action="show-hide"] {
+    right: calc(var(--button-size) + 0.3em);
+}
+
+.challenge-tracker-app.windowless:hover > .window-header {
     visibility: visible;
     transition: visibility 0.2s ease-in;
     transition-delay: 0.5s;
 }
 
-.challenge-tracker.windowless:not(:hover) > .window-header {
+.challenge-tracker-app.windowless:not(:hover) > .window-header {
     visibility: hidden;
     transition: visibility 0.2s ease-in;
     transition-delay: 0.1s;
+    overflow: visible;
 }
 
 .challenge-tracker .window-title {
@@ -61,11 +91,11 @@
     white-space: nowrap;
 }
 
-.challenge-tracker.windowless .window-title {
+.challenge-tracker-app.windowless .window-title {
     padding: 5px;
 }
 
-.challenge-tracker.windowless .window-header a {
+.challenge-tracker-app.windowless .window-header a {
     margin: 5px 5px 5px 0;
 }
 
@@ -104,94 +134,111 @@
     padding: 0.1em;
 }
 
-#challenge-tracker-form {
-    width: auto !important;
-}
-
-.challenge-tracker-form {
-    padding: 0 0.5em 0.5em 0;
+.challenge-tracker-list-app {
     margin-top: 0;
-    gap: 1em;
-    overflow: auto;
-    max-height: 300px;
 }
 
-.challenge-tracker-form > li {
-    align-items: center;
-    gap: 1em;
-    justify-content: space-between;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    padding-top: 0.5em;
+.challenge-tracker-list-app .standard-form {
+    height: 100%;
 }
 
-.challenge-tracker-form > li:first-child {
+.challenge-tracker-list-app ul {
+    padding: 0;
+}
+
+.challenge-tracker-list-app li {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    list-style: none;
+    padding: 5px 0;
+}
+
+.challenge-tracker-list-app > li:first-child {
     border: none;
     padding-top: 0;
 }
 
-.challenge-tracker-form-button-group {
+.challenge-tracker-list-app-button-group {
     display: flex;
     justify-content: flex-start;
     gap: 1px;
     padding-top: 0.5em;
+    height: 40px;
+    display: flex;
 }
 
-.challenge-tracker-form-button-col-group {
+.challenge-tracker-list-app-button-col-group {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    height: 100%;
 }
 
-.challenge-tracker-form-button-box {
+.challenge-tracker-list-app-button-col-group button {
+    flex: 1;
+}
+
+.challenge-tracker-list-app-button-row-group {
+    display: flex;
+    gap: 2px;
+}
+
+.challenge-tracker-list-app-button-row-group button {
+    flex: 1;
+}
+
+.challenge-tracker-list-app-button-box {
     border: 2px groove #eeede0;
     padding: 3px;
 }
 
 .challenge-tracker-button {
     cursor: pointer;
-    display: flex;
     align-items: center;
     justify-content: center;
+    height: unset;
 }
 
 .challenge-tracker-button:disabled {
     background-color: transparent;
     color: transparent;
     cursor: default;
+    border: 1px solid var(--color-light-5);););););
 }
 
 .challenge-tracker-button.icon-with-text {
     width: 70px;
+    flex: 1;
 }
 
 .challenge-tracker-button.icon-only {
     width: 30px;
+    height: 20px;
+    padding: 0;
+    line-height: normal;
+    flex: 1;
+    min-height: 10px;
 }
 
 .challenge-tracker-button.icon-only > i {
     margin-right: 0;
 }
 
-.challenge-tracker-form-box {
+.challenge-tracker-list-app-box {
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     padding-top: 0.5em;
 }
 
-.challenge-tracker-form-box:first-child {
+.challenge-tracker-list-app-box:first-child {
     border: 0;
     padding-top: 0;
 }
 
-.challenge-tracker-form-file-picker-group {
+.challenge-tracker-list-app-file-picker-group {
     display: flex;
 }
 
-.challenge-tracker-edit-form {
-    padding: 0 0.5em 0.5em 0;
-    width: 400px !important;
-    row-gap: 2px;
-    overflow: auto;
-    max-height: 600px;
+.challenge-tracker-edit-app .standard-form {
+    height: 100%;
 }
 
 .challenge-tracker-submit-button {

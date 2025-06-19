@@ -30,6 +30,7 @@
         "save": "Save and Close",
         "title": "Edit Challenge Tracker",
         "trackerOptions": {
+          "mainTitle": "Main Options",
           "title": "Title",
           "titleTooltip": "The title of the challenge tracker",
           "scroll": "Scroll",
@@ -95,13 +96,14 @@
         "hint": "GM setting: Set the location of the Challenge Tracker button (Requires reload)",
         "choices" : {
           "playerList": "Player List",
-          "token": "Token Controls",
-          "measure": "Measurement Controls",
+          "tokens": "Token Controls",
+          "templates": "Measurement Controls",
           "tiles": "Tile Controls",
           "drawing": "Drawing Tools",
           "walls": "Wall Controls",
           "lighting": "Lighting Controls",
-          "sound": "Sound Controls",
+          "sounds": "Ambient Sound Controls",
+          "regions": "Region Controls",
           "notes": "Journal Notes",
           "none": "None"
         }

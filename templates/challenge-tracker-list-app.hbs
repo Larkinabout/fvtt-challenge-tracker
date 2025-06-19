@@ -1,0 +1,47 @@
+<div class="standard-form" data-owner-id="{{ownerId}}">
+  <div class="standard-form scrollable">
+    <ul class="challenge-tracker-list-app flexcol">
+      {{#each challengeTrackerList}}
+        <li data-owner-id="{{ownerId}}" data-challenge-tracker-id="{{id}}">
+          <div class="flexrow">
+            <div>
+              {{title}}
+            </div>
+            <div style="flex: none; justify-content: flex-end;">
+              [{{outerCurrent}}/{{outerTotal}}]{{#ifEquals innerTotal 0}}{{else}} [{{innerCurrent}}/{{innerTotal}}]{{/ifEquals}}
+            </div>
+          </div>
+          <div class="challenge-tracker-list-app-button-group">
+            <div class="challenge-tracker-list-app-button-col-group">
+              <button type="button" data-tooltip="{{localize "challengeTracker.labels.form.moveUpTooltip"}}" data-action="move-up" class="challenge-tracker-button icon-only" {{moveUpDisabled}}>
+                <i class="fas fa-caret-up"></i>
+              </button>
+              <button type="button" data-tooltip="{{localize "challengeTracker.labels.form.moveDownTooltip"}}" data-action="move-down" class="challenge-tracker-button icon-only" {{moveDownDisabled}}>
+                <i class="fas fa-caret-down"></i>
+              </button>
+            </div>
+            <div class="challenge-tracker-list-app-button-row-group">
+              <button type="button" data-tooltip="{{localize "challengeTracker.labels.form.openTooltip"}}" data-action="open" class="challenge-tracker-button icon-with-text">
+              <i class="fas fa-folder-open"></i>{{localize "challengeTracker.labels.form.open"}}
+            </button>
+            <button type="button" data-tooltip="{{localize "challengeTracker.labels.form.editTooltip"}}" data-action="edit" class="challenge-tracker-button icon-with-text">
+              <i class="fas fa-pen"></i>{{localize "challengeTracker.labels.form.edit"}}
+            </button>
+            <button type="button" data-tooltip="{{localize "challengeTracker.labels.form.copyTooltip"}}" data-action="copy" class="challenge-tracker-button icon-with-text">
+              <i class="fas fa-copy"></i>{{localize "challengeTracker.labels.form.copy"}}
+            </button>
+            <button type="button" data-tooltip="{{localize "challengeTracker.labels.form.deleteTooltip"}}" data-action="delete" class="challenge-tracker-button icon-with-text">
+              <i class="fas fa-trash"></i>{{localize "challengeTracker.labels.form.delete"}}
+            </button>
+            </div>
+          </div>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
+  <footer class="form-footer" data-application-part="footer">
+    <button type="button" data-tooltip="{{localize "challengeTracker.labels.form.newTooltip"}}" data-action="create" class="challenge-tracker-button">
+      <i class="fas fa-plus"></i>{{localize "challengeTracker.labels.form.new"}}
+    </button>
+  </footer>
+</div>

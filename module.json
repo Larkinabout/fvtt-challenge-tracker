@@ -5,8 +5,8 @@
   "version": "This is auto replaced",
   "library": "false",
   "compatibility": {
-    "minimum": "10",
-    "verified": "11.300"
+    "minimum": "13.341",
+    "verified": "13.345"
   },
   "authors": [
     {
@@ -27,7 +27,7 @@
     ]
   },
   "esmodules": [
-    "./scripts/init.js"
+    "./dist/challenge-tracker.min.mjs"
   ],
   "scripts": [
   ],
