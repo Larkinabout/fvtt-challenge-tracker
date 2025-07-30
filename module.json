@@ -30,7 +30,7 @@
     ]
   },
   "esmodules": [
-    "./dist/challenge-tracker.min.mjs"
+    "./scripts/main/module.mjs"
   ],
   "scripts": [
   ],
