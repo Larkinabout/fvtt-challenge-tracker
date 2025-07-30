@@ -6,7 +6,7 @@
   "library": "false",
   "compatibility": {
     "minimum": "13.341",
-    "verified": "13.345"
+    "verified": "13.346"
   },
   "authors": [
     {
@@ -19,7 +19,10 @@
     "systems": [],
     "requires": [
       {
-        "id": "color-picker"
+        "id": "color-picker",
+        "compatibility": {
+          "minimum": "1.7"
+        }
       },
       {
         "id": "socketlib"

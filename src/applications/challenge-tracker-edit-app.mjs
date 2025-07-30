@@ -42,31 +42,33 @@ export class challengeTrackerEditApp extends HandlebarsApplicationMixin(Applicat
   /* -------------------------------------------- */
 
   async _prepareContext() {
+    const colorPickerField = new game.colorPicker.ColorPickerField();
+
     if ( this.challengeTrackerId ) {
-      return { challengeTracker: ChallengeTrackerFlag.get(this.ownerId, this.challengeTrackerId) };
+      const flags = ChallengeTrackerFlag.get(this.ownerId, this.challengeTrackerId);
+      return { ...flags, colorPickerField };
     } else {
       return {
-        challengeTracker: {
-          backgroundImage: null,
-          frameColor: null,
-          frameWidth: "medium",
-          id: `${MODULE.ID}-${Math.random().toString(16).slice(2)}`,
-          foregroundImage: null,
-          innerBackgroundColor: null,
-          innerColor: null,
-          innerCurrent: 0,
-          innerTotal: 3,
-          outerBackgroundColor: null,
-          outerColor: null,
-          outerCurrent: 0,
-          outerTotal: 4,
-          ownerId: this.ownerId,
-          persist: true,
-          show: false,
-          size: null,
-          title: game.i18n.localize("challengeTracker.labels.title"),
-          windowed: true
-        }
+        colorPickerField,
+        backgroundImage: null,
+        frameColor: null,
+        frameWidth: "medium",
+        id: `${MODULE.ID}-${Math.random().toString(16).slice(2)}`,
+        foregroundImage: null,
+        innerBackgroundColor: null,
+        innerColor: null,
+        innerCurrent: 0,
+        innerTotal: 3,
+        outerBackgroundColor: null,
+        outerColor: null,
+        outerCurrent: 0,
+        outerTotal: 4,
+        ownerId: this.ownerId,
+        persist: true,
+        show: false,
+        size: null,
+        title: game.i18n.localize("challengeTracker.labels.title"),
+        windowed: true
       };
     }
   }
@@ -94,7 +96,8 @@ export class challengeTrackerEditApp extends HandlebarsApplicationMixin(Applicat
 
   /* -------------------------------------------- */
 
-  _activateListeners(html) {
+  _onRender(context, options) {
+    super._onRender(context, options);
     ColorPicker.install();
   }
 

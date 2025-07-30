@@ -108,7 +108,8 @@ export class ChallengeTracker extends HandlebarsApplicationMixin(ApplicationV2) 
   static DEFAULT_OPTIONS = {
     classes: ["challenge-tracker-app"],
     window: {
-      resizable: false
+      resizable: false,
+      title: DEFAULTS.title
     }
   };
 
@@ -343,7 +344,10 @@ export class ChallengeTracker extends HandlebarsApplicationMixin(ApplicationV2) 
     // Call openHandler for only GM or everyone
     const options = {
       id: challengeTrackerOptions.id,
-      title: challengeTrackerOptions.title, width: challengeTrackerOptions.size
+      window: {
+        title: challengeTrackerOptions.title,
+        width: challengeTrackerOptions.size
+      }
     };
     if ( challengeTrackerOptions?.position?.left ) { options.left = challengeTrackerOptions?.position?.left; }
     if ( challengeTrackerOptions?.position?.top ) { options.top = challengeTrackerOptions?.position?.top; }
@@ -441,7 +445,7 @@ export class ChallengeTracker extends HandlebarsApplicationMixin(ApplicationV2) 
    */
   static closeAll() {
     for (const challengeTracker of Object.values(game.challengeTracker)) {
-      challengeTracker._close();
+      challengeTracker.close();
     }
   }
 
@@ -459,7 +463,7 @@ export class ChallengeTracker extends HandlebarsApplicationMixin(ApplicationV2) 
     }
     const challengeTracker = Object.values(game.challengeTracker)
       .find(ct => ct.challengeTrackerOptions.title === title);
-    if ( challengeTracker ) challengeTracker._close();
+    if ( challengeTracker ) challengeTracker.close();
   }
 
   /* -------------------------------------------- */
@@ -474,29 +478,27 @@ export class ChallengeTracker extends HandlebarsApplicationMixin(ApplicationV2) 
       return;
     }
     const challengeTracker = Object.values(game.challengeTracker).find(ct => ct.challengeTrackerOptions.id === id);
-    if ( challengeTracker ) challengeTracker._close();
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Add click event to the Close element
-   * @private
-   */
-  _closeEvent() {
-    this.element.querySelector(".close").addEventListener("click", () => this._close());
+    if ( challengeTracker ) challengeTracker.close();
   }
 
   /* -------------------------------------------- */
 
   /**
    * Close Challenge Tracker via event of close method
-   * @private
+   * @override
    */
-  _close() {
+  close(options = {}) {
+    const socket = options.socket ?? false;
+    if ( socket ) {
+      super.close();
+      return;
+    }
+
     if ( !game.user.isGM && !Utils.checkUserId(this.ownerId) ) return;
+
     const executorId = game.userId;
     this.eventListenerController.abort();
+
     ChallengeTrackerSocket.executeForEveryone(
       "closeHandler",
       this.options,
@@ -536,7 +538,7 @@ export class ChallengeTracker extends HandlebarsApplicationMixin(ApplicationV2) 
     const closeFunction = challengeTracker.challengeTrackerOptions.closeFunction;
     if ( typeof closeFunction === "function" ) closeFunction();
 
-    challengeTracker.close();
+    challengeTracker.close({ socket: true });
     delete game.challengeTracker[challengeTrackerId];
   }
 
@@ -709,14 +711,17 @@ export class ChallengeTracker extends HandlebarsApplicationMixin(ApplicationV2) 
    * @param {object} event Listener event
    **/
   _clickEvent(event) {
-    if ( this.challengeTrackerOptions.innerTotal > 0 && this.contextFrame.isPointInPath(this.innerArc, event.offsetX, event.offsetY) ) {
-      this.challengeTrackerOptions.innerCurrent = (this.challengeTrackerOptions.innerCurrent === this.challengeTrackerOptions.innerTotal)
-        ? this.challengeTrackerOptions.innerTotal
+    if ( this.challengeTrackerOptions.innerTotal > 0
+      && this.contextFrame.isPointInPath(this.innerArc, event.offsetX, event.offsetY) ) {
+      this.challengeTrackerOptions.innerCurrent = (
+        this.challengeTrackerOptions.innerCurrent === this.challengeTrackerOptions.innerTotal
+      ) ? this.challengeTrackerOptions.innerTotal
         : this.challengeTrackerOptions.innerCurrent + 1;
       this._draw();
     } else if ( this.contextFrame.isPointInPath(this.outerArc, event.offsetX, event.offsetY) ) {
-      this.challengeTrackerOptions.outerCurrent = (this.challengeTrackerOptions.outerCurrent === this.challengeTrackerOptions.outerTotal)
-        ? this.challengeTrackerOptions.outerTotal
+      this.challengeTrackerOptions.outerCurrent = (
+        this.challengeTrackerOptions.outerCurrent === this.challengeTrackerOptions.outerTotal
+      ) ? this.challengeTrackerOptions.outerTotal
         : this.challengeTrackerOptions.outerCurrent + 1;
       this._draw();
     }
@@ -808,8 +813,9 @@ export class ChallengeTracker extends HandlebarsApplicationMixin(ApplicationV2) 
     } else if ( this.contextFrame.isPointInPath(this.outerArc, x, y) ) {
       if ( event.deltaY > 0 ) {
         if ( this.challengeTrackerOptions.outerTotal > 1 ) this.challengeTrackerOptions.outerTotal--;
-        this.challengeTrackerOptions.outerCurrent = (this.challengeTrackerOptions.outerCurrent > this.challengeTrackerOptions.outerTotal)
-          ? this.challengeTrackerOptions.outerTotal
+        this.challengeTrackerOptions.outerCurrent = (
+          this.challengeTrackerOptions.outerCurrent > this.challengeTrackerOptions.outerTota
+        ) ? this.challengeTrackerOptions.outerTotal
           : this.challengeTrackerOptions.outerCurrent;
       }
       if ( event.deltaY < 0 ) {
@@ -904,7 +910,7 @@ export class ChallengeTracker extends HandlebarsApplicationMixin(ApplicationV2) 
    **/
   static async drawHandler(challengeTrackerOptions, options) {
     const challengeTracker = Object.values(game.challengeTracker).find(ct => ct.id === options.id);
-    if ( !challengeTracker ) return;
+    if ( !challengeTracker || !challengeTracker.element ) return;
     await challengeTracker.setVariables();
     challengeTracker.drawCanvas(challengeTrackerOptions);
     if ( challengeTrackerOptions.windowed ) {

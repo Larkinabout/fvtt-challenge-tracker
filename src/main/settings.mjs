@@ -138,13 +138,14 @@ export class Settings {
   /* -------------------------------------------- */
 
   static initColorSettings() {
-    ColorPicker.register(
+    game.settings.register(
       MODULE.ID,
       "innerBackgroundColor",
       {
         name: game.i18n.localize("challengeTracker.settings.innerBackgroundColor.name"),
         hint: game.i18n.localize("challengeTracker.settings.innerBackgroundColor.hint"),
         scope: "world",
+        config: true,
         restricted: true,
         default: DEFAULTS.innerBackgroundColor,
         onChange: innerBackgroundColor => {
@@ -155,23 +156,24 @@ export class Settings {
             Utils.getSetting("innerColor", DEFAULTS.innerColor),
             Utils.getSetting("frameColor", DEFAULTS.frameColor)
           );
-        }
-      },
-      {
-        format: "hexa",
-        alphaChannel: true
+        },
+        type: new game.colorPicker.ColorPickerField({
+          format: "hexa",
+          alphaChannel: true
+        })
       }
     );
 
     /* -------------------------------------------- */
 
-    ColorPicker.register(
+    game.settings.register(
       MODULE.ID,
       "innerColor",
       {
         name: game.i18n.localize("challengeTracker.settings.innerColor.name"),
         hint: game.i18n.localize("challengeTracker.settings.innerColor.hint"),
         scope: "world",
+        config: true,
         restricted: true,
         default: DEFAULTS.innerColor,
         onChange: innerColor => {
@@ -182,23 +184,24 @@ export class Settings {
             innerColor,
             Utils.getSetting("frameColor", DEFAULTS.frameColor)
           );
-        }
-      },
-      {
-        format: "hexa",
-        alphaChannel: true
+        },
+        type: new game.colorPicker.ColorPickerField({
+          format: "hexa",
+          alphaChannel: true
+        })
       }
     );
 
     /* -------------------------------------------- */
 
-    ColorPicker.register(
+    game.settings.register(
       MODULE.ID,
       "outerBackgroundColor",
       {
         name: game.i18n.localize("challengeTracker.settings.outerBackgroundColor.name"),
         hint: game.i18n.localize("challengeTracker.settings.outerBackgroundColor.hint"),
         scope: "world",
+        config: true,
         restricted: true,
         default: DEFAULTS.outerBackgroundColor,
         onChange: outerBackgroundColor => {
@@ -209,23 +212,24 @@ export class Settings {
             Utils.getSetting("innerColor", DEFAULTS.innerColor),
             Utils.getSetting("frameColor", DEFAULTS.frameColor)
           );
-        }
-      },
-      {
-        format: "hexa",
-        alphaChannel: true
+        },
+        type: new game.colorPicker.ColorPickerField({
+          format: "hexa",
+          alphaChannel: true
+        })
       }
     );
 
     /* -------------------------------------------- */
 
-    ColorPicker.register(
+    game.settings.register(
       MODULE.ID,
       "outerColor",
       {
         name: game.i18n.localize("challengeTracker.settings.outerColor.name"),
         hint: game.i18n.localize("challengeTracker.settings.outerColor.hint"),
         scope: "world",
+        config: true,
         restricted: true,
         default: DEFAULTS.outerColor,
         onChange: outerColor => {
@@ -236,23 +240,24 @@ export class Settings {
             Utils.getSetting("innerColor", DEFAULTS.innerColor),
             Utils.getSetting("frameColor", DEFAULTS.frameColor)
           );
-        }
-      },
-      {
-        format: "hexa",
-        alphaChannel: true
+        },
+        type: new game.colorPicker.ColorPickerField({
+          format: "hexa",
+          alphaChannel: true
+        })
       }
     );
 
     /* -------------------------------------------- */
 
-    ColorPicker.register(
+    game.settings.register(
       MODULE.ID,
       "frameColor",
       {
         name: game.i18n.localize("challengeTracker.settings.frameColor.name"),
         hint: game.i18n.localize("challengeTracker.settings.frameColor.hint"),
         scope: "world",
+        config: true,
         restricted: true,
         default: DEFAULTS.frameColor,
         onChange: frameColor => {
@@ -263,11 +268,11 @@ export class Settings {
             Utils.getSetting("innerColor", DEFAULTS.innerColor),
             frameColor
           );
-        }
-      },
-      {
-        format: "hex",
-        alphaChannel: true
+        },
+        type: new game.colorPicker.ColorPickerField({
+          format: "hex",
+          alphaChannel: false
+        })
       }
     );
   }

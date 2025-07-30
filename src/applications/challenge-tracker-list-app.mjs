@@ -82,14 +82,6 @@ export class challengeTrackerListApp extends HandlebarsApplicationMixin(Applicat
   /* -------------------------------------------- */
 
   /** @inheritDoc */
-  async close(options={}) {
-    if ( !options.closeKey ) return super.close(options);
-    return this;
-  }
-
-  /* -------------------------------------------- */
-
-  /** @inheritDoc */
   async _onFirstRender(context, options) {
     await super._onFirstRender(context, options);
     canvas.scene.apps[this.id] = this;

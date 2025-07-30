@@ -113,7 +113,23 @@ Hooks.on("getSceneControlButtons", controls => {
   if ( buttonLocation === "player-list" || buttonLocation === "none" ) return;
   if ( !controls[buttonLocation] ) return;
 
-  controls[buttonLocation].tools.challengeTracker = {
+  const tools = controls[buttonLocation].tools;
+
+  if ( !controls[buttonLocation]._challengeTrackerWrapped ) {
+    const originalOnToolChange = controls[buttonLocation].onToolChange;
+    controls[buttonLocation].onToolChange = (...args) => {
+      if ( typeof originalOnToolChange === "function" ) {
+        originalOnToolChange(...args);
+      }
+
+      if ( tools.challengeTracker?.active ) {
+        tools.challengeTracker.active = false;
+        game.challengeTrackerListApp?.close();
+      }
+    };
+  }
+
+  tools.challengeTracker = {
     name: "challengeTracker",
     title: game.i18n.localize("challengeTracker.labels.buttonTitle"),
     icon: "challenge-tracker-control-button",
@@ -126,6 +142,8 @@ Hooks.on("getSceneControlButtons", controls => {
     },
     toggle: true
   };
+
+  controls[buttonLocation]._challengeTrackerWrapped = true;
 });
 
 /* -------------------------------------------- */

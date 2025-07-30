@@ -54,6 +54,7 @@
 
 .challenge-tracker-app.windowless button.header-control:not(:hover) {
     background: var(--color-header-background);
+    transition: 0s;
 }
 
 .challenge-tracker-app:not(.windowless) button.header-control[data-action="drag"] {
@@ -75,7 +76,7 @@
 .challenge-tracker-app.windowless:hover > .window-header {
     visibility: visible;
     transition: visibility 0.2s ease-in;
-    transition-delay: 0.5s;
+    transition-delay: 1s;
 }
 
 .challenge-tracker-app.windowless:not(:hover) > .window-header {
@@ -92,7 +93,12 @@
 }
 
 .challenge-tracker-app.windowless .window-title {
+    background-color: var(--color-header-background);
+    border-radius: 4px;
+    line-height: 1;
     padding: 5px;
+    position: absolute;
+    top: 0px;
 }
 
 .challenge-tracker-app.windowless .window-header a {
