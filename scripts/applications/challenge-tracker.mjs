@@ -349,8 +349,13 @@ export class ChallengeTracker extends HandlebarsApplicationMixin(ApplicationV2) 
         width: challengeTrackerOptions.size
       }
     };
-    if ( challengeTrackerOptions?.position?.left ) { options.left = challengeTrackerOptions?.position?.left; }
-    if ( challengeTrackerOptions?.position?.top ) { options.top = challengeTrackerOptions?.position?.top; }
+    
+    if (challengeTrackerOptions?.position) {
+      options.position = {
+        left: challengeTrackerOptions.position.left,
+        top: challengeTrackerOptions.position.top
+      };
+    }
 
     if ( challengeTrackerOptions.show ) {
       ChallengeTrackerSocket.executeForEveryone(
