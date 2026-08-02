@@ -108,13 +108,11 @@
         <label>{{localize "challengeTracker.labels.editForm.trackerOptions.frameWidth"}}</label>
         <div class="form-fields">
           <select id="frameWidth" name="frameWidth">
-            {{#select frameWidth}}
-            <option value="none">{{localize "challengeTracker.settings.frameWidth.choices.none"}}</option>
-            <option value="extra-thin">{{localize "challengeTracker.settings.frameWidth.choices.extraThin"}}</option>
-            <option value="thin">{{localize "challengeTracker.settings.frameWidth.choices.thin"}}</option>
-            <option value="medium">{{localize "challengeTracker.settings.frameWidth.choices.medium"}}</option>
-            <option value="thick">{{localize "challengeTracker.settings.frameWidth.choices.thick"}}</option>
-            {{/select}}
+            <option value="none" {{#ifEquals frameWidth "none"}}selected{{/ifEquals}}>{{localize "challengeTracker.settings.frameWidth.choices.none"}}</option>
+            <option value="extra-thin" {{#ifEquals frameWidth "extra-thin"}}selected{{/ifEquals}}>{{localize "challengeTracker.settings.frameWidth.choices.extraThin"}}</option>
+            <option value="thin" {{#ifEquals frameWidth "thin"}}selected{{/ifEquals}}>{{localize "challengeTracker.settings.frameWidth.choices.thin"}}</option>
+            <option value="medium" {{#ifEquals frameWidth "medium"}}selected{{/ifEquals}}>{{localize "challengeTracker.settings.frameWidth.choices.medium"}}</option>
+            <option value="thick" {{#ifEquals frameWidth "thick"}}selected{{/ifEquals}}>{{localize "challengeTracker.settings.frameWidth.choices.thick"}}</option>
           </select>
         </div>
       </div>
