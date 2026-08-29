@@ -7,18 +7,31 @@ export class ChallengeTrackerFlag {
    **/
   static getList(userId) {
     const challengeTrackerList = [];
-    if ( !game.users.get(userId)?.flags["challenge-tracker"] ) return;
-    const flagKeys = Object.keys(game.users.get(userId)?.flags["challenge-tracker"]);
+    const user = game.users.get(userId);
+    const userFlags = user?.flags?.["challenge-tracker"];
+    if ( !userFlags ) return [];
+
+    const flagKeys = Object.keys(userFlags);
     const flagsLength = flagKeys.length;
     for (const flagKey of flagKeys) {
-      const flagData = game.users.get(userId)?.getFlag(MODULE.ID, flagKey);
-      const moveUpDisabled = (flagData.listPosition === 1) ? "disabled" : "";
-      const moveDownDisabled = (flagData.listPosition >= flagsLength) ? "disabled" : "";
-      const mergedFlagData = foundry.utils.mergeObject(flagData, { moveUpDisabled, moveDownDisabled });
+      const flagData = user?.getFlag(MODULE.ID, flagKey);
+      if ( !flagData || !flagData.id ) continue;
+
+      const listPosition = Number.isFinite(flagData.listPosition)
+        ? Number(flagData.listPosition)
+        : Number.MAX_SAFE_INTEGER;
+      const moveUpDisabled = (listPosition === 1) ? "disabled" : "";
+      const moveDownDisabled = (listPosition >= flagsLength) ? "disabled" : "";
+      const mergedFlagData = foundry.utils.mergeObject(flagData, {
+        ownerId: user.id,
+        moveUpDisabled,
+        moveDownDisabled,
+        listPosition
+      });
       challengeTrackerList.push(mergedFlagData);
     }
-    challengeTrackerList.sort((a, b) => a.listPosition < b.listPosition ? 1 : -1);
-    challengeTrackerList.reverse();
+
+    challengeTrackerList.sort((a, b) => (Number(a.listPosition ?? Number.MAX_SAFE_INTEGER)) - (Number(b.listPosition ?? Number.MAX_SAFE_INTEGER)));
     return challengeTrackerList;
   }
 
@@ -61,8 +74,18 @@ export class ChallengeTrackerFlag {
    * @param {boolean} challengeTrackerOptions.windowed true = Windowed, false = Windowless
    **/
   static async set(ownerId, challengeTrackerOptions) {
-    await game.users.get(ownerId)?.setFlag(MODULE.ID, challengeTrackerOptions.id, challengeTrackerOptions);
+    if ( !challengeTrackerOptions ) return;
+
+    const normalizedOwnerId = ownerId ?? game.userId;
+    const normalizedId = challengeTrackerOptions.id ?? `${MODULE.ID}-${Math.random().toString(16).slice(2)}`;
+    const normalizedOptions = foundry.utils.mergeObject(challengeTrackerOptions, {
+      id: normalizedId,
+      ownerId: normalizedOwnerId
+    });
+
+    await game.users.get(normalizedOwnerId)?.setFlag(MODULE.ID, normalizedId, normalizedOptions);
     game.challengeTrackerListApp?.render(false, { width: "auto", height: "auto" });
+    return normalizedOptions;
   }
 
   /* -------------------------------------------- */
@@ -73,13 +96,25 @@ export class ChallengeTrackerFlag {
    * @param {string} challengeTrackerId Unique identifier for the Challenge Tracker
    **/
   static async unset(ownerId, challengeTrackerId) {
-    const flagKey = Object.keys(game.users.get(ownerId)?.flags["challenge-tracker"])
-      .find(ct => ct === challengeTrackerId);
+    if ( !challengeTrackerId ) {
+      ui.notifications.error(game.i18n.format("challengeTracker.errors.notSupplied", { parameter: "id", function: "ChallengeTrackerFlag.unset" }));
+      return;
+    }
+
+    const user = game.users.get(ownerId);
+    const flagSet = user?.flags?.["challenge-tracker"];
+    if ( !flagSet ) {
+      ui.notifications.error(game.i18n.format("challengeTracker.errors.doesNotExist", { value: challengeTrackerId }));
+      return;
+    }
+
+    const flagKey = Object.keys(flagSet).find(ct => ct === challengeTrackerId);
     if ( !flagKey ) {
       ui.notifications.error(game.i18n.format("challengeTracker.errors.doesNotExist", { value: challengeTrackerId }));
       return;
     }
-    const deletedFlag = await game.users.get(ownerId)?.unsetFlag(MODULE.ID, challengeTrackerId);
+
+    const deletedFlag = await user?.unsetFlag(MODULE.ID, challengeTrackerId);
     ChallengeTrackerFlag.setListPosition();
     game.challengeTrackerListApp?.render(false, { width: "auto", height: "auto" });
     ui.notifications.info(`Challenge Tracker '${challengeTrackerId}' deleted.`);

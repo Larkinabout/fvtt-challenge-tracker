@@ -2,11 +2,11 @@
   "id": "challenge-tracker",
   "title": "Challenge Tracker",
   "description": "An interactive aid to track successes and failures in challenges à la D&D 4e-inspired skill challenges and Blades in the Dark progress clocks",
-  "version": "This is auto replaced",
+  "version": "3.0.2",
   "library": "false",
   "compatibility": {
     "minimum": "13.341",
-    "verified": "13.346"
+    "verified": "14.366"
   },
   "authors": [
     {
